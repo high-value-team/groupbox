@@ -16,6 +16,9 @@
 # IDEA IDE
 .idea
 
-
 # Dropstack
 .dropstack.json
+
+# FRONTEND
+/src/frontend/build
+/src/frontend/node_modules
