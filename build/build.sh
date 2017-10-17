@@ -10,7 +10,7 @@ sed s!'$stackletname'!$GROUPBOX_STACKLETNAME! < template.dropstack.json > ../dro
 echo "go build"
 export GOOS=linux
 export GOARCH=amd64
-export VERSION_NUMBER=0.0.2
+export VERSION_NUMBER=0.0.3
 go build -ldflags "-X main.VersionNumber=$VERSION_NUMBER" -o ../dropstack/groupbox ../src
 
 # docker image

@@ -20,3 +20,11 @@ run local
 make local
 ./dropstack
 ```
+
+run local with docker
+```
+make build
+cd dropstack
+docker build -t groupbox .
+docker run --rm -ti -p 8080:80 groupbox
+```
