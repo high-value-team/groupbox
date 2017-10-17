@@ -1,9 +1,11 @@
-.PHONY: all dropstack local
+.PHONY: all build deploy local
 
-all: dropstack
+all: local
 
-dropstack:
+build:
 	cd build && ./build.sh
+
+deploy:
 	cd dropstack && dropstack deploy
 
 local:

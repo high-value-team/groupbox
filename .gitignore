@@ -29,5 +29,4 @@ groupbox
 /src/frontend/node_modules
 
 # Deployment
-!/dropstack/.gitkeep
-/dropstack/*
+/dropstack

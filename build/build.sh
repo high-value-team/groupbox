@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mkdir -p ../dropstack
+
 # GROUPBOX_STACKLETNAME in ~/.bashrc definiert (ralfw)
 echo "create .dropstack.json"
 sed s!'$stackletname'!$GROUPBOX_STACKLETNAME! < template.dropstack.json > ../dropstack/.dropstack.json
