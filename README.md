@@ -1,6 +1,12 @@
 # groupbox
 Ad-hoc online collaboration on information collections
 
+tools
+```
+brew install dropstack-cli
+brew install go --with-cc-common # Installs go with cross compilation support
+export GOROOT=/usr/local/Cellar/go/1.9.1/libexec # optional
+```
 
 run local
 ```
