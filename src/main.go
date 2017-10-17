@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+// wird durch build.sh gesetzt
 var VersionNumber string = ""
 
 func main() {
