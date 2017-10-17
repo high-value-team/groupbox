@@ -16,6 +16,9 @@
 # IDEA IDE
 .idea
 
+# MacOS
+.DS_Store
+
 # Dropstack
 .dropstack.json
 

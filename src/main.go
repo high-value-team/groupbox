@@ -19,5 +19,5 @@ func main() {
 		fmt.Fprintf(w, "hello from Backend")
 	}
 	httpPortal := backend.HTTPPortal{frontedHandler, backendHandler}
-	http.ListenAndServe(":8080", &httpPortal)
+	http.ListenAndServe(":80", &httpPortal)
 }
