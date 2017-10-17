@@ -9,5 +9,4 @@ GOOS=linux GOARCH=amd64 go build -o ../dropstack/groupbox ../src
 # docker image
 cp Dockerfile ../dropstack/Dockerfile
 
-cd ../dropstack
-echo "Jetzt deployen mit: dropstack deploy"
+echo "Jetzt nach ../dropstack wechseln und deployen mit dropstack deploy"

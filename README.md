@@ -13,7 +13,7 @@ run local
 cd build
 go build -o groupbox ../src
 docker build -t groupbox .
-docker run --rm -ti -p 80:8080 groupbox
+docker run --rm -ti -p 8080:80 groupbox
 ```
 
 run on dropstack
