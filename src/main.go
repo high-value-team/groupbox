@@ -1,9 +1,12 @@
 package main
 
+//go:generate go run frontend/util/generator/generator.go
+
 import (
-	"github.com/ralfw/groupbox/src/backend"
-	"net/http"
 	"fmt"
+	"net/http"
+
+	"github.com/ralfw/groupbox/src/backend"
 )
 
 // usage:
@@ -11,10 +14,10 @@ import (
 // visit localhost:8080
 func main() {
 	frontedHandler := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w,"hello from Frontend")
+		fmt.Fprintf(w, "hello from Frontend")
 	}
 	backendHandler := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w,"hello from Backend")
+		fmt.Fprintf(w, "hello from Backend")
 	}
 	httpPortal := portal.HTTPPortal{frontedHandler, backendHandler}
 	http.ListenAndServe(":8080", &httpPortal)

@@ -15,3 +15,7 @@
 
 # IDEA IDE
 .idea
+
+# FRONTEND
+/src/frontend/build
+/src/frontend/node_modules
