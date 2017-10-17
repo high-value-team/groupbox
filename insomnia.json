@@ -1,0 +1,84 @@
+{
+	"_type": "export",
+	"__export_format": 3,
+	"__export_date": "2017-10-17T12:51:32.171Z",
+	"__export_source": "insomnia.desktop.app:v5.9.6",
+	"resources": [
+		{
+			"_id": "wrk_7b6f864219e0460b97f58dc2f04239ab",
+			"parentId": null,
+			"modified": 1508244222172,
+			"created": 1508244222172,
+			"name": "Insomnia",
+			"description": "",
+			"certificates": [],
+			"_type": "workspace"
+		},
+		{
+			"_id": "env_6c14268f33514d2896098fd4bfd28a98",
+			"parentId": "wrk_7b6f864219e0460b97f58dc2f04239ab",
+			"modified": 1508244222179,
+			"created": 1508244222179,
+			"name": "Base Environment",
+			"data": {},
+			"color": null,
+			"isPrivate": false,
+			"_type": "environment"
+		},
+		{
+			"_id": "jar_3bc3741f2e024238ba67331098f2a8bd",
+			"parentId": "wrk_7b6f864219e0460b97f58dc2f04239ab",
+			"modified": 1508244222175,
+			"created": 1508244222175,
+			"name": "Default Jar",
+			"cookies": [],
+			"_type": "cookie_jar"
+		},
+		{
+			"_id": "req_2de9ec37f781465683025933bdc9a58a",
+			"parentId": "wrk_7b6f864219e0460b97f58dc2f04239ab",
+			"modified": 1508244614930,
+			"created": 1508244304384,
+			"url": "{{domain}}/api/version",
+			"name": "Version",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1508244304384,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "env_2a583d07654f44de83c9ddd1350f2329",
+			"parentId": "env_6c14268f33514d2896098fd4bfd28a98",
+			"modified": 1508244444895,
+			"created": 1508244392061,
+			"name": "local",
+			"data": {
+				"domain": "http://localhost:8080"
+			},
+			"color": null,
+			"isPrivate": false,
+			"_type": "environment"
+		},
+		{
+			"_id": "env_133a604a3a68427a8cb8065b2ec61e0a",
+			"parentId": "env_6c14268f33514d2896098fd4bfd28a98",
+			"modified": 1508244484771,
+			"created": 1508244459761,
+			"name": "dropstack",
+			"data": {
+				"domain": "https://hfrigore.cloud.dropstack.run"
+			},
+			"color": null,
+			"isPrivate": false,
+			"_type": "environment"
+		}
+	]
+}
