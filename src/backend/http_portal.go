@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"encoding/json"
 	"github.com/ralfw/groupbox/src/frontend"
+	"fmt"
 )
 
 type RouteType int
@@ -17,9 +18,11 @@ const (
 )
 
 type HTTPPortal struct {
+	Interactions *Interactions
 }
 
-func (portal *HTTPPortal) Run(address string){
+func (portal *HTTPPortal) Run(port int){
+	address := fmt.Sprintf(":%d", port)
 	http.ListenAndServe(address, portal)
 }
 
@@ -47,7 +50,7 @@ func (portal *HTTPPortal) classifyRoute(url string) RouteType {
 }
 
 func (portal *HTTPPortal) HandleVersion(w http.ResponseWriter, r *http.Request) {
-	versionInformation := getVersionInformation()
+	versionInformation := portal.Interactions.getVersionInformation()
 	portal.writeResponse(w, versionInformation)
 }
 

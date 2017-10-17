@@ -7,9 +7,13 @@ type VersionInfo struct {
 	Timestamp string `json:"timestamp"`
 }
 
-func getVersionInformation() *VersionInfo {
+type Interactions struct {
+	VersionNumber string
+}
+
+func (i *Interactions) getVersionInformation() *VersionInfo {
 	return &VersionInfo{
-		VersionNumber: "0.0.1",
+		VersionNumber: i.VersionNumber,
 		Timestamp: time.Now().Format(time.RFC3339),
 	}
 }

@@ -4,11 +4,21 @@ package main
 
 import (
 	"github.com/ralfw/groupbox/src/backend"
+	"github.com/urfave/cli"
+	"os"
 )
 
-// usage:
-// go run main.go
+var VersionNumber string = ""
+
 func main() {
-	httpPortal := backend.HTTPPortal{}
-	httpPortal.Run(":80")
+	// TODO CLI-Parsing überarbeiten
+	app := cli.NewApp()
+	app.Flags = backend.Flags()
+	app.Action = func( c *cli.Context) error {
+		interactions := &backend.Interactions{VersionNumber:VersionNumber}
+		httpPortal := backend.HTTPPortal{Interactions:interactions}
+		httpPortal.Run(c.Int(backend.FlagHTTPPort))
+		return nil
+	}
+	app.Run(os.Args)
 }
