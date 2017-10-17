@@ -12,9 +12,6 @@ groupbox
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
-.glide/
-
 # IDEA IDE
 .idea
 
@@ -27,6 +24,7 @@ groupbox
 # FRONTEND
 /src/frontend/build
 /src/frontend/node_modules
+/src/frontend/coverage
 
 # Deployment
 /dropstack
