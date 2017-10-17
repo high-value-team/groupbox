@@ -1,0 +1,8 @@
+{
+  "variables": "",
+  "instances": 1,
+  "type": "web",
+  "excludes": [],
+  "name": "$stackletname",
+  "serviceUrl": "$stackletname.cloud.dropstack.run"
+}
