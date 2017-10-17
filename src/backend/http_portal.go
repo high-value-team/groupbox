@@ -1,4 +1,4 @@
-package portal
+package backend
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ var backendPath = regexp.MustCompile("^/api/([a-zA-Z0-9]+)$")
 
 type HTTPPortal struct {
 	FrontendHandler http.HandlerFunc
-	BackendHandler http.HandlerFunc
+	BackendHandler  http.HandlerFunc
 }
 
 func (p *HTTPPortal) ServeHTTP(writer http.ResponseWriter, reader *http.Request) {

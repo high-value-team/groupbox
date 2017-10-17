@@ -3,6 +3,7 @@
 *.dll
 *.so
 *.dylib
+/src/groupbox
 
 # Test binary, build with `go test -c`
 *.test
@@ -15,6 +16,9 @@
 
 # IDEA IDE
 .idea
+
+# MacOS
+.DS_Store
 
 # Dropstack
 .dropstack.json
