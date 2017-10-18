@@ -11,7 +11,10 @@ var VersionNumber string = ""
 
 func main() {
 	cliParams := NewCLIParams()
-	interactions := &backend.Interactions{VersionNumber: VersionNumber}
-	httpPortal := backend.HTTPPortal{Interactions: interactions}
+	requestHandlers := []backend.RequestHandler{
+		&backend.VersionRequestHandler{VersionNumber: VersionNumber},
+		&backend.StaticRequestHandler{},
+	}
+	httpPortal := backend.HTTPPortal{RequestHandlers: requestHandlers}
 	httpPortal.Run(cliParams.Port)
 }
