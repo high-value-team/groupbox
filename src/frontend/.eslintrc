@@ -1,0 +1,131 @@
+{
+	"parser": "babel-eslint",
+
+	"parserOptions": {
+		"ecmaFeatures": {
+			"arrowFunctions": true,
+			"blockBindings": true,
+			"classes": true,
+			"modules": true,
+			"templateStrings": true
+		},
+		"ecmaVersion": 6,
+		"sourceType": "module"
+	},
+
+	"env": {
+		"browser": true,
+		"es6": true,
+		"jest": true,
+		"node": true
+	},
+
+	"extends": [
+		"eslint:recommended",
+		"plugin:jest/recommended",
+		"plugin:react/recommended",
+		"plugin:import/errors",
+		"plugin:import/warnings"
+	],
+
+	"globals": {
+		"console": true
+	},
+
+	"plugins": [
+		"jest",
+		"json"
+	],
+
+	"settings": {
+    "import/resolver": {
+			"node": {
+				"paths": ["src"],
+				"extensions": [".js", ".jsx"]
+			}
+    }
+	},
+
+	"rules": {
+		"arrow-spacing": 1,
+		"brace-style": [1, "1tbs", { "allowSingleLine": true }],
+		"constructor-super": 1,
+		"curly": [0, "multi"],
+		"indent": [1, 2, { "SwitchCase": 1 }],
+		"key-spacing": ["error"],
+		"keyword-spacing": ["error"],
+		"max-len": ["error", 120],
+		"no-console": 0,
+		"no-extra-strict": 0,
+		"no-unused-vars": ["error", { "ignoreRestSiblings": true }],
+		"no-useless-concat": 1,
+		"no-var": 1,
+		"no-warning-comments": 0,
+		"prefer-arrow-callback": 1,
+		"prefer-const": 1,
+		"prefer-reflect": 1,
+		"prefer-spread": 1,
+		"prefer-template": 1,
+		"quotes": [1, "single", { "avoidEscape": true }],
+		"semi": [2, "always"],
+		"space-before-blocks": [1, "always" ],
+
+		"jsx-quotes": [ 1, "prefer-double" ],
+		"react/display-name": 0,
+		"react/jsx-boolean-value": [1, "always" ],
+		"react/jsx-curly-spacing": 1,
+		"react/jsx-indent": [1, 2],
+		"react/jsx-indent-props": [2, "tab"],
+		"react/jsx-no-literals": 0,
+    "react/sort-prop-types": 0,
+    "react/jsx-sort-props": 0,
+    "react/no-danger": 1,
+    "react/no-did-mount-set-state": 1,
+    "react/no-did-update-set-state": 1,
+    "react/no-multi-comp": 1,
+    "react/no-set-state": 0,
+    "react/self-closing-comp": 1,
+    "react/sort-comp": [1, {
+			"order": [
+				"type-annotations",
+				"state",
+				"static-methods",
+				"constructor",
+				"lifecycle",
+				"getters",
+				"setters",
+				"/^a.+$/",
+				"/^b.+$/",
+				"/^c.+$/",
+				"/^d.+$/",
+				"/^e.+$/",
+				"/^f.+$/",
+				"/^g.+$/",
+				"/^h.+$/",
+				"/^i.+$/",
+				"/^j.+$/",
+				"/^k.+$/",
+				"/^l.+$/",
+				"/^m.+$/",
+				"/^n.+$/",
+				"/^o.+$/",
+				"/^p.+$/",
+				"/^q.+$/",
+				"/^r.+$/",
+				"/^s.+$/",
+				"/^t.+$/",
+				"/^u.+$/",
+				"/^v.+$/",
+				"/^w.+$/",
+				"/^x.+$/",
+				"/^y.+$/",
+				"/^z.+$/",
+				"everything-else",
+				"/^on.+$/",
+				"/^render.+$/",
+				"render"
+			]
+		}]
+	}
+
+}

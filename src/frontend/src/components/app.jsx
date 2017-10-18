@@ -1,15 +1,22 @@
 import React from 'react';
-import Topbar from './topbar';
+import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
-import { getVersion, Version } from '../services/version';
+import Topbar from './topbar';
 
-const styles = theme => ({
+import { getVersion } from '../services/version';
+
+const styles = (/*theme*/) => ({
   root: {
   },
 });
 
 class App extends React.Component {
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    children: PropTypes.node.isRequired,
+  }
 
   constructor(props) {
     super(props);
@@ -23,7 +30,7 @@ class App extends React.Component {
   loadVersion = () => {
     getVersion().then((version) => {
       const { versionNumber } = version;
-      this.setState({versionNumber});
+      this.setState({ versionNumber });
     });
   }
 
