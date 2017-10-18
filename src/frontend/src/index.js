@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -18,7 +18,7 @@ const element = (
   </MuiThemeProvider>
 );
 
-const target: HTMLElement = document.getElementById('root') as HTMLElement;
+const target = document.getElementById('root');
 
 ReactDOM.render(element, target);
 registerServiceWorker();
