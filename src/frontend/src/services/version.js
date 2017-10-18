@@ -1,7 +1,8 @@
 export async function getVersion() {
   const rsp = await fetch('/api/version');
   if (rsp.ok) {
-    return await rsp.json();
+    const version = await rsp.json();
+    return version;
   }
-  throw new Error('Cannot retrieve version.');
+  return {versionNumber: '', timestamp: new Date()};
 }
