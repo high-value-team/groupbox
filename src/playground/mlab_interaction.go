@@ -35,7 +35,6 @@ func main() {
 	fmt.Printf("connectionString:%s\n\n", connectionString)
 
 	session, err := mgo.Dial(connectionString)
-
 	if err != nil {
 		panic(err)
 	}
