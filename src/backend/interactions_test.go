@@ -42,19 +42,18 @@ func TestMapToBoxDTO(t *testing.T) {
 	interactions := Interactions{}
 
 	// act
-	var err error
-	actual := interactions.mapToBoxDTO(&err, &box, &boxMember)
+	actual := interactions.mapToBoxDTO(&box, &boxMember)
 
 	// assert
 	expected := &BoxDTO{
-		MemberNickname:   "Golden Panda",
-		Title:        "Klassiker der Weltliteratur",
-		CreationDate: "2017-10-01T10:30:59Z",
+		MemberNickname: "Golden Panda",
+		Title:          "Klassiker der Weltliteratur",
+		CreationDate:   "2017-10-01T10:30:59Z",
 		Items: []ItemDTO{
 			{
-				AuthorNickname:   "Golden Panda",
-				CreationDate: "2017-10-01T10:35:20Z",
-				Message:      "Die drei Musketiere, Alexandre Dumas",
+				AuthorNickname: "Golden Panda",
+				CreationDate:   "2017-10-01T10:35:20Z",
+				Message:        "Die drei Musketiere, Alexandre Dumas",
 			},
 		},
 	}

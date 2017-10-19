@@ -1,9 +1,5 @@
 package backend
 
-import (
-	"errors"
-)
-
 type Box struct {
 	BoxID        string   `bson:"boxId"`
 	Title        string   `bson:"title"`
@@ -43,10 +39,21 @@ type Member struct {
 	Owner    bool   `bson:"owner"`
 }
 
-var (
-	SadError       = errors.New("Something really sad happened")
-	SuprisingError = errors.New("Something really suprising happened")
-)
+type SadException struct {
+	Err error
+}
+
+func (e *SadException) Message() string {
+	return e.Err.Error()
+}
+
+type SuprisingException struct {
+	Err error
+}
+
+func (e *SuprisingException) Message() string {
+	return e.Err.Error()
+}
 
 type Interactions struct {
 	mongoDBAdapter *MongoDBAdapter
@@ -56,19 +63,13 @@ func NewInteractions(mongoDBAdapter *MongoDBAdapter) *Interactions {
 	return &Interactions{mongoDBAdapter: mongoDBAdapter}
 }
 
-func (i *Interactions) GetBox(boxKey string) (*BoxDTO, error) {
-	var err error
-	boxMember := i.mongoDBAdapter.openBox(&err, boxKey)
-	box := i.mongoDBAdapter.loadBox(&err, boxMember.BoxID)
-	boxDTO := i.mapToBoxDTO(&err, box, boxMember)
-	return boxDTO, err
+func (i *Interactions) GetBox(boxKey string) *BoxDTO {
+	boxMember := i.mongoDBAdapter.openBox(boxKey)
+	box := i.mongoDBAdapter.loadBox(boxMember.BoxID)
+	return i.mapToBoxDTO(box, boxMember)
 }
 
-func (i *Interactions) mapToBoxDTO(err *error, box *Box, boxMember *BoxMember) *BoxDTO {
-	if *err != nil {
-		return nil
-	}
-
+func (i *Interactions) mapToBoxDTO(box *Box, boxMember *BoxMember) *BoxDTO {
 	boxDTO := BoxDTO{
 		Title:          box.Title,
 		MemberNickname: boxMember.Member.Nickname,

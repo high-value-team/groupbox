@@ -29,52 +29,38 @@ func (adapter *MongoDBAdapter) Stop() {
 	adapter.session.Close()
 }
 
-func (adapter *MongoDBAdapter) openBox(err *error, boxKey string) *BoxMember {
-	if *err != nil {
-		return nil
-	}
-
+func (adapter *MongoDBAdapter) openBox(boxKey string) *BoxMember {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
 	collection := sessionCopy.DB("").C(ConstBoxMemberCollection)
 
 	var boxMember BoxMember
-	dbErr := collection.Find(bson.M{"boxKey": boxKey}).One(&boxMember)
-	if checkError(err, dbErr) {
-		return nil
-	}
+	err := collection.Find(bson.M{"boxKey": boxKey}).One(&boxMember)
+	check(err)
 
 	return &boxMember
 }
 
-func (adapter *MongoDBAdapter) loadBox(err *error, boxID string) *Box {
-	if *err != nil {
-		return nil
-	}
-
+func (adapter *MongoDBAdapter) loadBox(boxID string) *Box {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
 	collection := sessionCopy.DB("").C(ConstBoxCollection)
 
 	var box Box
-	dbErr := collection.Find(bson.M{"boxId": boxID}).One(&box)
-	if checkError(err, dbErr) {
-		return nil
-	}
+	err := collection.Find(bson.M{"boxId": boxID}).One(&box)
+	check(err)
 
 	return &box
 }
 
-func checkError(err1 *error, err2 error) bool {
-	if err2 != nil {
-		if err2 == mgo.ErrNotFound {
-			*err1 = SadError
+func check(err error) {
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			panic(SadException{Err: mgo.ErrNotFound})
 		} else {
-			*err1 = err2
+			panic(SuprisingException{Err: err})
 		}
-		return true
 	}
-	return false
 }
