@@ -1,6 +1,9 @@
-.PHONY: all build deploy local run
+.PHONY: all build deploy local run travis
 
-all: local
+all: travis
+
+travis:
+	cd src/backend && go test -v
 
 build:
 	cd build && ./build.sh
