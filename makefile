@@ -13,5 +13,5 @@ local:
 
 run:
 	cd dropstack && docker build -t groupbox .
-	cd dropstack && docker run --rm -ti -p 8080:80 groupbox
+	cd dropstack && docker run --rm -ti -p 9090:80 groupbox
 

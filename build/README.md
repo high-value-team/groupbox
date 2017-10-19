@@ -4,10 +4,11 @@
 
 1. `build/template.environment` kopieren nach `build/environment`. Die Datei `environment` ist bei gitignore ausgeschlossen.
 2. Environment-Vars in `environment` passend füllen.
-3. In `/build` aufrufen: `source environment`, um die Env-Vars auch wirklich zu setzen.
 
 ### Dropstack Client (OSX)
-`brew install dropstack-cli`
+```
+brew install dropstack-cli
+```
 
 ### Golang (OSX)
 ```
@@ -20,35 +21,28 @@ export GOROOT=/usr/local/Cellar/go/1.9.1/libexec
 
 ## Build und Deployment
 ### Lokal ohne Container
+```
+# in /groupbox
+source build/environment
+
+make local
+./groupbox
+```
+Anschließend läuft die Anwendung lokal auf [http://localhost:8080](http://localhost:8080).
 
 ### Lokal im Container
+```
+make build
+make run
+```
+Anschließend läuft die Anwendung lokal auf [http://localhost:9090](http://localhost:9090).
 
 ### Dropstack
-
-
-
-
-
-
-
-deploy to dropstack
 ```
+# in /groupbox
+source build/environment
+
 make build
 make deploy
 ```
-
-run local
-```
-source build/environment # export environment variables
-make local
-./dropstack --mongodb-url=$MONGODB_URL
-```
-
-run local with docker
-```
-make build
-cd dropstack
-docker build -t groupbox .
-docker run --rm -ti -p 8080:80 groupbox
-```
-
+Anschließend läuft die Anwendung in einem Stacklet.
