@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
 import Topbar from './topbar';
-
-import { getVersion } from '../services/version';
+import VersionService from '../services/version';
 
 const styles = (/*theme*/) => ({
   root: {
@@ -23,15 +22,13 @@ class App extends React.Component {
     this.state = { versionNumber: '' };
   }
 
-  componentWillMount() {
-    this.loadVersion();
+  componentDidMount() {
+    this.version = VersionService
+      .subscribe(version => this.setState({versionNumber: version.versionNumber}));
   }
 
-  loadVersion = () => {
-    getVersion().then((version) => {
-      const { versionNumber } = version;
-      this.setState({ versionNumber });
-    });
+  componentWillUnmount() {
+    this.version.unsubscribe();
   }
 
   render() {
