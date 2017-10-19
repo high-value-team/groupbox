@@ -47,12 +47,12 @@ func TestMapToBoxDTO(t *testing.T) {
 
 	// assert
 	expected := &BoxDTO{
-		MemberName:   "Golden Panda",
+		MemberNickname:   "Golden Panda",
 		Title:        "Klassiker der Weltliteratur",
 		CreationDate: "2017-10-01T10:30:59Z",
 		Items: []ItemDTO{
 			{
-				AuthorName:   "Golden Panda",
+				AuthorNickname:   "Golden Panda",
 				CreationDate: "2017-10-01T10:35:20Z",
 				Message:      "Die drei Musketiere, Alexandre Dumas",
 			},

@@ -15,16 +15,16 @@ type Item struct {
 }
 
 type BoxDTO struct {
-	MemberName   string    `json:"memberName"`
-	Title        string    `json:"title"`
-	CreationDate string    `json:"creationDate"`
-	Items        []ItemDTO `json:"items"`
+	Title          string    `json:"title"`
+	MemberNickname string    `json:"memberNickname"`
+	CreationDate   string    `json:"creationDate"`
+	Items          []ItemDTO `json:"items"`
 }
 
 type ItemDTO struct {
-	AuthorName   string `json:"authorName"`
-	CreationDate string `json:"creationDate"`
-	Message      string `json:"message"`
+	AuthorNickname string `json:"authorNickname"`
+	CreationDate   string `json:"creationDate"`
+	Message        string `json:"message"`
 }
 
 type BoxMember struct {
@@ -61,16 +61,16 @@ func (i *Interactions) mapToBoxDTO(err *error, box *Box, boxMember *BoxMember) *
 	}
 
 	boxDTO := BoxDTO{
-		MemberName:   boxMember.Member.Nickname,
-		Title:        box.Title,
-		CreationDate: box.CreationDate,
-		Items:        []ItemDTO{},
+		Title:          box.Title,
+		MemberNickname: boxMember.Member.Nickname,
+		CreationDate:   box.CreationDate,
+		Items:          []ItemDTO{},
 	}
 	for _, item := range box.Items {
 		boxDTO.Items = append(boxDTO.Items, ItemDTO{
-			AuthorName:   item.Author.Nickname,
-			CreationDate: item.CreationDate,
-			Message:      item.Message,
+			AuthorNickname: item.Author.Nickname,
+			CreationDate:   item.CreationDate,
+			Message:        item.Message,
 		})
 	}
 
