@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2017-10-17T12:51:32.171Z",
+	"__export_date": "2017-10-19T13:34:51.816Z",
 	"__export_source": "insomnia.desktop.app:v5.9.6",
 	"resources": [
 		{
@@ -55,6 +55,66 @@
 			"_type": "request"
 		},
 		{
+			"_id": "req_84a5af325924461abc9bdd40c9d2b2c4",
+			"parentId": "wrk_7b6f864219e0460b97f58dc2f04239ab",
+			"modified": 1508420013766,
+			"created": 1508342997033,
+			"url": "{{domain}}/api/boxes/1",
+			"name": "Get Box (boxKey=1 -> boxId=litklas, Peter)",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1508342997033,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4050466430fb47a3890ba341f2041245",
+			"parentId": "wrk_7b6f864219e0460b97f58dc2f04239ab",
+			"modified": 1508418653788,
+			"created": 1508343027465,
+			"url": "{{domain}}/api/boxes/20",
+			"name": "Get Box (boxKey=20 -> boxId=filme, Bruce)",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1508293650708.5,
+			"settingStoreCookies": true,
+			"settingSendCookies": false,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_2681aa8009854364919ed242c2093b98",
+			"parentId": "wrk_7b6f864219e0460b97f58dc2f04239ab",
+			"modified": 1508420053619,
+			"created": 1508420028764,
+			"url": "{{domain}}/api/boxes/xyz",
+			"name": "Get Box (invalid box key)",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": -1508268977546.25,
+			"settingStoreCookies": true,
+			"settingSendCookies": false,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
 			"_id": "env_2a583d07654f44de83c9ddd1350f2329",
 			"parentId": "env_6c14268f33514d2896098fd4bfd28a98",
 			"modified": 1508244444895,
@@ -75,6 +135,19 @@
 			"name": "dropstack",
 			"data": {
 				"domain": "https://hfrigore.cloud.dropstack.run"
+			},
+			"color": null,
+			"isPrivate": false,
+			"_type": "environment"
+		},
+		{
+			"_id": "env_302984a0b8914f7c84b2b864fc734ae2",
+			"parentId": "env_6c14268f33514d2896098fd4bfd28a98",
+			"modified": 1508418987525,
+			"created": 1508418974328,
+			"name": "local Docker",
+			"data": {
+				"domain": "http://localhost:9090"
 			},
 			"color": null,
 			"isPrivate": false,
