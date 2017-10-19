@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# usage:
+# cp template.environment environment # use correct values in environment variables
+# source environment
+
+# mongoDB
+export DB_USERNAME="groupbox"
+export DB_PASSWORD="secret"
+export DB_NAME="develop"
+export MONGODB_URL="mongodb://$DB_USERNAME:$DB_PASSWORD@ds121565.mlab.com:21565/$DB_NAME"
+
+# dropstack
+export GROUPBOX_STACKLETNAME="abc"
+
+export VERSION_NUMBER=0.0.4
+

@@ -15,21 +15,21 @@ type Person struct {
 }
 
 // usage:
-// export USERNAME="groupbox"
-// export PASSWORD="geheim"
+// export DB_USERNAME="groupbox"
+// export DB_PASSWORD="geheim"
 // export DB_NAME="develop"
 // export COL_NAME="person"
 // go run mlab_interaction.go
 func main() {
 
-	username := os.Getenv("USERNAME")
-	password := os.Getenv("PASSWORD")
+	username := os.Getenv("DB_USERNAME")
+	password := os.Getenv("DB_PASSWORD")
 	databaseName := os.Getenv("DB_NAME")
 	collectionName := os.Getenv("COL_NAME")
 	connectionString := fmt.Sprintf("mongodb://%s:%s@ds121565.mlab.com:21565/%s", username, password, databaseName)
 
-	fmt.Printf("USERNAME:%s\n", username)
-	fmt.Printf("PASSWORD:%s\n", password)
+	fmt.Printf("DB_USERNAME:%s\n", username)
+	fmt.Printf("DB_PASSWORD:%s\n", password)
 	fmt.Printf("DB_NAME:%s\n", databaseName)
 	fmt.Printf("COL_NAME:%s\n", collectionName)
 	fmt.Printf("connectionString:%s\n\n", connectionString)

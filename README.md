@@ -17,8 +17,9 @@ make deploy
 
 run local
 ```
+source build/environment # export environment variables
 make local
-./dropstack
+./dropstack --mongodb-url=$MONGODB_URL
 ```
 
 run local with docker
@@ -28,3 +29,4 @@ cd dropstack
 docker build -t groupbox .
 docker run --rm -ti -p 8080:80 groupbox
 ```
+

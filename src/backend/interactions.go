@@ -1,5 +1,9 @@
 package backend
 
+import (
+	"errors"
+)
+
 type Box struct {
 	BoxID        string   `bson:"boxId"`
 	Title        string   `bson:"title"`
@@ -38,6 +42,11 @@ type Member struct {
 	Nickname string `bson:"nickname"`
 	Owner    bool   `bson:"owner"`
 }
+
+var (
+	SadError       = errors.New("Something really sad happened")
+	SuprisingError = errors.New("Something really suprising happened")
+)
 
 type Interactions struct {
 	mongoDBAdapter *MongoDBAdapter

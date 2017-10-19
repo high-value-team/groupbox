@@ -3,6 +3,6 @@
   "instances": 1,
   "type": "web",
   "excludes": [],
-  "name": "$stackletname",
-  "serviceUrl": "$stackletname.cloud.dropstack.run"
+  "name": "GROUPBOX_STACKLET_NAME",
+  "serviceUrl": "GROUPBOX_STACKLET_NAME.cloud.dropstack.run"
 }

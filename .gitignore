@@ -28,3 +28,4 @@ groupbox
 
 # Deployment
 /dropstack
+/build/environment

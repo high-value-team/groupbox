@@ -11,14 +11,14 @@ var VersionNumber string = ""
 
 func main() {
 	cliParams := NewCLIParams()
-	mongoDBAdapter := backend.MongoDBAdapter{}
+	mongoDBAdapter := backend.MongoDBAdapter{ConnectionString: cliParams.MongoDBURL}
 	mongoDBAdapter.Start()
 	defer mongoDBAdapter.Stop()
 
 	interactions := backend.NewInteractions(&mongoDBAdapter)
 	requestHandlers := []backend.RequestHandler{
-		&backend.VersionRequestHandler{VersionNumber: VersionNumber},
 		&backend.GetBoxRequestHandler{Interactions: interactions},
+		&backend.VersionRequestHandler{VersionNumber: VersionNumber},
 		&backend.StaticRequestHandler{},
 	}
 	httpPortal := backend.HTTPPortal{RequestHandlers: requestHandlers}

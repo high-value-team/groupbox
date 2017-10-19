@@ -41,8 +41,7 @@ func (adapter *MongoDBAdapter) openBox(err *error, boxKey string) *BoxMember {
 
 	var boxMember BoxMember
 	dbErr := collection.Find(bson.M{"boxKey": boxKey}).One(&boxMember)
-	if dbErr != nil {
-		*err = dbErr
+	if checkError(err, dbErr) {
 		return nil
 	}
 
@@ -61,10 +60,21 @@ func (adapter *MongoDBAdapter) loadBox(err *error, boxID string) *Box {
 
 	var box Box
 	dbErr := collection.Find(bson.M{"boxId": boxID}).One(&box)
-	if dbErr != nil {
-		*err = dbErr
+	if checkError(err, dbErr) {
 		return nil
 	}
 
 	return &box
+}
+
+func checkError(err1 *error, err2 error) bool {
+	if err2 != nil {
+		if err2 == mgo.ErrNotFound {
+			*err1 = SadError
+		} else {
+			*err1 = err2
+		}
+		return true
+	}
+	return false
 }

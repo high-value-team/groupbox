@@ -1,8 +1,8 @@
 package backend
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
 )
 
 type RequestHandler interface {
@@ -13,7 +13,7 @@ type HTTPPortal struct {
 	RequestHandlers []RequestHandler
 }
 
-func (portal *HTTPPortal) Run(port int){
+func (portal *HTTPPortal) Run(port int) {
 	address := fmt.Sprintf(":%d", port)
 	http.ListenAndServe(address, portal)
 }

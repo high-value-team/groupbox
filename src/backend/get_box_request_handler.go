@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"regexp"
+
+	mgo "gopkg.in/mgo.v2"
 )
 
 type GetBoxRequestHandler struct {
@@ -11,40 +13,41 @@ type GetBoxRequestHandler struct {
 }
 
 func (handler *GetBoxRequestHandler) TryHandle(writer http.ResponseWriter, reader *http.Request) bool {
-	if handler.Match(reader) {
-		handler.Handle(writer, reader)
+	boxKey, match := handler.Match(reader)
+	if match {
+		handler.Handle(writer, reader, boxKey)
 		return true
 	}
 	return false
 }
 
-func (handler *GetBoxRequestHandler) Match(reader *http.Request) bool {
+func (handler *GetBoxRequestHandler) Match(reader *http.Request) (string, bool) {
 	path := regexp.MustCompile("^/api/boxes/([a-zA-Z0-9]+)$")
-	return path.FindStringSubmatch(reader.URL.Path) != nil
+	pathRegex := path.FindStringSubmatch(reader.URL.Path)
+	if pathRegex != nil {
+		return pathRegex[1], true
+	}
+	return "", false
 }
 
-func (handler *GetBoxRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request) {
-	boxKey := handler.parseBoxKey(reader.URL.Path)
+func (handler *GetBoxRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request, boxKey string) {
 	boxDTO, err := handler.Interactions.GetBox(boxKey)
 	if err != nil {
-		// TODO
-		//switch err.Type {
-		//case MySadError:
-		//	// sad error
-		//	writeErrorResponse()
-		//default:
-		//	// suprised error
-		//	writeErrorResponse()
-		//}
+		switch err {
+		case mgo.ErrNotFound:
+			http.Error(writer, err.Error(), 404)
+		default:
+			http.Error(writer, err.Error(), 500)
+		}
 	}
 	writeJsonResponse(writer, boxDTO)
-}
-
-func (handler *GetBoxRequestHandler) parseBoxKey(url string) string {
-	return ""
 }
 
 func writeJsonResponse(writer http.ResponseWriter, i interface{}) {
 	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(i)
+}
+
+func writePagenotFound(writer http.ResponseWriter, reader *http.Request) {
+	http.NotFound(writer, reader)
 }
