@@ -6,6 +6,7 @@
     "material-design-icons": "^3.0.1",
     "material-ui": "^1.0.0-beta.17",
     "material-ui-icons": "^1.0.0-beta.17",
+    "moment": "^2.19.1",
     "object-assign": "^4.1.1",
     "promise": "^8.0.1",
     "react": "^16.0.0",
