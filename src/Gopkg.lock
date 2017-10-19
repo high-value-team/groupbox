@@ -8,6 +8,12 @@
   version = "v0.1.0"
 
 [[projects]]
+  branch = "develop"
+  name = "github.com/ralfw/groupbox"
+  packages = ["src/frontend"]
+  revision = "79ec84cfd1fe7c9b97e253077a74437281a946ac"
+
+[[projects]]
   name = "github.com/urfave/cli"
   packages = ["."]
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
@@ -22,6 +28,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "364a8fcc074dd764b3b92d6f7b76f73a13bb539f075ac17e07c21a764206a063"
+  inputs-digest = "f4195375a8276eb0240a02e445589468486e8fbea066622196a455ef4aac55c1"
   solver-name = "gps-cdcl"
   solver-version = 1
