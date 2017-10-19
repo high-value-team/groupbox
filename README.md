@@ -1,6 +1,9 @@
 # groupbox
 Ad-hoc online collaboration on information collections
 
+![travis build status](https://travis-ci.org/high-value-team/groupbox.svg?branch=develop)
+
+
 tools
 ```
 brew install dropstack-cli
