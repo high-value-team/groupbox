@@ -3,7 +3,7 @@ package main
 //go:generate go run frontend/util/generator/generator.go
 
 import (
-	"github.com/ralfw/groupbox/src/backend"
+	"github.com/high-value-team/groupbox/src/backend"
 )
 
 // wird durch build.sh gesetzt
