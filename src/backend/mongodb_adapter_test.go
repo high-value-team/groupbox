@@ -90,3 +90,113 @@ func TestOpenBoxErrorPassedIn(t *testing.T) {
 		t.Fatal("expected boxMember to be nil")
 	}
 }
+
+func TestLoadBoxFound(t *testing.T) {
+	// arrange
+	adapter := MongoDBAdapter{ConnectionString: ConnectionString}
+	adapter.Start()
+	defer adapter.Stop()
+
+	// act
+	var err error
+	actual := adapter.loadBox(&err, "litklas")
+
+	// assert
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := &Box{
+		BoxID:        "litklas",
+		Title:        "Klassiker der Weltliteratur",
+		CreationDate: "2017-10-01T10:30:59Z",
+		Members: []Member{
+			{
+				Email:    "peter@acme.com",
+				Nickname: "Golden Panda",
+				Owner:    true,
+			},
+			{
+				Email:    "paul@acme.com",
+				Nickname: "Flying Fox",
+				Owner:    false,
+			},
+			{
+				Email:    "mary@acme.com",
+				Nickname: "Fierce Tiger",
+				Owner:    false,
+			},
+		},
+		Items: []Item{
+			{
+				CreationDate: "2017-10-01T10:35:20Z",
+				Message:      "Die drei Musketiere, Alexandre Dumas",
+				Author: Member{
+					Email:    "peter@acme.com",
+					Nickname: "Golden Panda",
+					Owner:    true,
+				},
+			},
+			{
+				CreationDate: "2017-10-02T14:40:30Z",
+				Message:      "Der Zauberer von Oz, Frank Baum",
+				Author: Member{
+					Email:    "mary@acme.com",
+					Nickname: "Fierce Tiger",
+					Owner:    false,
+				},
+			},
+			{
+				CreationDate: "2017-10-03T20:55:10Z",
+				Message:      "Schuld und Sühne, Dostojewski, www.amazon.de/Schuld-Sühne-Fjodr-Michailowitsch-Dostojewski-ebook/dp/B004UBCWK6",
+				Author: Member{
+					Email:    "paul@acme.com",
+					Nickname: "Flying Fox",
+					Owner:    false,
+				},
+			},
+		},
+	}
+	if !reflect.DeepEqual(expected, actual) {
+		t.Errorf("loadBox() failed!\nexpected:\n%+v\nactual:\n%+v\n", expected, actual)
+	}
+}
+
+func TestLoadBoxNOTFound(t *testing.T) {
+	// arrange
+	adapter := MongoDBAdapter{ConnectionString: ConnectionString}
+	adapter.Start()
+	defer adapter.Stop()
+
+	// act
+	var err error
+	actual := adapter.loadBox(&err, "key does not exist")
+
+	// assert
+	if err != mgo.ErrNotFound {
+		t.Fatal("expected ErrNotFound error")
+	}
+	if actual != nil {
+		t.Fatal("expected box to be nil")
+	}
+}
+
+func TestLoadBoxErrorPassedIn(t *testing.T) {
+	// arrange
+	adapter := MongoDBAdapter{ConnectionString: ConnectionString}
+	adapter.Start()
+	defer adapter.Stop()
+
+	// act
+	err := fmt.Errorf("my error")
+	expectedErr := err
+	actual := adapter.loadBox(&err, "litklas")
+
+	// assert
+	if err != expectedErr {
+		t.Fatal("expected expectedErr error")
+	}
+	if actual != nil {
+		t.Fatal("expected box to be nil")
+	}
+}
