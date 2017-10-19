@@ -1,18 +1,20 @@
 package main
 
 import (
-	"github.com/urfave/cli"
 	"os"
+
+	"github.com/urfave/cli"
 )
 
 type CLIParams struct {
 	Port int
 }
 
-func NewCLIParams() *CLIParams {
+func NewCLIParams(version string) *CLIParams {
 	cliParams := &CLIParams{}
 
 	app := cli.NewApp()
+	app.Version = version
 	const FlagHTTPPort string = "port"
 	app.Flags = []cli.Flag{
 		cli.IntFlag{

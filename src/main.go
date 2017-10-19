@@ -10,7 +10,7 @@ import (
 var VersionNumber string = ""
 
 func main() {
-	cliParams := NewCLIParams()
+	cliParams := NewCLIParams(VersionNumber)
 	mongoDBAdapter := backend.MongoDBAdapter{}
 	mongoDBAdapter.Start()
 	defer mongoDBAdapter.Stop()

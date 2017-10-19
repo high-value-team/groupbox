@@ -9,4 +9,4 @@ deploy:
 	cd dropstack && dropstack deploy
 
 local:
-	go build -ldflags "-X main.VersionNumber=1.2.3" -o groupbox ./src/
+	go build -ldflags "-X main.VersionNumber=`git describe --always --tags --dirty="*"`" -o groupbox ./src/
