@@ -10,6 +10,7 @@ sed s!'GROUPBOX_STACKLET_NAME'!${GROUPBOX_STACKLET_NAME}! < template.dropstack.j
 echo "go build"
 export GOOS=linux
 export GOARCH=amd64
+export VERSION_NUMBER=`git describe --always --tags --dirty="*"`
 go build -ldflags "-X main.VersionNumber=$VERSION_NUMBER" -o ../dropstack/groupbox ../src
 
 # docker image
@@ -21,3 +22,4 @@ mv Dockerfile ../dropstack/Dockerfile
 
 
 echo "Jetzt nach ../dropstack wechseln und deployen mit dropstack deploy"
+

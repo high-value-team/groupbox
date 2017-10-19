@@ -11,10 +11,11 @@ type CLIParams struct {
 	MongoDBURL string
 }
 
-func NewCLIParams() *CLIParams {
+func NewCLIParams(version string) *CLIParams {
 	cliParams := &CLIParams{}
 
 	app := cli.NewApp()
+	app.Version = version
 	const FlagHTTPPort string = "port"
 	const FlagMongoDBURL string = "mongodb-url"
 	app.Flags = []cli.Flag{

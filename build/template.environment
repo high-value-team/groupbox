@@ -13,5 +13,4 @@ export MONGODB_URL="mongodb://$DB_USERNAME:$DB_PASSWORD@ds121565.mlab.com:21565/
 # dropstack
 export GROUPBOX_STACKLETNAME="abc"
 
-export VERSION_NUMBER=0.0.4
 
