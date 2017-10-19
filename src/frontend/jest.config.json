@@ -1,0 +1,16 @@
+{
+  "rootDir": "src",
+  "coverageReporters": [
+    "html",
+    "json",
+    "lcov",
+    "text"
+  ],
+  "setupFiles": [
+    "<rootDir>/../scripts/polyfills.js",
+    "raf/polyfill"
+  ],
+  "testPathIgnorePatterns": [
+    "/node_modules/"
+  ]
+}

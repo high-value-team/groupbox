@@ -7,9 +7,21 @@
   revision = "58d9cde84f237ecdd89bd7f61c2de2853f4c5c6e"
   version = "v0.1.0"
 
+[[projects]]
+  name = "github.com/urfave/cli"
+  packages = ["."]
+  revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
+  version = "v1.20.0"
+
+[[projects]]
+  branch = "v2"
+  name = "gopkg.in/mgo.v2"
+  packages = [".","bson","internal/json","internal/sasl","internal/scram"]
+  revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "42e1a000ad14cf6c994c4bf3faaa297f7f06ab4b9a434809d070ea420e51625e"
+  inputs-digest = "364a8fcc074dd764b3b92d6f7b76f73a13bb539f075ac17e07c21a764206a063"
   solver-name = "gps-cdcl"
   solver-version = 1

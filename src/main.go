@@ -3,21 +3,24 @@ package main
 //go:generate go run frontend/util/generator/generator.go
 
 import (
-	"fmt"
-	"net/http"
-
 	"github.com/ralfw/groupbox/src/backend"
-	"github.com/ralfw/groupbox/src/frontend"
 )
 
-// usage:
-// go run main.go
-// visit localhost:8080
+// wird durch build.sh gesetzt
+var VersionNumber string = ""
+
 func main() {
-	frontedHandler := http.FileServer(frontend.FS(false)).ServeHTTP
-	backendHandler := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "hello from Backend")
+	cliParams := NewCLIParams()
+	mongoDBAdapter := backend.MongoDBAdapter{}
+	mongoDBAdapter.Start()
+	defer mongoDBAdapter.Stop()
+
+	interactions := backend.NewInteractions(&mongoDBAdapter)
+	requestHandlers := []backend.RequestHandler{
+		&backend.VersionRequestHandler{VersionNumber: VersionNumber},
+		&backend.GetBoxRequestHandler{Interactions: interactions},
+		&backend.StaticRequestHandler{},
 	}
-	httpPortal := backend.HTTPPortal{frontedHandler, backendHandler}
-	http.ListenAndServe(":80", &httpPortal)
+	httpPortal := backend.HTTPPortal{RequestHandlers: requestHandlers}
+	httpPortal.Run(cliParams.Port)
 }
