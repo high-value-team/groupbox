@@ -147,7 +147,7 @@ class Box extends React.Component {
     const { classes } = this.props;
     const { box } = this.state;
 
-    const items = box.items.sort((a, b) => b.creationDate > a.creationDate );
+    const items = box.items ? box.items.sort((a, b) => b.creationDate > a.creationDate ) : [];
 
     return (
       <div className={classes.root}>
