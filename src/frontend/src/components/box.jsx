@@ -102,7 +102,7 @@ class Box extends React.Component {
       .split(/\s+/)
       .map(word => word.substr(0, 1))
       .reduce((initials, letter) => `${initials}${letter}`, '');
-}
+  }
 
   hideDialog = () => {
     this.setState({ dialogOpen: false });
@@ -228,7 +228,7 @@ class Box extends React.Component {
         </div>
         <div className={classes.greetingCount}>
           <Typography type="subheading">
-            Einträge {itemCount}
+            Einträge: {itemCount}
           </Typography>
         </div>
         <div className={classes.flexGrow}/>

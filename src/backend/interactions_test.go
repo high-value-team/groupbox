@@ -68,4 +68,9 @@ func TestExtractSubject(t *testing.T) {
 	if result != "1234567890" {
 		t.Errorf("Expected subject equal to message shorter than max subject len; result <%s>", result)
 	}
+
+	result = extractSubject("123456\n7890")
+	if result != "123456 7890" {
+		t.Errorf("Expected subject to contain no new line.", result)
+	}
 }

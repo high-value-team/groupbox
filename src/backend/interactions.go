@@ -4,6 +4,7 @@ package backend
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -34,9 +35,8 @@ func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string
 
 func (i *Interactions) AddItem(boxKey string, message string) {
 	item := buildItem(boxKey, message)
-	i.updateBox(boxKey, item)
-	box := i.mongoDBAdapter.loadBox(boxKey)
-	audience := selectAudience(box)
+	box := i.updateBox(boxKey, item)
+	audience := selectAudience(box.Members, boxKey)
 	i.emailNotifications.NotifyAudience(audience, box.Title)
 }
 
@@ -60,9 +60,9 @@ func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
 	return &boxDTO
 }
 
-func buildItem(boxKey string, message string) Item {
+func buildItem(boxKey string, message string) *Item {
 	subject := extractSubject(message)
-	return Item{
+	return &Item{
 		AuthorKey:    boxKey,
 		CreationDate: time.Now().Format(time.RFC3339),
 		Subject:      subject,
@@ -70,6 +70,11 @@ func buildItem(boxKey string, message string) Item {
 	}
 }
 
+/*
+	A certain number of chars at the beginning of a message are taken as its subject.
+	If the message is longer than that, "..." is appended to the subject.
+	Any new line chars in the subject are replaced by spaces.
+*/
 func extractSubject(message string) string {
 	const MAX_LEN_SUBJECT int = 15
 	var subject string
@@ -83,16 +88,19 @@ func extractSubject(message string) string {
 		subject += "..."
 	}
 
+	subject = strings.Replace(subject, "\n", " ", -1)
+
 	if subject == "" {
 		subject = "?"
 	}
 	return subject
 }
 
-func (i *Interactions) updateBox(boxKey string, item Item) {
+func (i *Interactions) updateBox(boxKey string, item *Item) *Box {
 	box := i.mongoDBAdapter.loadBox(boxKey)
-	box.Items = append(box.Items, item)
+	box.Items = append(box.Items, *item)
 	i.mongoDBAdapter.saveBox(box)
+	return box
 }
 
 func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string) []Member {
@@ -148,10 +156,10 @@ func selectOwner(members []Member) *Member {
 	panic(SuprisingException{Err: fmt.Errorf("No owner found!")})
 }
 
-func selectAudience(box *Box) []Member {
+func selectAudience(members []Member, authorKey string) []Member {
 	audience := []Member{}
-	for _, member := range box.Members {
-		if !member.Owner {
+	for _, member := range members {
+		if member.Key != authorKey {
 			audience = append(audience, member)
 		}
 	}
