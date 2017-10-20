@@ -68,7 +68,7 @@ func (g *NicknameGenerator) Next() string {
 	}
 	if retries == MAX_RETRIES {
 		g.generated[nickname]++
-		nickname = fmt.Sprintf("%s.%d", nickname, g.generated[nickname])
+		nickname = fmt.Sprintf("%s(%d)", nickname, g.generated[nickname])
 	}
 	return nickname
 }
