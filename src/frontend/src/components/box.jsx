@@ -139,7 +139,7 @@ class Box extends React.Component {
 
     return (
       <Dialog open={this.state.dialogOpen} onRequestClose={this.hideDialog}>
-        <DialogTitle>neuer Eintrag</DialogTitle>
+        <DialogTitle>Neuer Eintrag</DialogTitle>
         <DialogContent className={classes.dialog}>
           <TextField
             className={classes.dialogMessage}
@@ -167,12 +167,12 @@ class Box extends React.Component {
   renderDialogButton = () => {
     const { classes } = this.props;
     return (
-      <Tooltip id="tooltip-icon" title="neuer Eintrag anlegen">
+      <Tooltip id="tooltip-icon" title="Neuen Eintrag anlegen">
         <Button
           className={classes.buttonAdd}
           fab={true}
           color="accent"
-          aria-label="neuer Eintrag anlegen"
+          aria-label="Neuen Eintrag anlegen"
           onClick={this.showDialog} >
           <AddIcon />
         </Button>
