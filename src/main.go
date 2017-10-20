@@ -4,7 +4,6 @@ package main
 
 import (
 	"github.com/high-value-team/groupbox/src/backend"
-	"log"
 )
 
 // wird durch build.sh gesetzt
@@ -12,7 +11,6 @@ var VersionNumber string = ""
 
 func main() {
 	cliParams := NewCLIParams(VersionNumber)
-	log.Printf("Main.MongoDB Url: <%s>", cliParams.MongoDBURL)
 	mongoDBAdapter := backend.MongoDBAdapter{ConnectionString: cliParams.MongoDBURL}
 	mongoDBAdapter.Start()
 	defer mongoDBAdapter.Stop()
@@ -26,6 +24,7 @@ func main() {
 
 	interactions := backend.NewInteractions(&mongoDBAdapter, &emailNotifications)
 	requestHandlers := []backend.RequestHandler{
+		&backend.AddItemRequestHandler{Interactions: interactions},
 		&backend.CreateBoxRequestHandler{Interactions: interactions},
 		&backend.GetBoxRequestHandler{Interactions: interactions},
 		&backend.VersionRequestHandler{VersionNumber: VersionNumber},

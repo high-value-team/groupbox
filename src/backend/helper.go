@@ -20,3 +20,17 @@ func writeJsonResponse(writer http.ResponseWriter, i interface{}) {
 	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(i)
 }
+
+func parseRequestBody(reader *http.Request, body interface{}) {
+	decoder := json.NewDecoder(reader.Body)
+	defer func() {
+		err := reader.Body.Close()
+		if err != nil {
+			panic(SuprisingException{Err: err})
+		}
+	}()
+	err := decoder.Decode(&body)
+	if err != nil {
+		panic(SuprisingException{Err: err})
+	}
+}

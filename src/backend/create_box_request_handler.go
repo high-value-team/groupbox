@@ -1,7 +1,6 @@
 package backend
 
 import (
-	"encoding/json"
 	"net/http"
 )
 
@@ -35,18 +34,4 @@ func (handler *CreateBoxRequestHandler) Handle(writer http.ResponseWriter, reade
 	parseRequestBody(reader, &requestDTO)
 	responseDTO := handler.Interactions.CreateBox(requestDTO.Title, requestDTO.Owner, requestDTO.Members)
 	writeJsonResponse(writer, responseDTO)
-}
-
-func parseRequestBody(reader *http.Request, body interface{}) {
-	decoder := json.NewDecoder(reader.Body)
-	defer func() {
-		err := reader.Body.Close()
-		if err != nil {
-			panic(SuprisingException{Err: err})
-		}
-	}()
-	err := decoder.Decode(&body)
-	if err != nil {
-		panic(SuprisingException{Err: err})
-	}
 }

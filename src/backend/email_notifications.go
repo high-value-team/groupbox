@@ -15,13 +15,30 @@ type MessageTemplateData struct {
 	PersonalLink string
 }
 
-const MessageTemplate = `
+const CreateBoxMessageTemplate = `
 <!DOCTYPE HTML PULBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html"; charset="ISO-8859-1">
 </head>
 Willkommen zur Groupbox: {{ .Title }}<br>
+<br>
+Ihr persönlicher Link <a href="{{ .PersonalLink }}">{{ .PersonalLink }}</a><br>
+<br>
+Viel Spass!<br>
+</body>
+</html>
+`
+
+const AddItemMessageTemplate = `
+<!DOCTYPE HTML PULBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html"; charset="ISO-8859-1">
+</head>
+Eine neue Nachricht wurde hinzugefügt.<br>
+<br>
+Groupbox: {{ .Title }}<br>
 <br>
 Ihr persönlicher Link <a href="{{ .PersonalLink }}">{{ .PersonalLink }}</a><br>
 <br>
@@ -44,17 +61,40 @@ func (e *EmailNotifications) SendInvitations(title string, members []Member) {
 	}
 }
 
+func (e *EmailNotifications) NotifyAudience(members []Member, title string) {
+	for i := range members {
+		e.notifyAudience(title, &members[i])
+	}
+}
+
+func (e *EmailNotifications) notifyAudience(title string, member *Member) {
+	message := e.buildAddItemMessage(title, member.Key)
+	e.sendMail(member.Email, "Neue Nachricht", message)
+}
+
 func (e *EmailNotifications) sendInvitation(title string, member *Member) {
-	messsage := e.buildMessage(title, member.Key)
+	messsage := e.buildCreateBoxMessage(title, member.Key)
 	e.sendMail(member.Email, "Neue Groupbox", messsage)
 }
 
-func (e *EmailNotifications) buildMessage(title, key string) string {
+func (e *EmailNotifications) buildCreateBoxMessage(title, key string) string {
 	messageTemplateData := MessageTemplateData{
 		Title:        title,
 		PersonalLink: fmt.Sprintf("%s/%s", e.Domain, key),
 	}
-	messageTemplate, err := template.New("body").Parse(MessageTemplate)
+	return buildMessage(CreateBoxMessageTemplate, messageTemplateData)
+}
+
+func (e *EmailNotifications) buildAddItemMessage(title, key string) string {
+	messageTemplateData := MessageTemplateData{
+		Title:        title,
+		PersonalLink: fmt.Sprintf("%s/%s", e.Domain, key),
+	}
+	return buildMessage(AddItemMessageTemplate, messageTemplateData)
+}
+
+func buildMessage(templateText string, messageTemplateData MessageTemplateData) string {
+	messageTemplate, err := template.New("body").Parse(templateText)
 	if err != nil {
 		panic(SuprisingException{Err: err})
 	}

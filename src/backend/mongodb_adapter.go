@@ -5,7 +5,6 @@ import (
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"log"
 )
 
 const (
@@ -19,8 +18,6 @@ type MongoDBAdapter struct {
 }
 
 func (adapter *MongoDBAdapter) Start() {
-	log.Printf("Connecting to MongoDB <%s>...", adapter.ConnectionString)
-
 	var err error
 	adapter.session, err = mgo.DialWithTimeout(adapter.ConnectionString, 1*time.Second)
 	if err != nil {
@@ -50,7 +47,7 @@ func (adapter *MongoDBAdapter) saveBox(box *Box) {
 
 	collection := sessionCopy.DB("").C(ConstBoxCollection)
 
-	err := collection.Insert(box)
+	_, err := collection.Upsert(bson.M{"members.key": box.Members[0].Key}, box)
 	check(err)
 }
 

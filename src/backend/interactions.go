@@ -16,7 +16,6 @@ func NewInteractions(mongoDBAdapter *MongoDBAdapter, emailNotifications *EmailNo
 	return &Interactions{mongoDBAdapter: mongoDBAdapter, emailNotifications: emailNotifications}
 }
 
-
 func (i *Interactions) GetBox(boxKey string) *BoxDTO {
 	box := i.mongoDBAdapter.loadBox(boxKey)
 	return i.mapToBoxDTO(box, boxKey)
@@ -33,12 +32,13 @@ func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string
 	return &CreateBoxResponseDTO{BoxKey: owner.Key}
 }
 
-
 func (i *Interactions) AddItem(boxKey string, message string) {
 	item := buildItem(boxKey, message)
 	i.updateBox(boxKey, item)
+	box := i.mongoDBAdapter.loadBox(boxKey)
+	audience := selectAudience(box)
+	i.emailNotifications.NotifyAudience(audience, box.Title)
 }
-
 
 func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
 	requestingMember := selectMember(boxKey, box.Members)
@@ -60,14 +60,13 @@ func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
 	return &boxDTO
 }
 
-
 func buildItem(boxKey string, message string) Item {
 	subject := extractSubject(message)
 	return Item{
-		AuthorKey:boxKey,
-		CreationDate:time.Now().Format(time.RFC3339),
-		Subject:subject,
-		Message:message,
+		AuthorKey:    boxKey,
+		CreationDate: time.Now().Format(time.RFC3339),
+		Subject:      subject,
+		Message:      message,
 	}
 }
 
@@ -76,22 +75,25 @@ func extractSubject(message string) string {
 	var subject string
 
 	lenSubject := MAX_LEN_SUBJECT
-	if lenSubject > len(message) {lenSubject =len(message)}
+	if lenSubject > len(message) {
+		lenSubject = len(message)
+	}
 	subject = message[0:lenSubject]
-	if (lenSubject < len(message)) { subject += "..." }
+	if lenSubject < len(message) {
+		subject += "..."
+	}
 
-	if subject == "" { subject = "?" }
+	if subject == "" {
+		subject = "?"
+	}
 	return subject
 }
 
-
-func(i *Interactions) updateBox(boxKey string, item Item) {
+func (i *Interactions) updateBox(boxKey string, item Item) {
 	box := i.mongoDBAdapter.loadBox(boxKey)
 	box.Items = append(box.Items, item)
 	i.mongoDBAdapter.saveBox(box)
 }
-
-
 
 func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string) []Member {
 	nicknameGen := NewNicknameGenerator()
@@ -99,26 +101,25 @@ func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string)
 	members := []Member{}
 
 	owner := Member{
-		Key: GenerateKey(),
-		Email: ownerEmail,
+		Key:      GenerateKey(),
+		Email:    ownerEmail,
 		Nickname: nicknameGen.Next(),
-		Owner:true,
+		Owner:    true,
 	}
 	members = append(members, owner)
 
-	for _,email := range memberEmails {
+	for _, email := range memberEmails {
 		member := Member{
-			Key:GenerateKey(),
-			Email:email,
-			Nickname:nicknameGen.Next(),
-			Owner:false,
+			Key:      GenerateKey(),
+			Email:    email,
+			Nickname: nicknameGen.Next(),
+			Owner:    false,
 		}
-		members = append(members,member)
+		members = append(members, member)
 	}
 
 	return members
 }
-
 
 func (i *Interactions) buildBox(title string, members []Member) *Box {
 	return &Box{
@@ -145,4 +146,14 @@ func selectOwner(members []Member) *Member {
 		}
 	}
 	panic(SuprisingException{Err: fmt.Errorf("No owner found!")})
+}
+
+func selectAudience(box *Box) []Member {
+	audience := []Member{}
+	for _, member := range box.Members {
+		if !member.Owner {
+			audience = append(audience, member)
+		}
+	}
+	return audience
 }
