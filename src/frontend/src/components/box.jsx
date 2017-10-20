@@ -28,6 +28,7 @@ const styles = theme => ({
   },
   avatar: {
     backgroundColor: red[500],
+    float: 'left'
   },
   buttonAdd: {
     margin: theme.spacing.unit,
@@ -39,7 +40,7 @@ const styles = theme => ({
   card: {
     float: 'left',
     margin: '0.5em',
-    maxWidth: 400,
+    maxWidth: '20em',
   },
   dialog: {
     width: '30em',
@@ -49,6 +50,26 @@ const styles = theme => ({
   flexGrow: {
     flex: '1 1 auto',
   },
+  greeting: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    alignItems: 'flex-start ',
+    width: '100%',
+    height: '3em',
+    marginTop: '1em', // top right bottom left
+    marginBottom: theme.spacing.unit,
+    marginLeft: theme.spacing.unit,
+  },
+  greetingName: {
+    margin: theme.spacing.unit
+  },
+  greetingAvatar: {
+  },
+  greetingCount: {
+    margin: theme.spacing.unit,
+    marginLeft: '5em',
+  }
 });
 
 class Box extends React.Component {
@@ -76,6 +97,12 @@ class Box extends React.Component {
     BoxService.next(null);
   }
 
+  getAuthorInitials = (nickname) => {
+    return nickname
+      .split(/\s+/)
+      .map(word => word.substr(0, 1))
+      .reduce((initials, letter) => `${initials}${letter}`, '');
+}
 
   hideDialog = () => {
     this.setState({ dialogOpen: false });
@@ -180,6 +207,36 @@ class Box extends React.Component {
     );
   }
 
+  renderGreeting = () => {
+
+    const { classes } = this.props;
+    const { box } = this.state;
+
+    const itemCount = box.items ? box.items.length : 0;
+
+    return (
+      <div className={classes.greeting}>
+        <div className={classes.greetingName}>
+          <Typography type="title">
+            Hallo {box.memberNickname}!
+          </Typography>
+        </div>
+        <div className={classes.greetingAvatar}>
+          <Avatar aria-label="Author" className={classes.avatar}>
+            {this.getAuthorInitials(box.memberNickname)}
+          </Avatar>
+        </div>
+        <div className={classes.greetingCount}>
+          <Typography type="subheading">
+            Einträge {itemCount}
+          </Typography>
+        </div>
+        <div className={classes.flexGrow}/>
+      </div>
+    );
+
+  }
+
   renderLoading = () => {
     return (
       <div className={this.props.classes.root}>
@@ -199,18 +256,13 @@ class Box extends React.Component {
   renderItem = (index, item) => {
     const { classes } = this.props;
 
-    const authorInitials = item.authorNickname
-      .split(/\s+/)
-      .map(word => word.substr(0, 1))
-      .reduce((initials, letter) => `${initials}${letter}`, '');
-
     return (
       <Card className={classes.card} key={`item-${index}`} >
         <CardHeader
           avatar={
             <Tooltip id="avatar-tooltip" title={item.authorNickname} placement="right">
               <Avatar aria-label="Author" className={classes.avatar}>
-                {authorInitials}
+                {this.getAuthorInitials(item.authorNickname)}
               </Avatar>
             </Tooltip>
           }
@@ -241,11 +293,13 @@ class Box extends React.Component {
 
     const items = box.items ? box.items.sort((a, b) => b.creationDate > a.creationDate) : [];
     const addButton = this.renderDialogButton();
+    const greeting = this.renderGreeting();
     const dialog = this.renderDialog();
 
     return (
       <div className={classes.root}>
         {addButton}
+        {greeting}
         {items.map((item, index) => this.renderItem(index, item))}
         {dialog}
       </div>
