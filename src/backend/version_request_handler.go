@@ -1,9 +1,9 @@
 package backend
 
 import (
+	"encoding/json"
 	"net/http"
 	"regexp"
-	"encoding/json"
 	"time"
 )
 
@@ -25,14 +25,15 @@ func (handler *VersionRequestHandler) Match(reader *http.Request) bool {
 }
 
 func (handler *VersionRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request) {
+	writer.Header().Set("Last-Modified", time.Now().Format(http.TimeFormat))
 	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(VersionInfo{
 		VersionNumber: handler.VersionNumber,
-		Timestamp: time.Now().Format(time.RFC3339),
+		Timestamp:     time.Now().Format(time.RFC3339),
 	})
 }
 
 type VersionInfo struct {
 	VersionNumber string `json:"versionNumber"`
-	Timestamp string `json:"timestamp"`
+	Timestamp     string `json:"timestamp"`
 }
