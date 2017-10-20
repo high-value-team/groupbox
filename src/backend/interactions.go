@@ -72,6 +72,12 @@ func buildItem(boxKey string, message string) Item {
 	}
 }
 
+
+/*
+	A certain number of chars at the beginning of a message are taken as its subject.
+	If the message is longer than that, "..." is appended to the subject.
+	Any new line chars in the subject are replaced by spaces.
+ */
 func extractSubject(message string) string {
 	const MAX_LEN_SUBJECT int = 15
 	var subject string
