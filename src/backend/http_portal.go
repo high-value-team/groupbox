@@ -3,6 +3,7 @@ package backend
 import (
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type RequestHandler interface {
@@ -19,12 +20,15 @@ func (portal *HTTPPortal) Run(port int) {
 }
 
 func (portal *HTTPPortal) ServeHTTP(writer http.ResponseWriter, reader *http.Request) {
+	writer.Header().Set("Last-Modified", time.Now().Format(http.TimeFormat))
+	writer.Header().Set("Cache-Control", "no-cache")
 	defer handleException(writer)
 	for _, requestHandler := range portal.RequestHandlers {
 		if requestHandler.TryHandle(writer, reader) {
 			break
 		}
 	}
+
 }
 
 func handleException(writer http.ResponseWriter) {
