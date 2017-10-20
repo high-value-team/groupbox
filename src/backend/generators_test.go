@@ -6,8 +6,8 @@ import (
 )
 
 func TestGenerateKey(t *testing.T) {
-	result1 := generateKey()
-	result2 := generateKey()
+	result1 := GenerateKey()
+	result2 := GenerateKey()
 
 	fmt.Printf("Key generated: %v\n", result1)
 
@@ -18,22 +18,22 @@ func TestGenerateKey(t *testing.T) {
 
 
 func TestNewNicknameGenerator(t *testing.T) {
-	sut := NewNicknameGenerator_explicit([]string{"a", "b"}, []string{"x", "y"})
+	sut := NewNicknameGenerator()
 
 	var results []string
-	results = append(results, sut.next())
-	results = append(results, sut.next())
-	results = append(results, sut.next())
-	results = append(results, sut.next())
-	results = append(results, sut.next())
-	results = append(results, sut.next())
+	results = append(results, sut.Next())
+	results = append(results, sut.Next())
+	results = append(results, sut.Next())
+	results = append(results, sut.Next())
+	results = append(results, sut.Next())
+	results = append(results, sut.Next())
 
 	uniqueResults := map[string]string {}
 	for _,r := range results {
 		fmt.Printf("Nickname generated: %s\n", r)
 
 		if _,ok := uniqueResults[r]; ok {
-			t.Error("Duplicate key nickname generated!")
+			t.Error("Duplicate nickname generated!")
 			return
 		}
 		uniqueResults[r] = ""

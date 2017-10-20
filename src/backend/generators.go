@@ -2,17 +2,18 @@ package backend
 
 import (
 	"encoding/hex"
-	"crypto/rand"
+	crand "crypto/rand"
 	"fmt"
-	"math"
+	mrand "math/rand"
+	"time"
 )
 
 
 // source: http://www.ashishbanerjee.com/home/go/go-generate-uuid
 // API doc: https://golang.org/pkg/math/rand/#Read
-func generateKey() string {
+func GenerateKey() string {
 	uuid := make([]byte, 16)
-	rand.Read(uuid)
+	crand.Read(uuid)
 
 	// TODO: verify the two lines implement RFC 4122 correctly
 	uuid[8] = 0x80 // variant bits see page 5
@@ -22,56 +23,52 @@ func generateKey() string {
 }
 
 
-/* Nicknames are generated as pairs of words: first an adjective, then a noun, e.g. "Golden Tiger".
-   Both words are taken from respective lists and will lead to nicknames generated for all boxes in the same order.
-   Within a box all nicknames are different, across boxes they are the same.
-
-   Lists of a fixed length only support a fixed number of nicknames. Should the number of box members exceed
-   this max. number of different nicknames a suffix is appended to ensure uniqueness.
-   This should not happen, though, since such large numbers of members are very unlikely.
- */
 type NicknameGenerator struct {
 	adjectives     []string
 	nouns          []string
-	adjectiveIndex int
-	nounIndex      int
+	generated 	   map[string]int
 }
 
 func NewNicknameGenerator() *NicknameGenerator {
-	return NewNicknameGenerator_explicit(
-		// AEHNOQRTUWXY
+	return newNicknameGeneratorExplicit(
+		// not yet assigned: AEHNOQRTUWXY
 		[]string{"Mighty", "Golden", "Flying", "Black", "Valiant", "Smart", "Indigo", "Charming", "Dreamy", "Luminous", "Pink", "Kinky", "Jumping"},
 
 		// source for nouns: https://en.wikipedia.org/wiki/List_of_animal_names
-		// GILMNOQUVXY
+		// not yet assigned: GILMNOQUVXY
 		[]string{"Eagle", "Panda", "Raven", "Wolf", "Jaguar", "Dolphin", "Tiger", "Shark", "Koala", "Zebra", "Albatross", "Fox", "Barracuda", "Cheetah", "Hornet"},
 	)
 }
 
-func NewNicknameGenerator_explicit(adjectives []string, nouns []string) *NicknameGenerator {
+func newNicknameGeneratorExplicit(adjectives []string, nouns []string) *NicknameGenerator {
 	o := NicknameGenerator{
 		adjectives:     adjectives,
 		nouns:          nouns,
-		adjectiveIndex: 0,
-		nounIndex:      0,
+		generated:      map[string]int{},
 	}
 	return &o
 }
 
-func (g *NicknameGenerator) next() string {
-	ai := int(math.Mod(float64(g.adjectiveIndex),float64(len(g.adjectives))))
-	ni := int(math.Mod(float64(g.nounIndex),float64(len(g.nouns))))
-	fmt.Printf("  next before: %v, %v -> %v/%v\n", g.adjectiveIndex, g.nounIndex, ai, ni)
+func (g *NicknameGenerator) Next() string {
+	const MAX_RETRIES int = 10
+	var nickname string
 
-	if ni == len(g.nouns)-1 { g.adjectiveIndex += 1 }
-	g.nounIndex += 1
+	mrand.Seed(time.Now().Unix())
+	var retries int
+	for retries = 0; retries < MAX_RETRIES; retries++ {
+		adjectiveIndex := mrand.Intn(len(g.adjectives))
+		nounIndex := mrand.Intn(len(g.nouns))
 
-	nickname := fmt.Sprintf("%s %s", g.adjectives[ai], g.nouns[ni])
-	if g.adjectiveIndex >= len(g.adjectives) {
-		suffix := fmt.Sprintf("(%v.%v)", g.adjectiveIndex, g.nounIndex)
-		nickname += suffix
+		nickname = fmt.Sprintf("%s %s", g.adjectives[adjectiveIndex], g.nouns[nounIndex])
+
+		if _, ok := g.generated[nickname]; !ok {
+			g.generated[nickname] = 0
+			break;
+		}
 	}
-
-	fmt.Printf("  next: %s\n", nickname)
+	if retries == MAX_RETRIES {
+		g.generated[nickname]++
+		nickname = fmt.Sprintf("%s.%d", nickname, g.generated[nickname])
+	}
 	return nickname
 }
