@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+import BoxService from '../services/box';
+
 import { withStyles } from 'material-ui/styles';
 import { LinearProgress } from 'material-ui/Progress';
 
@@ -62,14 +64,17 @@ class Box extends React.Component {
     this.loadBox();
   }
 
+  componentWillUnmount() {
+    BoxService.next(null);
+  }
+
+
   loadBox() {
     this.setState({ status: 1 });
     fetch(`/api/boxes/${this.props.boxkey}`).then(rsp => {
       if (rsp.ok) {
         rsp.json().then(box => {
-          const title = `${box.title} - Groupbox`;
-          window.history.replaceState({}, title, '/');
-          document.title = title;
+          BoxService.next(box);
           this.setState({ box, status: 2 });
         });
       } else {
@@ -107,9 +112,6 @@ class Box extends React.Component {
       .map(word => word.substr(0, 1))
       .reduce((initials, letter) => `${initials}${letter}`, '');
 
-    const title = item.message
-      .split(/\n+/)[0].substr(0, 20);
-
     return (
       <Card className={classes.card} key={`item-${index}`} >
         <CardHeader
@@ -120,7 +122,7 @@ class Box extends React.Component {
               </Avatar>
             </Tooltip>
           }
-          title={title}
+          title={item.subject}
           subheader={moment(item.creationDate).fromNow()}
         />
         <CardContent>
@@ -149,10 +151,7 @@ class Box extends React.Component {
 
     return (
       <div className={classes.root}>
-        <h1>{box.title}</h1>
-        <div>
-          {items.map((item, index) => this.renderItem(index, item))}
-        </div>
+        {items.map((item, index) => this.renderItem(index, item))}
       </div>
     );
 

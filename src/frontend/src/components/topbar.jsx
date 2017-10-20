@@ -22,7 +22,8 @@ const styles = (/*theme*/) => ({
 });
 
 function Topbar(props) {
-  const { classes, version } = props;
+  const { classes, title } = props;
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -31,7 +32,7 @@ function Topbar(props) {
             <MenuIcon />
           </IconButton>
           <Typography type="title" color="inherit" className={classes.flex}>
-            Groupbox {version}
+            {title}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -41,7 +42,7 @@ function Topbar(props) {
 
 Topbar.propTypes = {
   classes: PropTypes.object.isRequired,
-  version: PropTypes.string,
+  title: PropTypes.string,
 };
 
 export default withStyles(styles)(Topbar);
