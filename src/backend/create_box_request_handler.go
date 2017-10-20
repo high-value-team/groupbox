@@ -2,7 +2,6 @@ package backend
 
 import (
 	"net/http"
-	"regexp"
 )
 
 type CreateBoxRequestHandler struct {
@@ -22,10 +21,7 @@ func (handler *CreateBoxRequestHandler) TryHandle(writer http.ResponseWriter, re
 }
 
 func (handler *CreateBoxRequestHandler) Match(reader *http.Request) bool {
-	if regexp.MustCompile("^/api/boxes$") != nil {
-		return true
-	}
-	return false
+	return match("^/api/boxes$", reader.URL.Path)
 }
 
 func (handler *CreateBoxRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request) {
