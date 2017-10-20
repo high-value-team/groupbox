@@ -106,6 +106,7 @@ class Home extends React.Component {
               value={this.state.name}
               onChange={this.updateName}
               margin="normal"
+              type="email"
             />
           </div>
           <div>
@@ -116,6 +117,7 @@ class Home extends React.Component {
               value={this.state.ownerEmail}
               onChange={this.updateOwnerEmail}
               margin="normal"
+              type="email"
             />
           </div>
           <div>
