@@ -1,6 +1,0 @@
-{"_id":{"$oid":"59e74c39734d1d62dcc08be3"},"boxKey":"1","boxId":"litklas","member":{"email":"peter@acme.com","nickname":"Golden Panda","owner":true}}
-{"_id":{"$oid":"59e74c71734d1d62dcc08bfc"},"boxKey":"2","boxId":"litklas","member":{"email":"paul@acme.com","nickname":"Flying Fox","owner":false}}
-{"_id":{"$oid":"59e74c91734d1d62dcc08c0a"},"boxKey":"3","boxId":"litklas","member":{"email":"mary@acme.com","nickname":"Fierce Tiger","owner":false}}
-{"_id":{"$oid":"59e74cbe734d1d62dcc08c2e"},"boxKey":"10","boxId":"filme","member":{"email":"peter@acme.com","nickname":"Golden Panda","owner":false}}
-{"_id":{"$oid":"59e74cf0734d1d62dcc08c37"},"boxKey":"20","boxId":"filme","member":{"email":"bruce@acme.com","nickname":"Crazy Rabbit","owner":true}}
-{"_id":{"$oid":"59e74d0a734d1d62dcc08c4f"},"boxKey":"30","boxId":"filme","member":{"email":"janine@acme.com","nickname":"Black Widow","owner":false}}
