@@ -1,13 +1,12 @@
-
 package main
 
 import (
+	"bytes"
+	"fmt"
+	"mime/quotedprintable"
+	"net/smtp"
 	"os"
 	"strings"
-	"net/smtp"
-	"fmt"
-	"bytes"
-	"mime/quotedprintable"
 )
 
 // usage:
@@ -16,12 +15,12 @@ import (
 // go run send_email.go
 func main() {
 
-	username := os.Getenv("USERNAME")
-	password := os.Getenv("PASSWORD")
+	username := os.Getenv("SMTP_USERNAME")
+	password := os.Getenv("SMTP_PASSWORD")
 
 	sender := NewSender(username, password)
 
-	Receiver := []string{"abc@gmail.com"}
+	Receiver := []string{"florian@fnbk.cc"}
 
 	Subject := "Groupbox Einladung"
 	message := `
