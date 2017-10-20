@@ -35,7 +35,7 @@ func (handler *GetBoxRequestHandler) Handle(writer http.ResponseWriter, reader *
 }
 
 func writeJsonResponse(writer http.ResponseWriter, i interface{}) {
-	writer.Header().Set("Last-Modified", time.Now().Format(http.TimeFormat))
+	writer.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
 	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(i)
 }

@@ -25,7 +25,7 @@ func (handler *VersionRequestHandler) Match(reader *http.Request) bool {
 }
 
 func (handler *VersionRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request) {
-	writer.Header().Set("Last-Modified", time.Now().Format(http.TimeFormat))
+	writer.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
 	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(VersionInfo{
 		VersionNumber: handler.VersionNumber,

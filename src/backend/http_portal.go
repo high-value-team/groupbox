@@ -30,7 +30,7 @@ func (portal *HTTPPortal) ServeHTTP(writer http.ResponseWriter, reader *http.Req
 }
 
 func handleException(writer http.ResponseWriter) {
-	writer.Header().Set("Last-Modified", time.Now().Format(http.TimeFormat))
+	writer.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
 	if r := recover(); r != nil {
 		switch ex := r.(type) {
 		case SadException:
