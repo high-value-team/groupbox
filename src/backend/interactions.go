@@ -1,5 +1,7 @@
 package backend
 
+//TODO: Methoden entzerren, evtl auf verschiedene Klassen/Datei/Packages verteilen, zumindest in bessere Reihenfolge bringen
+
 import (
 	"fmt"
 	"time"
@@ -32,6 +34,12 @@ func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string
 }
 
 
+func (i *Interactions) AddItem(boxKey string, message string) {
+	item := buildItem(boxKey, message)
+	i.updateBox(boxKey, item)
+}
+
+
 func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
 	requestingMember := selectMember(boxKey, box.Members)
 	boxDTO := BoxDTO{
@@ -51,6 +59,38 @@ func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
 
 	return &boxDTO
 }
+
+
+func buildItem(boxKey string, message string) Item {
+	subject := extractSubject(message)
+	return Item{
+		AuthorKey:boxKey,
+		CreationDate:time.Now().Format(time.RFC3339),
+		Subject:subject,
+		Message:message,
+	}
+}
+
+func extractSubject(message string) string {
+	const MAX_LEN_SUBJECT int = 15
+	var subject string
+
+	lenSubject := MAX_LEN_SUBJECT
+	if lenSubject > len(message) {lenSubject =len(message)}
+	subject = message[0:lenSubject]
+	if (lenSubject < len(message)) { subject += "..." }
+
+	if subject == "" { subject = "?" }
+	return subject
+}
+
+
+func(i *Interactions) updateBox(boxKey string, item Item) {
+	box := i.mongoDBAdapter.loadBox(boxKey)
+	box.Items = append(box.Items, item)
+	i.mongoDBAdapter.saveBox(box)
+}
+
 
 
 func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string) []Member {
