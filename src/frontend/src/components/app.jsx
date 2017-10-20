@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
 
-import Topbar from './topbar';
+import BoxService from '../services/box';
 import VersionService from '../services/version';
+
+import { withStyles } from 'material-ui/styles';
+import Topbar from './topbar';
 
 const styles = (/*theme*/) => ({
   root: {
@@ -19,23 +21,43 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { versionNumber: '' };
+    this.state = { title: '', versionNumber: '' };
   }
 
   componentDidMount() {
-    this.version = VersionService
-      .subscribe(version => this.setState({versionNumber: version.versionNumber}), err => console.log(err));
+    this.boxService = BoxService.subscribe(this.onNewBox);
+    this.versionService = VersionService
+      .subscribe(
+        version => this.setState({versionNumber: version.versionNumber}, this.onNewBox),
+        err => console.log(err)
+      );
   }
 
   componentWillUnmount() {
-    this.version.unsubscribe();
+    this.boxService.unsubscribe();
+    this.versionService.unsubscribe();
+  }
+
+  onNewBox = box => {
+
+    if (box) {
+      const title = `${box.title} - Groupbox`;
+      this.setState({title});
+      window.history.replaceState({}, title, '/');
+      document.title = title;
+    } else {
+      const title = this.state.versionNumber ? `Groupbox ${this.state.versionNumber}` : 'Groupbox';
+      this.setState({title});
+      document.title = title;
+    }
+
   }
 
   render() {
     const { children, classes } = this.props;
     return (
       <div className={classes.root}>
-        <Topbar version={this.state.versionNumber} />
+        <Topbar title={this.state.title} />
         {children}
       </div>
     );
