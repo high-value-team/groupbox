@@ -17,9 +17,14 @@ go build -ldflags "-X main.VersionNumber=$VERSION_NUMBER" -o ../dropstack/groupb
 echo "create Dockerfile"
 cp template.Dockerfile Dockerfile
 sed -i .backup "s|MONGODB_URL|${MONGODB_URL}|g" Dockerfile
+sed -i .backup "s|GROUPBOX_ROOT_URI|${GROUPBOX_ROOT_URI}|g" Dockerfile
+sed -i .backup "s|SMTP_USERNAME|${SMTP_USERNAME}|g" Dockerfile
+sed -i .backup "s|SMTP_PASSWORD|${SMTP_PASSWORD}|g" Dockerfile
+sed -i .backup "s|SMTP_NO_REPLY_EMAIL|${SMTP_NO_REPLY_EMAIL}|g" Dockerfile
+sed -i .backup "s|SMTP_SERVER_ADDRESS|${SMTP_SERVER_ADDRESS}|g" Dockerfile
+
 rm Dockerfile.backup
 mv Dockerfile ../dropstack/Dockerfile
 
-
-echo "Jetzt nach ../dropstack wechseln und deployen mit dropstack deploy"
+echo "Jetzt cd dropstack und deployen mit dropstack deploy"
 

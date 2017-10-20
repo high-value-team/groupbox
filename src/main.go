@@ -4,6 +4,7 @@ package main
 
 import (
 	"github.com/high-value-team/groupbox/src/backend"
+	"log"
 )
 
 // wird durch build.sh gesetzt
@@ -11,6 +12,7 @@ var VersionNumber string = ""
 
 func main() {
 	cliParams := NewCLIParams(VersionNumber)
+	log.Printf("Main.MongoDB Url: <%s>", cliParams.MongoDBURL)
 	mongoDBAdapter := backend.MongoDBAdapter{ConnectionString: cliParams.MongoDBURL}
 	mongoDBAdapter.Start()
 	defer mongoDBAdapter.Stop()

@@ -22,9 +22,9 @@ func NewCLIParams(version string) *CLIParams {
 	app := cli.NewApp()
 	app.Version = version
 	const FlagHTTPPort string = "port"
-	const FlagDomain string = "domain"
+	const FlagDomain string = "groupbox-root-uri"
 	const FlagMongoDBURL string = "mongodb-url"
-	const FlagSMTPNoReplyEmail string = "smtp-no-replay-email"
+	const FlagSMTPNoReplyEmail string = "smtp-no-reply-email"
 	const FlagSMTPServerAddress string = "smtp-server-address"
 	const FlagSMTPUsername string = "smtp-username"
 	const FlagSMTPPassword string = "smtp-password"
