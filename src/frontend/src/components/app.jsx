@@ -21,14 +21,14 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { title: '', versionNumber: '' };
+    this.state = { box: null, version: null, title: '' };
   }
 
   componentDidMount() {
-    this.boxService = BoxService.subscribe(this.onNewBox);
+    this.boxService = BoxService.subscribe(box => this.setState({box}, this.calcTitle));
     this.versionService = VersionService
       .subscribe(
-        version => this.setState({versionNumber: version.versionNumber}, this.onNewBox),
+        version => this.setState({version}, this.calcTitle),
         err => console.log(err)
       );
   }
@@ -38,18 +38,20 @@ class App extends React.Component {
     this.versionService.unsubscribe();
   }
 
-  onNewBox = box => {
+  calcTitle = () => {
+
+    const { box, version } = this.state;
+    let title = 'Groupbox';
 
     if (box) {
-      const title = `${box.title} - Groupbox`;
-      this.setState({title});
+      title = `${box.title} - Groupbox`;
       window.history.replaceState({}, title, '/');
-      document.title = title;
-    } else {
-      const title = this.state.versionNumber ? `Groupbox ${this.state.versionNumber}` : 'Groupbox';
-      this.setState({title});
-      document.title = title;
+    } else if (version && version.versionNumber) {
+      title = `Groupbox ${version.versionNumber}`;
     }
+
+    this.setState({title});
+    document.title = title;
 
   }
 
