@@ -17,6 +17,7 @@ func main() {
 
 	interactions := backend.NewInteractions(&mongoDBAdapter)
 	requestHandlers := []backend.RequestHandler{
+		&backend.CreateBoxRequestHandler{Interactions: interactions},
 		&backend.GetBoxRequestHandler{Interactions: interactions},
 		&backend.VersionRequestHandler{VersionNumber: VersionNumber},
 		&backend.StaticRequestHandler{},
