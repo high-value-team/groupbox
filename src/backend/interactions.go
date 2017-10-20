@@ -14,6 +14,7 @@ func NewInteractions(mongoDBAdapter *MongoDBAdapter, emailNotifications *EmailNo
 	return &Interactions{mongoDBAdapter: mongoDBAdapter, emailNotifications: emailNotifications}
 }
 
+
 func (i *Interactions) GetBox(boxKey string) *BoxDTO {
 	box := i.mongoDBAdapter.loadBox(boxKey)
 	return i.mapToBoxDTO(box, boxKey)
@@ -21,12 +22,15 @@ func (i *Interactions) GetBox(boxKey string) *BoxDTO {
 
 func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string) *CreateBoxResponseDTO {
 	members := i.generateMembers(ownerEmail, memberEmails)
-	owner := selectOwner(members)
 	box := i.buildBox(title, members)
 	i.mongoDBAdapter.saveBox(box)
-	i.emailNotifications.SendInvitations(title, box.Members)
+
+	i.emailNotifications.SendInvitations(title, members)
+
+	owner := selectOwner(members)
 	return &CreateBoxResponseDTO{BoxKey: owner.Key}
 }
+
 
 func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
 	requestingMember := selectMember(boxKey, box.Members)
@@ -48,9 +52,33 @@ func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
 	return &boxDTO
 }
 
+
 func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string) []Member {
-	return nil
+	nicknameGen := NewNicknameGenerator()
+
+	members := []Member{}
+
+	owner := Member{
+		Key: GenerateKey(),
+		Email: ownerEmail,
+		Nickname: nicknameGen.Next(),
+		Owner:true,
+	}
+	members = append(members, owner)
+
+	for _,email := range memberEmails {
+		member := Member{
+			Key:GenerateKey(),
+			Email:email,
+			Nickname:nicknameGen.Next(),
+			Owner:false,
+		}
+		members = append(members,member)
+	}
+
+	return members
 }
+
 
 func (i *Interactions) buildBox(title string, members []Member) *Box {
 	return &Box{
@@ -67,7 +95,7 @@ func selectMember(key string, members []Member) *Member {
 			return &members[i]
 		}
 	}
-	panic(SuprisingException{Err: fmt.Errorf("No member found for key:%s", key)})
+	panic(SuprisingException{Err: fmt.Errorf("No member found for key:%s!", key)})
 }
 
 func selectOwner(members []Member) *Member {
@@ -76,5 +104,5 @@ func selectOwner(members []Member) *Member {
 			return &members[i]
 		}
 	}
-	panic(SuprisingException{Err: fmt.Errorf("No owner found")})
+	panic(SuprisingException{Err: fmt.Errorf("No owner found!")})
 }

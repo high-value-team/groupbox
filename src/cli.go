@@ -37,8 +37,8 @@ func NewCLIParams(version string) *CLIParams {
 		},
 		cli.StringFlag{
 			Name:   FlagDomain,
-			EnvVar: "DOMAIN",
-			Value:  "localhost:8080",
+			EnvVar: "GROUPBOX_ROOT_URI",
+			Value:  "http://localhost:8080",
 			Usage:  "Domain of the application",
 		},
 		cli.StringFlag{

@@ -52,7 +52,7 @@ func (e *EmailNotifications) sendInvitation(title string, member *Member) {
 func (e *EmailNotifications) buildMessage(title, key string) string {
 	messageTemplateData := MessageTemplateData{
 		Title:        title,
-		PersonalLink: fmt.Sprintf("%s/api/boxes/%s", e.Domain, key),
+		PersonalLink: fmt.Sprintf("%s/%s", e.Domain, key),
 	}
 	messageTemplate, err := template.New("body").Parse(MessageTemplate)
 	if err != nil {
