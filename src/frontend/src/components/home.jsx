@@ -3,28 +3,32 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
+import Typography from 'material-ui/Typography';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
-    marginTop: 30,
     fontFamily: 'Roboto, sans-serif',
+    width: '100%',
   },
-  button: {
+  container: {
+  },
+  title: {
     margin: theme.spacing.unit,
-  },
-  paper: {
-    padding: 16,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200,
+    width: '300px'
+  },
+  textFieldBig: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: '90%',
+  },
+  button: {
+    marginLeft: theme.spacing.unit,
+    marginTop: theme.spacing.unit * 3,
   },
 });
 
@@ -39,15 +43,52 @@ class Home extends React.Component {
     this.state = {
       name: '',
       ownerEmail: '',
+      memberEmails: '',
     };
   }
 
   doSubmit = () => {
-    console.log('doSubmit', this.state.name, this.state.ownerEmail);
+    const memberEmails = this.state.memberEmails.split(/[\s,;]+/);
+    //console.log('doSubmit', this.state.name, this.state.ownerEmail, memberEmails);
+
+    const body = JSON.stringify({
+      title: this.state.name,
+      owner: this.state.ownerEmail,
+      members: memberEmails,
+    });
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Content-Length', body.length);
+
+    fetch('/api/boxes', {
+      method: 'POST',
+      headers,
+      body,
+    }).then(rsp => {
+      if (rsp.ok) {
+        try {
+          rsp.json().then(newbox => {
+            const boxkey = newbox.boxKey;
+            if (boxkey) {
+              window.location.href = `${window.location.href}${boxkey}`;
+            } else {
+              console.log('Error creating new box: missing box key');
+            }
+          });
+        } catch (err) {
+          console.log(`Error creating new box: ${err}`);
+        }
+      } else {
+        console.log(`Error creating new box: ${rsp.status} - ${rsp.statusText}`);
+      }
+    });
+
   };
 
   updateName = e => this.setState({ name: e.target.value });
   updateOwnerEmail = e => this.setState({ ownerEmail: e.target.value });
+  updateMemberEmails = e => this.setState({ memberEmails: e.target.value });
 
   render() {
 
@@ -55,42 +96,46 @@ class Home extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Grid container={true} spacing={24} justify="center">
-
-          <Grid item={true} xs={12}>
-            <Paper className={classes.paper} elevation={0}>
-              Groupbox anlegen
-            </Paper>
-          </Grid>
-
-          <Grid item={true} xs={12}>
+        <form className={classes.container} noValidate={true} autoComplete="off">
+          <Typography className={classes.title} type="display1" gutterBottom={true}>Groupbox anlegen</Typography>
+          <div>
             <TextField
               id="name"
-              label="Etikett"
+              label="Titel"
               className={classes.textField}
               value={this.state.name}
               onChange={this.updateName}
               margin="normal"
             />
-          </Grid>
-          <Grid item={true} xs={12}>
+          </div>
+          <div>
             <TextField
               id="ownerEmail"
-              label="Wer bist Du?"
-              placeholder="Deine Mailadresse"
+              label="Deine Mailadresse"
               className={classes.textField}
               value={this.state.ownerEmail}
               onChange={this.updateOwnerEmail}
               margin="normal"
             />
-          </Grid>
-          <Grid item={true} xs={12}>
+          </div>
+          <div>
+            <TextField
+              id="memberEmails"
+              label="Mitglieder Mailadressen"
+              placeholder="Die Mailadressen von die Box-Mitglieder bitte hier eintragen."
+              className={classes.textFieldBig}
+              value={this.state.memberEmails}
+              onChange={this.updateMemberEmails}
+              fullWidth={true}
+              margin="normal"
+            />
+          </div>
+          <div>
             <Button raised={true} color="primary" className={classes.button} onClick={this.doSubmit}>
               Los!
             </Button>
-          </Grid>
-
-        </Grid>
+          </div>
+        </form>
       </div>
     );
 

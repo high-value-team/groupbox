@@ -3,7 +3,6 @@ package backend
 import (
 	"encoding/json"
 	"net/http"
-	"regexp"
 	"time"
 )
 
@@ -20,12 +19,11 @@ func (handler *VersionRequestHandler) TryHandle(writer http.ResponseWriter, read
 }
 
 func (handler *VersionRequestHandler) Match(reader *http.Request) bool {
-	versionPath := regexp.MustCompile("^/api/([a-zA-Z0-9]+)$")
-	return versionPath.FindStringSubmatch(reader.URL.Path) != nil
+	return match("^/api/([a-zA-Z0-9]+)$", reader.URL.Path)
 }
 
 func (handler *VersionRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request) {
-	writer.Header().Set("Last-Modified", time.Now().Format(http.TimeFormat))
+	writer.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
 	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(VersionInfo{
 		VersionNumber: handler.VersionNumber,

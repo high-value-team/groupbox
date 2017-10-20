@@ -13,4 +13,8 @@ export MONGODB_URL="mongodb://$DB_USERNAME:$DB_PASSWORD@ds121565.mlab.com:21565/
 # dropstack
 export GROUPBOX_STACKLET_NAME="abc"
 
-
+# SMTP
+export SMTP_USERNAME="groupbox@ralfw.de"
+export SMTP_PASSWORD="geheim"
+export SMTP_NO_REPLY_EMAIL="no-reply-groupbox@ralfw.de"
+export SMTP_SERVER_ADDRESS="sslout.df.eu:587"

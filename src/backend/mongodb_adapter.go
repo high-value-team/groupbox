@@ -41,6 +41,15 @@ func (adapter *MongoDBAdapter) loadBox(boxKey string) *Box {
 
 	return &box
 }
+func (adapter *MongoDBAdapter) saveBox(box *Box) {
+	sessionCopy := adapter.session.Copy()
+	defer sessionCopy.Close()
+
+	collection := sessionCopy.DB("").C(ConstBoxCollection)
+
+	err := collection.Insert(box)
+	check(err)
+}
 
 func check(err error) {
 	if err != nil {

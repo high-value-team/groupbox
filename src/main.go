@@ -14,9 +14,17 @@ func main() {
 	mongoDBAdapter := backend.MongoDBAdapter{ConnectionString: cliParams.MongoDBURL}
 	mongoDBAdapter.Start()
 	defer mongoDBAdapter.Stop()
+	emailNotifications := backend.EmailNotifications{
+		Domain:            cliParams.Domain,
+		NoReplyEmail:      cliParams.SMTPNoReplyEmail,
+		SMTPServerAddress: cliParams.SMTPServerAddress,
+		Username:          cliParams.SMTPUsername,
+		Password:          cliParams.SMTPPassword,
+	}
 
-	interactions := backend.NewInteractions(&mongoDBAdapter)
+	interactions := backend.NewInteractions(&mongoDBAdapter, &emailNotifications)
 	requestHandlers := []backend.RequestHandler{
+		&backend.CreateBoxRequestHandler{Interactions: interactions},
 		&backend.GetBoxRequestHandler{Interactions: interactions},
 		&backend.VersionRequestHandler{VersionNumber: VersionNumber},
 		&backend.StaticRequestHandler{},

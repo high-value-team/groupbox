@@ -1,10 +1,8 @@
 package backend
 
 import (
-	"encoding/json"
 	"net/http"
 	"regexp"
-	"time"
 )
 
 type GetBoxRequestHandler struct {
@@ -32,10 +30,4 @@ func (handler *GetBoxRequestHandler) Match(reader *http.Request) (string, bool) 
 func (handler *GetBoxRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request, boxKey string) {
 	boxDTO := handler.Interactions.GetBox(boxKey)
 	writeJsonResponse(writer, boxDTO)
-}
-
-func writeJsonResponse(writer http.ResponseWriter, i interface{}) {
-	writer.Header().Set("Last-Modified", time.Now().Format(http.TimeFormat))
-	writer.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(writer).Encode(i)
 }

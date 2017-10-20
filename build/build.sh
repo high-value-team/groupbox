@@ -7,7 +7,7 @@ echo "create .dropstack.json"
 sed s!'GROUPBOX_STACKLET_NAME'!${GROUPBOX_STACKLET_NAME}! < template.dropstack.json > ../dropstack/.dropstack.json
 
 # go executable
-echo "go build"
+echo "create go executable"
 export GOOS=linux
 export GOARCH=amd64
 export VERSION_NUMBER=`git describe --always --tags --dirty="*"`
