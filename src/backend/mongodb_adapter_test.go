@@ -21,58 +21,6 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestOpenBoxFound(t *testing.T) {
-	// arrange
-	adapter := MongoDBAdapter{ConnectionString: ConnectionString}
-	adapter.Start()
-	defer adapter.Stop()
-
-	// act
-	actual := adapter.openBox("1")
-
-	// assert
-	expected := &BoxMember{
-		BoxKey: "1",
-		BoxID:  "litklas",
-		Member: Member{
-			Email:    "peter@acme.com",
-			Nickname: "Golden Panda",
-			Owner:    true,
-		},
-	}
-	if !reflect.DeepEqual(expected, actual) {
-		t.Errorf("openBox() failed!\nexpected:\n%+v\nactual:\n%+v\n", expected, actual)
-	}
-}
-
-func TestOpenBoxNOTFound(t *testing.T) {
-	// arrange
-	adapter := MongoDBAdapter{ConnectionString: ConnectionString}
-	adapter.Start()
-	defer adapter.Stop()
-
-	// act
-	var exception interface{}
-	var actual interface{}
-	recoverFromPanic(
-		func() {
-			actual = adapter.openBox("key does not exist")
-		},
-		func(recovered interface{}) {
-			exception = recovered
-		},
-	)
-
-	// assert
-	if _, ok := exception.(SadException); !ok {
-		t.Fatal("expected SadException")
-	}
-
-	if actual != nil {
-		t.Fatal("expected actual to be nil")
-	}
-}
-
 func TestLoadBoxFound(t *testing.T) {
 	// arrange
 	adapter := MongoDBAdapter{ConnectionString: ConnectionString}
@@ -81,7 +29,7 @@ func TestLoadBoxFound(t *testing.T) {
 
 	// act
 	var err error
-	actual := adapter.loadBox("litklas")
+	actual := adapter.loadBox("1")
 
 	// assert
 	if err != nil {
@@ -89,21 +37,23 @@ func TestLoadBoxFound(t *testing.T) {
 	}
 
 	expected := &Box{
-		BoxID:        "litklas",
 		Title:        "Klassiker der Weltliteratur",
 		CreationDate: "2017-10-01T10:30:59Z",
 		Members: []Member{
 			{
+				Key:      "1",
 				Email:    "peter@acme.com",
 				Nickname: "Golden Panda",
 				Owner:    true,
 			},
 			{
+				Key:      "2",
 				Email:    "paul@acme.com",
 				Nickname: "Flying Fox",
 				Owner:    false,
 			},
 			{
+				Key:      "3",
 				Email:    "mary@acme.com",
 				Nickname: "Fierce Tiger",
 				Owner:    false,
@@ -112,30 +62,21 @@ func TestLoadBoxFound(t *testing.T) {
 		Items: []Item{
 			{
 				CreationDate: "2017-10-01T10:35:20Z",
+				Subject:      "Die drei Muske...",
 				Message:      "Die drei Musketiere, Alexandre Dumas",
-				Author: Member{
-					Email:    "peter@acme.com",
-					Nickname: "Golden Panda",
-					Owner:    true,
-				},
+				AuthorKey:    "1",
 			},
 			{
 				CreationDate: "2017-10-02T14:40:30Z",
+				Subject:      "Der Zauberer v...",
 				Message:      "Der Zauberer von Oz, Frank Baum",
-				Author: Member{
-					Email:    "mary@acme.com",
-					Nickname: "Fierce Tiger",
-					Owner:    false,
-				},
+				AuthorKey:    "3",
 			},
 			{
 				CreationDate: "2017-10-03T20:55:10Z",
+				Subject:      "Schuld und Süh...",
 				Message:      "Schuld und Sühne, Dostojewski, www.amazon.de/Schuld-Sühne-Fjodr-Michailowitsch-Dostojewski-ebook/dp/B004UBCWK6",
-				Author: Member{
-					Email:    "paul@acme.com",
-					Nickname: "Flying Fox",
-					Owner:    false,
-				},
+				AuthorKey:    "2",
 			},
 		},
 	}

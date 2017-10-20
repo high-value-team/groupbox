@@ -7,8 +7,8 @@ import (
 
 func TestMapToBoxDTO(t *testing.T) {
 	// arrange
+	boxKey := "1"
 	box := Box{
-		BoxID:        "litklas",
 		Title:        "Klassiker der Weltliteratur",
 		CreationDate: "2017-10-01T10:30:59Z",
 		Members: []Member{
@@ -16,43 +16,33 @@ func TestMapToBoxDTO(t *testing.T) {
 				Email:    "peter@acme.com",
 				Nickname: "Golden Panda",
 				Owner:    true,
+				Key:      boxKey,
 			},
 		},
 		Items: []Item{
 			{
 				CreationDate: "2017-10-01T10:35:20Z",
+				Subject:      "hallo",
 				Message:      "Die drei Musketiere, Alexandre Dumas",
-				Author: Member{
-					Email:    "peter@acme.com",
-					Nickname: "Golden Panda",
-					Owner:    true,
-				},
+				AuthorKey:    boxKey,
 			},
-		},
-	}
-	boxMember := BoxMember{
-		BoxKey: "1",
-		BoxID:  "litklas",
-		Member: Member{
-			Email:    "peter@acme.com",
-			Nickname: "Golden Panda",
-			Owner:    true,
 		},
 	}
 	interactions := Interactions{}
 
 	// act
-	actual := interactions.mapToBoxDTO(&box, &boxMember)
+	actual := interactions.mapToBoxDTO(&box, boxKey)
 
 	// assert
 	expected := &BoxDTO{
-		MemberNickname: "Golden Panda",
 		Title:          "Klassiker der Weltliteratur",
+		MemberNickname: "Golden Panda",
 		CreationDate:   "2017-10-01T10:30:59Z",
 		Items: []ItemDTO{
 			{
 				AuthorNickname: "Golden Panda",
 				CreationDate:   "2017-10-01T10:35:20Z",
+				Subject:        "hallo",
 				Message:        "Die drei Musketiere, Alexandre Dumas",
 			},
 		},

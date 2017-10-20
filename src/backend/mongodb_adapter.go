@@ -29,27 +29,14 @@ func (adapter *MongoDBAdapter) Stop() {
 	adapter.session.Close()
 }
 
-func (adapter *MongoDBAdapter) openBox(boxKey string) *BoxMember {
-	sessionCopy := adapter.session.Copy()
-	defer sessionCopy.Close()
-
-	collection := sessionCopy.DB("").C(ConstBoxMemberCollection)
-
-	var boxMember BoxMember
-	err := collection.Find(bson.M{"boxKey": boxKey}).One(&boxMember)
-	check(err)
-
-	return &boxMember
-}
-
-func (adapter *MongoDBAdapter) loadBox(boxID string) *Box {
+func (adapter *MongoDBAdapter) loadBox(boxKey string) *Box {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
 	collection := sessionCopy.DB("").C(ConstBoxCollection)
 
 	var box Box
-	err := collection.Find(bson.M{"boxId": boxID}).One(&box)
+	err := collection.Find(bson.M{"members.key": boxKey}).One(&box)
 	check(err)
 
 	return &box

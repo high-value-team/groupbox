@@ -1,7 +1,8 @@
 package backend
 
+import "fmt"
+
 type Box struct {
-	BoxID        string   `bson:"boxId"`
 	Title        string   `bson:"title"`
 	CreationDate string   `bson:"creationDate"`
 	Members      []Member `bson:"members"`
@@ -10,8 +11,16 @@ type Box struct {
 
 type Item struct {
 	CreationDate string `bson:"creationDate"`
+	Subject      string `bson:"subject"`
 	Message      string `bson:"message"`
-	Author       Member `bson:"author"`
+	AuthorKey    string `bson:"authorKey"`
+}
+
+type Member struct {
+	Key      string `bson:"key"`
+	Email    string `bson:"email"`
+	Nickname string `bson:"nickname"`
+	Owner    bool   `bson:"owner"`
 }
 
 type BoxDTO struct {
@@ -24,19 +33,8 @@ type BoxDTO struct {
 type ItemDTO struct {
 	AuthorNickname string `json:"authorNickname"`
 	CreationDate   string `json:"creationDate"`
+	Subject        string `json:"subject"`
 	Message        string `json:"message"`
-}
-
-type BoxMember struct {
-	BoxKey string `bson:"boxKey"`
-	BoxID  string `bson:"boxId"`
-	Member Member `bson:"member"`
-}
-
-type Member struct {
-	Email    string `bson:"email"`
-	Nickname string `bson:"nickname"`
-	Owner    bool   `bson:"owner"`
 }
 
 type SadException struct {
@@ -64,25 +62,35 @@ func NewInteractions(mongoDBAdapter *MongoDBAdapter) *Interactions {
 }
 
 func (i *Interactions) GetBox(boxKey string) *BoxDTO {
-	boxMember := i.mongoDBAdapter.openBox(boxKey)
-	box := i.mongoDBAdapter.loadBox(boxMember.BoxID)
-	return i.mapToBoxDTO(box, boxMember)
+	box := i.mongoDBAdapter.loadBox(boxKey)
+	return i.mapToBoxDTO(box, boxKey)
 }
 
-func (i *Interactions) mapToBoxDTO(box *Box, boxMember *BoxMember) *BoxDTO {
+func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
+	requestingMember := selectMember(boxKey, box.Members)
 	boxDTO := BoxDTO{
 		Title:          box.Title,
-		MemberNickname: boxMember.Member.Nickname,
+		MemberNickname: requestingMember.Nickname,
 		CreationDate:   box.CreationDate,
 		Items:          []ItemDTO{},
 	}
 	for _, item := range box.Items {
 		boxDTO.Items = append(boxDTO.Items, ItemDTO{
-			AuthorNickname: item.Author.Nickname,
+			AuthorNickname: selectMember(item.AuthorKey, box.Members).Nickname,
 			CreationDate:   item.CreationDate,
+			Subject:        item.Subject,
 			Message:        item.Message,
 		})
 	}
 
 	return &boxDTO
+}
+
+func selectMember(key string, members []Member) *Member {
+	for i, _ := range members {
+		if members[i].Key == key {
+			return &members[i]
+		}
+	}
+	panic(SuprisingException{Err: fmt.Errorf("No member found for key:%s", key)})
 }
