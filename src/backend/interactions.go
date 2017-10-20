@@ -5,6 +5,7 @@ package backend
 import (
 	"fmt"
 	"time"
+	"strings"
 )
 
 type Interactions struct {
@@ -79,6 +80,8 @@ func extractSubject(message string) string {
 	if lenSubject > len(message) {lenSubject =len(message)}
 	subject = message[0:lenSubject]
 	if (lenSubject < len(message)) { subject += "..." }
+
+	subject = strings.Replace(subject, "\n", " ", -1)
 
 	if subject == "" { subject = "?" }
 	return subject
