@@ -24,7 +24,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.version = VersionService
-      .subscribe(version => this.setState({versionNumber: version.versionNumber}));
+      .subscribe(version => this.setState({versionNumber: version.versionNumber}), err => console.log(err));
   }
 
   componentWillUnmount() {
