@@ -5,21 +5,19 @@ import moment from 'moment';
 import BoxService from '../services/box';
 
 import { withStyles } from 'material-ui/styles';
-import { LinearProgress } from 'material-ui/Progress';
-
+import red from 'material-ui/colors/red';
 import Avatar from 'material-ui/Avatar';
 import Button from 'material-ui/Button';
 import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
-
-import FavoriteIcon from 'material-ui-icons/Favorite';
 import IconButton from 'material-ui/IconButton';
+import { LinearProgress } from 'material-ui/Progress';
 import TextField from 'material-ui/TextField';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 
-import red from 'material-ui/colors/red';
 import AddIcon from 'material-ui-icons/Add';
+import FavoriteIcon from 'material-ui-icons/Favorite';
 
 
 const styles = theme => ({
@@ -105,7 +103,7 @@ class Box extends React.Component {
   }
 
   hideDialog = () => {
-    this.setState({ dialogOpen: false });
+    this.setState({ dialogOpen: false, itemMessage: '' });
   }
 
   loadBox = () => {
@@ -140,13 +138,13 @@ class Box extends React.Component {
       body,
     }).then(rsp => {
       if (rsp.ok) {
-        window.location.href = `${window.location.href}${boxkey}`;
+        this.hideDialog();
+        this.loadBox();
       } else {
         console.log(`Error creating new box: ${rsp.status} - ${rsp.statusText}`);
       }
     });
 
-    this.setState({itemMessage: ''});
 
   }
 
@@ -218,7 +216,7 @@ class Box extends React.Component {
       <div className={classes.greeting}>
         <div className={classes.greetingName}>
           <Typography type="title">
-            Hallo {box.memberNickname}!
+            Hallo, {box.memberNickname}!
           </Typography>
         </div>
         <div className={classes.greetingAvatar}>

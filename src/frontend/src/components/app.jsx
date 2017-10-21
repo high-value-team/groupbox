@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import BoxService from '../services/box';
-import VersionService from '../services/version';
+//import VersionService from '../services/version';
 
 import { withStyles } from 'material-ui/styles';
 import Topbar from './topbar';
@@ -26,11 +26,11 @@ class App extends React.Component {
 
   componentDidMount() {
     this.boxService = BoxService.subscribe(box => this.setState({box}, this.calcTitle));
-    this.versionService = VersionService
-      .subscribe(
-        version => this.setState({version}, this.calcTitle),
-        err => console.log(err)
-      );
+    // this.versionService = VersionService
+    //   .subscribe(
+    //     version => this.setState({version}, this.calcTitle),
+    //     err => console.log(err)
+    //   );
   }
 
   componentWillUnmount() {
@@ -40,14 +40,11 @@ class App extends React.Component {
 
   calcTitle = () => {
 
-    const { box, version } = this.state;
-    let title = 'Groupbox';
+    const { box } = this.state;
+    let title = 'Groupbox - Gemeinsam sammeln';
 
     if (box) {
       title = `${box.title} - Groupbox`;
-      window.history.replaceState({}, title, '/');
-    } else if (version && version.versionNumber) {
-      title = `Groupbox ${version.versionNumber}`;
     }
 
     this.setState({title});
