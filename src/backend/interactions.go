@@ -27,7 +27,7 @@ func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string
 	box := i.buildBox(title, members)
 	i.mongoDBAdapter.saveBox(box)
 
-	i.emailNotifications.SendInvitations(title, members)
+	async(func() { i.emailNotifications.SendInvitations(title, members) })
 
 	owner := selectOwner(members)
 	return &CreateBoxResponseDTO{BoxKey: owner.Key}
@@ -37,7 +37,7 @@ func (i *Interactions) AddItem(boxKey string, message string) {
 	item := buildItem(boxKey, message)
 	box := i.updateBox(boxKey, item)
 	audience := selectAudience(box.Members, boxKey)
-	i.emailNotifications.NotifyAudience(audience, box.Title)
+	async(func() { i.emailNotifications.NotifyAudience(audience, box.Title) })
 }
 
 func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {

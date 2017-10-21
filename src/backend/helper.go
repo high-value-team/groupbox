@@ -2,6 +2,7 @@ package backend
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"regexp"
 	"time"
@@ -33,4 +34,13 @@ func parseRequestBody(reader *http.Request, body interface{}) {
 	if err != nil {
 		panic(SuprisingException{Err: err})
 	}
+}
+
+func async(fn func()) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Exception occured: %+v", r)
+		}
+	}()
+	fn()
 }
