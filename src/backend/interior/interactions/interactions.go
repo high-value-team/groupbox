@@ -1,22 +1,24 @@
-package backend
+package interactions
 
 //TODO: Methoden entzerren, evtl auf verschiedene Klassen/Datei/Packages verteilen, zumindest in bessere Reihenfolge bringen
 
 import (
 	"fmt"
 	"time"
+	"github.com/high-value-team/groupbox/src/backend/providers"
+	"github.com/high-value-team/groupbox/src/backend/models"
 )
 
 type Interactions struct {
-	mongoDBAdapter     *MongoDBAdapter
-	emailNotifications *EmailNotifications
+	mongoDBAdapter     *providers.MongoDBAdapter
+	emailNotifications *providers.EmailNotifications
 }
 
-func NewInteractions(mongoDBAdapter *MongoDBAdapter, emailNotifications *EmailNotifications) *Interactions {
+func NewInteractions(mongoDBAdapter *providers.MongoDBAdapter, emailNotifications *providers.EmailNotifications) *Interactions {
 	return &Interactions{mongoDBAdapter: mongoDBAdapter, emailNotifications: emailNotifications}
 }
 
-func (i *Interactions) GetBox(boxKey string) *BoxDTO {
+func (i *Interactions) GetBox(boxKey string) *models.BoxDTO {
 	box := i.mongoDBAdapter.loadBox(boxKey)
 	return i.mapToBoxDTO(box, boxKey)
 }
@@ -24,7 +26,7 @@ func (i *Interactions) GetBox(boxKey string) *BoxDTO {
 func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string) *CreateBoxResponseDTO {
 	members := i.generateMembers(ownerEmail, memberEmails)
 	box := i.buildBox(title, members)
-	i.mongoDBAdapter.saveBox(box)
+	i.mongoDBAdapter.SaveBox(box)
 
 	async(func() { i.emailNotifications.SendInvitations(title, members) })
 
@@ -67,12 +69,12 @@ func (i *Interactions) updateBox(boxKey string, item *Item) *Box {
 	return box
 }
 
-func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string) []Member {
+func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string) []models.Member {
 	nicknameGen := NewNicknameGenerator()
 
 	members := []Member{}
 
-	owner := Member{
+	owner := models.Member{
 		Key:      GenerateKey(),
 		Email:    ownerEmail,
 		Nickname: nicknameGen.Next(),
@@ -81,7 +83,7 @@ func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string)
 	members = append(members, owner)
 
 	for _, email := range memberEmails {
-		member := Member{
+		member := models.Member{
 			Key:      GenerateKey(),
 			Email:    email,
 			Nickname: nicknameGen.Next(),
@@ -93,35 +95,35 @@ func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string)
 	return members
 }
 
-func (i *Interactions) buildBox(title string, members []Member) *Box {
-	return &Box{
+func (i *Interactions) buildBox(title string, members []models.Member) *models.Box {
+	return &models.Box{
 		Title:        title,
 		CreationDate: time.Now().Format(time.RFC3339),
 		Members:      members,
-		Items:        []Item{},
+		Items:        []models.Item{},
 	}
 }
 
-func selectMember(key string, members []Member) *Member {
+func selectMember(key string, members []models.Member) *models.Member {
 	for i, _ := range members {
 		if members[i].Key == key {
 			return &members[i]
 		}
 	}
-	panic(SuprisingException{Err: fmt.Errorf("No member found for key:%s!", key)})
+	panic(models.SuprisingException{Err: fmt.Errorf("No member found for key:%s!", key)})
 }
 
-func selectOwner(members []Member) *Member {
+func selectOwner(members []models.Member) *models.Member {
 	for i, _ := range members {
 		if members[i].Owner {
 			return &members[i]
 		}
 	}
-	panic(SuprisingException{Err: fmt.Errorf("No owner found!")})
+	panic(models.SuprisingException{Err: fmt.Errorf("No owner found!")})
 }
 
-func selectAudience(members []Member, authorKey string) []Member {
-	audience := []Member{}
+func selectAudience(members []models.Member, authorKey string) []models.Member {
+	audience := []models.Member{}
 	for _, member := range members {
 		if member.Key != authorKey {
 			audience = append(audience, member)

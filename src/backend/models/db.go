@@ -1,4 +1,4 @@
-package backend
+package models
 
 import (
 	"strings"
@@ -26,38 +26,6 @@ type Member struct {
 	Owner    bool   `bson:"owner"`
 }
 
-type BoxDTO struct {
-	Title          string    `json:"title"`
-	MemberNickname string    `json:"memberNickname"`
-	CreationDate   string    `json:"creationDate"`
-	Items          []ItemDTO `json:"items"`
-}
-
-type ItemDTO struct {
-	AuthorNickname string `json:"authorNickname"`
-	CreationDate   string `json:"creationDate"`
-	Subject        string `json:"subject"`
-	Message        string `json:"message"`
-}
-
-type SadException struct {
-	Err error
-}
-
-func (e *SadException) Message() string {
-	return e.Err.Error()
-}
-
-type SuprisingException struct {
-	Err error
-}
-
-func (e *SuprisingException) Message() string {
-	return e.Err.Error()
-}
-
-
-
 
 func NewItem(authorKey string, message string) *Item {
 	subject, message := extractSubject(message)
@@ -72,7 +40,7 @@ func NewItem(authorKey string, message string) *Item {
 func extractSubject(message string) (string, string) {
 	message = strings.TrimSpace(message)
 	return tryExtractExplicitSubject(message,
-				extractImplicitSubject)
+		extractImplicitSubject)
 }
 
 /*
@@ -81,7 +49,7 @@ func extractSubject(message string) (string, string) {
 	The subject is extracted and then removed from the message.
  */
 func tryExtractExplicitSubject(message string,
-	 						   onNotFound func (string) (string,string)) (string,string) {
+	onNotFound func (string) (string,string)) (string,string) {
 	if len(message) > 0 && message[0:1] == "<" {
 		endOfSubjectIndex := strings.Index(message,">")
 		if endOfSubjectIndex < 0 {endOfSubjectIndex = len(message)}

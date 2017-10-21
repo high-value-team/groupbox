@@ -1,9 +1,10 @@
-package backend
+package portals
 
 import (
 	"fmt"
 	"net/http"
 	"time"
+	"github.com/high-value-team/groupbox/src/backend/models"
 )
 
 type RequestHandler interface {
@@ -33,9 +34,9 @@ func handleException(writer http.ResponseWriter) {
 	writer.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
 	if r := recover(); r != nil {
 		switch ex := r.(type) {
-		case SadException:
+		case models.SadException:
 			http.Error(writer, ex.Message(), 404)
-		case SuprisingException:
+		case models.SuprisingException:
 			http.Error(writer, ex.Message(), 500)
 		default:
 			if err, ok := r.(error); ok {

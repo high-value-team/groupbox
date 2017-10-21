@@ -1,4 +1,4 @@
-package backend
+package request_handlers
 
 import (
 	"encoding/json"

@@ -7,7 +7,7 @@
 //export SMTP_SERVER_ADDRESS="sslout.df.eu:587"
 // go test -tags=smtp
 
-package backend
+package providers
 
 import (
 	"os"
