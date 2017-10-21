@@ -216,7 +216,7 @@ class Box extends React.Component {
       <div className={classes.greeting}>
         <div className={classes.greetingName}>
           <Typography type="title">
-            Hallo {box.memberNickname}!
+            Hallo, {box.memberNickname}!
           </Typography>
         </div>
         <div className={classes.greetingAvatar}>
