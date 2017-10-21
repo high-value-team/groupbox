@@ -5,8 +5,9 @@ package interactions
 import (
 	"fmt"
 	"time"
-	"github.com/high-value-team/groupbox/src/backend/providers"
+
 	"github.com/high-value-team/groupbox/src/backend/models"
+	"github.com/high-value-team/groupbox/src/backend/providers"
 )
 
 type Interactions struct {
@@ -19,11 +20,11 @@ func NewInteractions(mongoDBAdapter *providers.MongoDBAdapter, emailNotification
 }
 
 func (i *Interactions) GetBox(boxKey string) *models.BoxDTO {
-	box := i.mongoDBAdapter.loadBox(boxKey)
+	box := i.mongoDBAdapter.LoadBox(boxKey)
 	return i.mapToBoxDTO(box, boxKey)
 }
 
-func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string) *CreateBoxResponseDTO {
+func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string) *models.CreateBoxResponseDTO {
 	members := i.generateMembers(ownerEmail, memberEmails)
 	box := i.buildBox(title, members)
 	i.mongoDBAdapter.SaveBox(box)
@@ -31,26 +32,26 @@ func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string
 	async(func() { i.emailNotifications.SendInvitations(title, members) })
 
 	owner := selectOwner(members)
-	return &CreateBoxResponseDTO{BoxKey: owner.Key}
+	return &models.CreateBoxResponseDTO{BoxKey: owner.Key}
 }
 
 func (i *Interactions) AddItem(boxKey string, message string) {
-	item := NewItem(boxKey, message)
+	item := models.NewItem(boxKey, message)
 	box := i.updateBox(boxKey, item)
 	audience := selectAudience(box.Members, boxKey)
 	async(func() { i.emailNotifications.NotifyAudience(audience, box.Title) })
 }
 
-func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
+func (i *Interactions) mapToBoxDTO(box *models.Box, boxKey string) *models.BoxDTO {
 	requestingMember := selectMember(boxKey, box.Members)
-	boxDTO := BoxDTO{
+	boxDTO := models.BoxDTO{
 		Title:          box.Title,
 		MemberNickname: requestingMember.Nickname,
 		CreationDate:   box.CreationDate,
-		Items:          []ItemDTO{},
+		Items:          []models.ItemDTO{},
 	}
 	for _, item := range box.Items {
-		boxDTO.Items = append(boxDTO.Items, ItemDTO{
+		boxDTO.Items = append(boxDTO.Items, models.ItemDTO{
 			AuthorNickname: selectMember(item.AuthorKey, box.Members).Nickname,
 			CreationDate:   item.CreationDate,
 			Subject:        item.Subject,
@@ -61,18 +62,17 @@ func (i *Interactions) mapToBoxDTO(box *Box, boxKey string) *BoxDTO {
 	return &boxDTO
 }
 
-
-func (i *Interactions) updateBox(boxKey string, item *Item) *Box {
-	box := i.mongoDBAdapter.loadBox(boxKey)
+func (i *Interactions) updateBox(boxKey string, item *models.Item) *models.Box {
+	box := i.mongoDBAdapter.LoadBox(boxKey)
 	box.Items = append(box.Items, *item)
-	i.mongoDBAdapter.saveBox(box)
+	i.mongoDBAdapter.SaveBox(box)
 	return box
 }
 
 func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string) []models.Member {
 	nicknameGen := NewNicknameGenerator()
 
-	members := []Member{}
+	members := []models.Member{}
 
 	owner := models.Member{
 		Key:      GenerateKey(),

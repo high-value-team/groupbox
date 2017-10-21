@@ -1,6 +1,5 @@
 package models
 
-
 type BoxDTO struct {
 	Title          string    `json:"title"`
 	MemberNickname string    `json:"memberNickname"`
@@ -15,5 +14,15 @@ type ItemDTO struct {
 	Message        string `json:"message"`
 }
 
+type AddItemRequestDTO struct {
+	Message string `json:"message"`
+}
 
-
+type CreateBoxResponseDTO struct {
+	BoxKey string `json:"boxKey"`
+}
+type CreateBoxRequestDTO struct {
+	Title   string   `json:"title"`
+	Owner   string   `json:"owner"`
+	Members []string `json:"members"`
+}

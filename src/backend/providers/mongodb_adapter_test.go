@@ -5,6 +5,8 @@ import (
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/high-value-team/groupbox/src/backend/models"
 )
 
 var ConnectionString string = ""
@@ -29,17 +31,17 @@ func TestLoadBoxFound(t *testing.T) {
 
 	// act
 	var err error
-	actual := adapter.loadBox("1")
+	actual := adapter.LoadBox("1")
 
 	// assert
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	expected := &Box{
+	expected := &models.Box{
 		Title:        "Klassiker der Weltliteratur",
 		CreationDate: "2017-10-01T10:30:59Z",
-		Members: []Member{
+		Members: []models.Member{
 			{
 				Key:      "1",
 				Email:    "peter@acme.com",
@@ -59,7 +61,7 @@ func TestLoadBoxFound(t *testing.T) {
 				Owner:    false,
 			},
 		},
-		Items: []Item{
+		Items: []models.Item{
 			{
 				CreationDate: "2017-10-01T10:35:20Z",
 				Subject:      "Die drei Muske...",
@@ -96,7 +98,7 @@ func TestLoadBoxNOTFound(t *testing.T) {
 	var actual interface{}
 	recoverFromPanic(
 		func() {
-			actual = adapter.loadBox("key does not exist")
+			actual = adapter.LoadBox("key does not exist")
 		},
 		func(recovered interface{}) {
 			exception = recovered
@@ -104,7 +106,7 @@ func TestLoadBoxNOTFound(t *testing.T) {
 	)
 
 	// assert
-	if _, ok := exception.(SadException); !ok {
+	if _, ok := exception.(models.SadException); !ok {
 		t.Fatal("expected SadException")
 	}
 

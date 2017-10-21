@@ -3,15 +3,17 @@ package interactions
 import (
 	"reflect"
 	"testing"
+
+	"github.com/high-value-team/groupbox/src/backend/models"
 )
 
 func TestMapToBoxDTO(t *testing.T) {
 	// arrange
 	boxKey := "1"
-	box := Box{
+	box := models.Box{
 		Title:        "Klassiker der Weltliteratur",
 		CreationDate: "2017-10-01T10:30:59Z",
-		Members: []Member{
+		Members: []models.Member{
 			{
 				Email:    "peter@acme.com",
 				Nickname: "Golden Panda",
@@ -19,7 +21,7 @@ func TestMapToBoxDTO(t *testing.T) {
 				Key:      boxKey,
 			},
 		},
-		Items: []Item{
+		Items: []models.Item{
 			{
 				CreationDate: "2017-10-01T10:35:20Z",
 				Subject:      "hallo",
@@ -34,11 +36,11 @@ func TestMapToBoxDTO(t *testing.T) {
 	actual := interactions.mapToBoxDTO(&box, boxKey)
 
 	// assert
-	expected := &BoxDTO{
+	expected := &models.BoxDTO{
 		Title:          "Klassiker der Weltliteratur",
 		MemberNickname: "Golden Panda",
 		CreationDate:   "2017-10-01T10:30:59Z",
-		Items: []ItemDTO{
+		Items: []models.ItemDTO{
 			{
 				AuthorNickname: "Golden Panda",
 				CreationDate:   "2017-10-01T10:35:20Z",

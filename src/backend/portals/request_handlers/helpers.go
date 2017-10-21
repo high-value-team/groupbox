@@ -2,10 +2,11 @@ package request_handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"regexp"
 	"time"
+
+	"github.com/high-value-team/groupbox/src/backend/models"
 )
 
 func match(regexStr string, path string) bool {
@@ -27,13 +28,11 @@ func parseRequestBody(reader *http.Request, body interface{}) {
 	defer func() {
 		err := reader.Body.Close()
 		if err != nil {
-			panic(SuprisingException{Err: err})
+			panic(models.SuprisingException{Err: err})
 		}
 	}()
 	err := decoder.Decode(&body)
 	if err != nil {
-		panic(SuprisingException{Err: err})
+		panic(models.SuprisingException{Err: err})
 	}
 }
-
-

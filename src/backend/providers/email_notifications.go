@@ -8,6 +8,8 @@ import (
 	"mime/quotedprintable"
 	"net/smtp"
 	"strings"
+
+	"github.com/high-value-team/groupbox/src/backend/models"
 )
 
 type MessageTemplateData struct {
@@ -55,24 +57,24 @@ type EmailNotifications struct {
 	Password          string
 }
 
-func (e *EmailNotifications) SendInvitations(title string, members []Member) {
+func (e *EmailNotifications) SendInvitations(title string, members []models.Member) {
 	for i := range members {
 		e.sendInvitation(title, &members[i])
 	}
 }
 
-func (e *EmailNotifications) NotifyAudience(members []Member, title string) {
+func (e *EmailNotifications) NotifyAudience(members []models.Member, title string) {
 	for i := range members {
 		e.notifyAudience(title, &members[i])
 	}
 }
 
-func (e *EmailNotifications) notifyAudience(title string, member *Member) {
+func (e *EmailNotifications) notifyAudience(title string, member *models.Member) {
 	message := e.buildAddItemMessage(title, member.Key)
 	e.sendMail(member.Email, "Neue Nachricht", message)
 }
 
-func (e *EmailNotifications) sendInvitation(title string, member *Member) {
+func (e *EmailNotifications) sendInvitation(title string, member *models.Member) {
 	messsage := e.buildCreateBoxMessage(title, member.Key)
 	e.sendMail(member.Email, "Neue Groupbox", messsage)
 }
@@ -96,13 +98,13 @@ func (e *EmailNotifications) buildAddItemMessage(title, key string) string {
 func buildMessage(templateText string, messageTemplateData MessageTemplateData) string {
 	messageTemplate, err := template.New("body").Parse(templateText)
 	if err != nil {
-		panic(SuprisingException{Err: err})
+		panic(models.SuprisingException{Err: err})
 	}
 	messageBuffer := bytes.Buffer{}
 	err = messageTemplate.Execute(&messageBuffer, messageTemplateData)
 	if err != nil {
 		log.Print(err)
-		panic(SuprisingException{Err: err})
+		panic(models.SuprisingException{Err: err})
 	}
 	return messageBuffer.String()
 }
@@ -124,12 +126,12 @@ func (e *EmailNotifications) sendMail(receipient string, subject, message string
 	_, err := finalMessage.Write([]byte(message))
 	if err != nil {
 		log.Print(err)
-		panic(SuprisingException{Err: err})
+		panic(models.SuprisingException{Err: err})
 	}
 	err = finalMessage.Close()
 	if err != nil {
 		log.Print(err)
-		panic(SuprisingException{Err: err})
+		panic(models.SuprisingException{Err: err})
 	}
 
 	// build email
@@ -147,6 +149,6 @@ func (e *EmailNotifications) sendMail(receipient string, subject, message string
 		e.Username, []string{receipient}, []byte(email))
 	if err != nil {
 		log.Print(err)
-		panic(SuprisingException{Err: err})
+		panic(models.SuprisingException{Err: err})
 	}
 }

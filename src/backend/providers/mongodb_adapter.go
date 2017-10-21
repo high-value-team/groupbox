@@ -3,6 +3,8 @@ package providers
 import (
 	"time"
 
+	"github.com/high-value-team/groupbox/src/backend/models"
+
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -29,19 +31,19 @@ func (adapter *MongoDBAdapter) Stop() {
 	adapter.session.Close()
 }
 
-func (adapter *MongoDBAdapter) loadBox(boxKey string) *Box {
+func (adapter *MongoDBAdapter) LoadBox(boxKey string) *models.Box {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
 	collection := sessionCopy.DB("").C(ConstBoxCollection)
 
-	var box Box
+	var box models.Box
 	err := collection.Find(bson.M{"members.key": boxKey}).One(&box)
 	check(err)
 
 	return &box
 }
-func (adapter *MongoDBAdapter) saveBox(box *Box) {
+func (adapter *MongoDBAdapter) SaveBox(box *models.Box) {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
@@ -54,9 +56,9 @@ func (adapter *MongoDBAdapter) saveBox(box *Box) {
 func check(err error) {
 	if err != nil {
 		if err == mgo.ErrNotFound {
-			panic(SadException{Err: mgo.ErrNotFound})
+			panic(models.SadException{Err: mgo.ErrNotFound})
 		} else {
-			panic(SuprisingException{Err: err})
+			panic(models.SuprisingException{Err: err})
 		}
 	}
 }

@@ -3,13 +3,15 @@ package request_handlers
 import (
 	"net/http"
 	"regexp"
+
+	"github.com/high-value-team/groupbox/src/backend/interior/interactions"
 )
 
-type GetBoxRequestHandler struct {
-	Interactions *Interactions
+type GetBox struct {
+	Interactions *interactions.Interactions
 }
 
-func (handler *GetBoxRequestHandler) TryHandle(writer http.ResponseWriter, reader *http.Request) bool {
+func (handler *GetBox) TryHandle(writer http.ResponseWriter, reader *http.Request) bool {
 	boxKey, match := handler.Match(reader)
 	if match {
 		handler.Handle(writer, reader, boxKey)
@@ -18,7 +20,7 @@ func (handler *GetBoxRequestHandler) TryHandle(writer http.ResponseWriter, reade
 	return false
 }
 
-func (handler *GetBoxRequestHandler) Match(reader *http.Request) (string, bool) {
+func (handler *GetBox) Match(reader *http.Request) (string, bool) {
 	path := regexp.MustCompile("^/api/boxes/([a-zA-Z0-9]+)$")
 	pathRegex := path.FindStringSubmatch(reader.URL.Path)
 	if pathRegex != nil {
@@ -27,7 +29,7 @@ func (handler *GetBoxRequestHandler) Match(reader *http.Request) (string, bool) 
 	return "", false
 }
 
-func (handler *GetBoxRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request, boxKey string) {
+func (handler *GetBox) Handle(writer http.ResponseWriter, reader *http.Request, boxKey string) {
 	boxDTO := handler.Interactions.GetBox(boxKey)
 	writeJsonResponse(writer, boxDTO)
 }

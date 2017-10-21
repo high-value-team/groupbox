@@ -6,11 +6,11 @@ import (
 	"time"
 )
 
-type VersionRequestHandler struct {
+type Version struct {
 	VersionNumber string
 }
 
-func (handler *VersionRequestHandler) TryHandle(writer http.ResponseWriter, reader *http.Request) bool {
+func (handler *Version) TryHandle(writer http.ResponseWriter, reader *http.Request) bool {
 	if handler.Match(reader) {
 		handler.Handle(writer, reader)
 		return true
@@ -18,11 +18,11 @@ func (handler *VersionRequestHandler) TryHandle(writer http.ResponseWriter, read
 	return false
 }
 
-func (handler *VersionRequestHandler) Match(reader *http.Request) bool {
+func (handler *Version) Match(reader *http.Request) bool {
 	return match("^/api/version$", reader.URL.Path)
 }
 
-func (handler *VersionRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request) {
+func (handler *Version) Handle(writer http.ResponseWriter, reader *http.Request) {
 	writer.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
 	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(VersionInfo{
