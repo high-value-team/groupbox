@@ -42,5 +42,5 @@ func async(fn func()) {
 			fmt.Printf("Exception occured: %+v", r)
 		}
 	}()
-	fn()
+	go fn()
 }

@@ -19,7 +19,7 @@ func (handler *VersionRequestHandler) TryHandle(writer http.ResponseWriter, read
 }
 
 func (handler *VersionRequestHandler) Match(reader *http.Request) bool {
-	return match("^/api/([a-zA-Z0-9]+)$", reader.URL.Path)
+	return match("^/api/version$", reader.URL.Path)
 }
 
 func (handler *VersionRequestHandler) Handle(writer http.ResponseWriter, reader *http.Request) {
