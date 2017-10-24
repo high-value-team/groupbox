@@ -73,6 +73,7 @@ func main3() {
 
 	// consturct
 	mongoDBAdapter, emailNotifications := NewProviders(cliParams)
+	defer mongoDBAdapter.Stop()
 	interactions := NewInteractions(mongoDBAdapter, emailNotifications)
 	httpPortal := NewHTTPPortal2(interactions)
 
@@ -83,7 +84,6 @@ func main3() {
 func NewProviders(cliParams *CLIParams) (*providers.MongoDBAdapter, *providers.EmailNotifications) {
 	mongoDBAdapter := providers.MongoDBAdapter{ConnectionString: cliParams.MongoDBURL}
 	mongoDBAdapter.Start()
-	defer mongoDBAdapter.Stop()
 
 	emailNotifications := &providers.EmailNotifications{
 		Domain:            cliParams.Domain,
