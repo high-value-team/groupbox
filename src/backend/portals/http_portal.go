@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
 	"github.com/high-value-team/groupbox/src/backend/models"
 )
 
@@ -39,7 +40,7 @@ func handleException(writer http.ResponseWriter) {
 		case models.SuprisingException:
 			http.Error(writer, ex.Message(), 500)
 		default:
-			if err, ok := r.(error); ok {
+			if err, ok := r.(error); !ok {
 				http.Error(writer, err.Error(), 500)
 			} else {
 				http.Error(writer, fmt.Sprintf("%s", r), 500)

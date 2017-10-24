@@ -1,7 +1,6 @@
 package providers
 
 import (
-	"fmt"
 	"os"
 	"reflect"
 	"testing"
@@ -11,15 +10,10 @@ import (
 
 var ConnectionString string = ""
 
-// export DB_USERNAME="groupbox"
-// export DB_PASSWORD="geheim"
-// export DB_NAME="develop"
+// export MONGODB_URL=mongodb://<username>:<password>@ds121565.mlab.com:21565/<databasename>
 // go test
 func TestMain(m *testing.M) {
-	username := os.Getenv("DB_USERNAME")
-	password := os.Getenv("DB_PASSWORD")
-	databaseName := os.Getenv("DB_NAME")
-	ConnectionString = fmt.Sprintf("mongodb://%s:%s@ds121565.mlab.com:21565/%s", username, password, databaseName)
+	ConnectionString = os.Getenv("MONGODB_URL")
 	os.Exit(m.Run())
 }
 

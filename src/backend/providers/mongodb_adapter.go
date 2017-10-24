@@ -10,8 +10,7 @@ import (
 )
 
 const (
-	ConstBoxCollection       string = "Box"
-	ConstBoxMemberCollection string = "BoxMember"
+	ConstBoxCollection string = "Box"
 )
 
 type MongoDBAdapter struct {
@@ -43,6 +42,7 @@ func (adapter *MongoDBAdapter) LoadBox(boxKey string) *models.Box {
 
 	return &box
 }
+
 func (adapter *MongoDBAdapter) SaveBox(box *models.Box) {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
