@@ -2,16 +2,16 @@
 
 
 [[projects]]
+  name = "github.com/go-chi/chi"
+  packages = ["."]
+  revision = "f7c66f685bcab06bcce78ac212c5f3553c063d19"
+  version = "v3.3.0"
+
+[[projects]]
   name = "github.com/mjibson/esc"
   packages = ["embed"]
   revision = "58d9cde84f237ecdd89bd7f61c2de2853f4c5c6e"
   version = "v0.1.0"
-
-[[projects]]
-  branch = "develop"
-  name = "github.com/ralfw/groupbox"
-  packages = ["src/frontend"]
-  revision = "79ec84cfd1fe7c9b97e253077a74437281a946ac"
 
 [[projects]]
   name = "github.com/urfave/cli"
@@ -28,6 +28,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f4195375a8276eb0240a02e445589468486e8fbea066622196a455ef4aac55c1"
+  inputs-digest = "66ea6a53e00b48c5835724421483b90819229df2ece7cf8418d388354c7a9a1e"
   solver-name = "gps-cdcl"
   solver-version = 1
