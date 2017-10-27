@@ -11,16 +11,9 @@ type CreateBox struct {
 	Interactions *interactions.Interactions
 }
 
-func (handler *CreateBox) TryHandle(writer http.ResponseWriter, reader *http.Request) bool {
-	if handler.Match(reader) {
-		handler.Handle(writer, reader)
-		return true
-	}
-	return false
-}
-
-func (handler *CreateBox) Match(reader *http.Request) bool {
-	return match("^/api/boxes$", reader.URL.Path)
+func NewCreateBoxHandler(interactions *interactions.Interactions) http.HandlerFunc {
+	createBox := CreateBox{Interactions: interactions}
+	return createBox.Handle
 }
 
 func (handler *CreateBox) Handle(writer http.ResponseWriter, reader *http.Request) {

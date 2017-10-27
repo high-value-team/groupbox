@@ -8,10 +8,14 @@ import (
 
 type StaticContent struct{}
 
-func (handler *StaticContent) TryHandle(writer http.ResponseWriter, reader *http.Request) bool {
+func NewStaticContentHandler() http.HandlerFunc {
+	staticContent := StaticContent{}
+	return staticContent.Handle
+}
+
+func (handler *StaticContent) Handle(writer http.ResponseWriter, reader *http.Request) {
 	if !frontend.IsExist(reader.URL.Path) {
 		reader.URL.Path = "/"
 	}
 	http.FileServer(frontend.FS(false)).ServeHTTP(writer, reader)
-	return true
 }

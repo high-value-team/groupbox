@@ -5,15 +5,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi"
 	"github.com/high-value-team/groupbox/src/backend/models"
 )
 
-type RequestHandler interface {
-	TryHandle(writer http.ResponseWriter, reader *http.Request) bool
-}
-
 type HTTPPortal struct {
-	RequestHandlers []RequestHandler
+	Router *chi.Mux
 }
 
 func (portal *HTTPPortal) Run(port int) {
@@ -24,11 +21,7 @@ func (portal *HTTPPortal) Run(port int) {
 func (portal *HTTPPortal) ServeHTTP(writer http.ResponseWriter, reader *http.Request) {
 	writer.Header().Set("Cache-Control", "no-cache")
 	defer handleException(writer)
-	for _, requestHandler := range portal.RequestHandlers {
-		if requestHandler.TryHandle(writer, reader) {
-			break
-		}
-	}
+	portal.Router.ServeHTTP(writer, reader)
 }
 
 func handleException(writer http.ResponseWriter) {

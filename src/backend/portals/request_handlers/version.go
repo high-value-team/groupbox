@@ -10,16 +10,9 @@ type Version struct {
 	VersionNumber string
 }
 
-func (handler *Version) TryHandle(writer http.ResponseWriter, reader *http.Request) bool {
-	if handler.Match(reader) {
-		handler.Handle(writer, reader)
-		return true
-	}
-	return false
-}
-
-func (handler *Version) Match(reader *http.Request) bool {
-	return match("^/api/version$", reader.URL.Path)
+func NewVersionHandler(versionNumber string) http.HandlerFunc {
+	version := Version{VersionNumber: versionNumber}
+	return version.Handle
 }
 
 func (handler *Version) Handle(writer http.ResponseWriter, reader *http.Request) {
