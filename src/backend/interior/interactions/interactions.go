@@ -19,20 +19,18 @@ func NewInteractions(mongoDBAdapter *providers.MongoDBAdapter, emailNotification
 	return &Interactions{mongoDBAdapter: mongoDBAdapter, emailNotifications: emailNotifications}
 }
 
-func (i *Interactions) GetBox(boxKey string) *models.BoxDTO {
-	box := i.mongoDBAdapter.LoadBox(boxKey)
-	return i.mapToBoxDTO(box, boxKey)
+func (i *Interactions) GetBox(boxKey string) *models.Box {
+	return i.mongoDBAdapter.LoadBox(boxKey)
 }
 
-func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string) *models.CreateBoxResponseDTO {
+func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string) *models.Member {
 	members := i.generateMembers(ownerEmail, memberEmails)
 	box := i.buildBox(title, members)
 	i.mongoDBAdapter.SaveBox(box)
 
 	async(func() { i.emailNotifications.SendInvitations(title, members) })
 
-	owner := selectOwner(members)
-	return &models.CreateBoxResponseDTO{BoxKey: owner.Key}
+	return selectOwner(members)
 }
 
 func (i *Interactions) AddItem(boxKey string, message string) {
@@ -40,26 +38,6 @@ func (i *Interactions) AddItem(boxKey string, message string) {
 	box := i.updateBox(boxKey, item)
 	audience := selectAudience(box.Members, boxKey)
 	async(func() { i.emailNotifications.NotifyAudience(audience, box.Title) })
-}
-
-func (i *Interactions) mapToBoxDTO(box *models.Box, boxKey string) *models.BoxDTO {
-	requestingMember := selectMember(boxKey, box.Members)
-	boxDTO := models.BoxDTO{
-		Title:          box.Title,
-		MemberNickname: requestingMember.Nickname,
-		CreationDate:   box.CreationDate,
-		Items:          []models.ItemDTO{},
-	}
-	for _, item := range box.Items {
-		boxDTO.Items = append(boxDTO.Items, models.ItemDTO{
-			AuthorNickname: selectMember(item.AuthorKey, box.Members).Nickname,
-			CreationDate:   item.CreationDate,
-			Subject:        item.Subject,
-			Message:        item.Message,
-		})
-	}
-
-	return &boxDTO
 }
 
 func (i *Interactions) updateBox(boxKey string, item *models.Item) *models.Box {
@@ -98,23 +76,14 @@ func (i *Interactions) generateMembers(ownerEmail string, memberEmails []string)
 func (i *Interactions) buildBox(title string, members []models.Member) *models.Box {
 	return &models.Box{
 		Title:        title,
-		CreationDate: time.Now().Format(time.RFC3339),
+		CreationDate: time.Now(),
 		Members:      members,
 		Items:        []models.Item{},
 	}
 }
 
-func selectMember(key string, members []models.Member) *models.Member {
-	for i, _ := range members {
-		if members[i].Key == key {
-			return &members[i]
-		}
-	}
-	panic(models.SuprisingException{Err: fmt.Errorf("No member found for key:%s!", key)})
-}
-
 func selectOwner(members []models.Member) *models.Member {
-	for i, _ := range members {
+	for i := range members {
 		if members[i].Owner {
 			return &members[i]
 		}
