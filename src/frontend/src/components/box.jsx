@@ -18,6 +18,7 @@ import Typography from 'material-ui/Typography';
 
 import AddIcon from 'material-ui-icons/Add';
 import FavoriteIcon from 'material-ui-icons/Favorite';
+import Linkify from 'react-linkify';
 
 
 const styles = theme => ({
@@ -269,7 +270,9 @@ class Box extends React.Component {
         />
         <CardContent>
           <Typography component="p">
-            {item.message}
+            <Linkify>
+              {item.message}
+            </Linkify>
           </Typography>
         </CardContent>
         <CardActions disableActionSpacing={true}>
