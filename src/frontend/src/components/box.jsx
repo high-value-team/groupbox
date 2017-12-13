@@ -270,7 +270,7 @@ class Box extends React.Component {
         />
         <CardContent>
           <Typography component="p">
-            <Linkify>
+            <Linkify properties={{target: '_blank'}}>
               {item.message}
             </Linkify>
           </Typography>
