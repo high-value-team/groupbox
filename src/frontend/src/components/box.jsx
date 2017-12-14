@@ -68,6 +68,9 @@ const styles = theme => ({
   greetingCount: {
     margin: theme.spacing.unit,
     marginLeft: '5em',
+  },
+  showCursor: {
+    cursor: 'pointer'
   }
 });
 
@@ -85,6 +88,8 @@ class Box extends React.Component {
       box: null,
       dialogOpen: false,
       itemMessage: '',
+      itemDialogOpen: false,
+      currentItem: null,
     };
   }
 
@@ -106,6 +111,10 @@ class Box extends React.Component {
   hideDialog = () => {
     this.setState({ dialogOpen: false, itemMessage: '' });
   }
+
+  hideItemDialog = () => {
+    this.setState({ itemDialogOpen: false, currentItem: null });
+  };
 
   loadBox = () => {
     this.setState({ status: 1 });
@@ -145,19 +154,21 @@ class Box extends React.Component {
         console.log(`Error creating new box: ${rsp.status} - ${rsp.statusText}`);
       }
     });
-
-
-  }
+  };
 
   showDialog = () => {
     this.setState({ dialogOpen: true });
-  }
+  };
+
+  showItemDialog = (item) => {
+    this.setState({ itemDialogOpen: true, currentItem: item });
+  };
 
   updateItemMessage = e => this.setState({itemMessage: e.target.value});
 
   renderBlank = () => {
     return <div className={this.props.classes.root} />;
-  }
+  };
 
   renderDialog = () => {
 
@@ -187,8 +198,7 @@ class Box extends React.Component {
         </DialogActions>
       </Dialog>
     );
-
-  }
+  };
 
   renderDialogButton = () => {
     const { classes } = this.props;
@@ -252,6 +262,43 @@ class Box extends React.Component {
     );
   }
 
+  renderItemDialog = () => {
+    const item = this.state.currentItem ? this.state.currentItem : { authorNickname: '' };
+    const { classes } = this.props;
+    return (
+      <Dialog open={this.state.itemDialogOpen} onRequestClose={this.hideItemDialog}>
+        <Card className={classes.card} >
+          <CardHeader
+            avatar={
+              <Tooltip id="avatar-tooltip" title={item.authorNickname} placement="right">
+                <Avatar aria-label="Author" className={classes.avatar}>
+                  {this.getAuthorInitials(item.authorNickname)}
+                </Avatar>
+              </Tooltip>
+            }
+            title={item.subject}
+            subheader={moment(item.creationDate).fromNow()}
+          />
+          <CardContent>
+            <Typography component="p">
+              <Linkify properties={{target: '_blank'}}>
+                {item.message}
+              </Linkify>
+            </Typography>
+          </CardContent>
+          <CardActions disableActionSpacing={true}>
+            <Tooltip id="favorite-tooltip" title="Finde ich gut!" placement="right">
+              <IconButton aria-label="Finde ich gut!">
+                <FavoriteIcon />
+              </IconButton>
+            </Tooltip>
+            <div className={classes.flexGrow} />
+          </CardActions>
+        </Card>
+      </Dialog>
+    );
+  };
+
   renderItem = (index, item) => {
     const { classes } = this.props;
 
@@ -267,6 +314,8 @@ class Box extends React.Component {
           }
           title={item.subject}
           subheader={moment(item.creationDate).fromNow()}
+          onClick={() => this.showItemDialog(item)}
+          className={classes.showCursor}
         />
         <CardContent>
           <Typography component="p">
@@ -296,6 +345,7 @@ class Box extends React.Component {
     const addButton = this.renderDialogButton();
     const greeting = this.renderGreeting();
     const dialog = this.renderDialog();
+    const itemDialog = this.renderItemDialog();
 
     return (
       <div className={classes.root}>
@@ -303,6 +353,7 @@ class Box extends React.Component {
         {greeting}
         {items.map((item, index) => this.renderItem(index, item))}
         {dialog}
+        {itemDialog}
       </div>
     );
 
