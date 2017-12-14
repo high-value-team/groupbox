@@ -30,7 +30,7 @@ type BSONMember struct {
 func ToBSONBox(box *models.Box) *BSONBox {
 	return &BSONBox{
 		Title:        box.Title,
-		CreationDate: box.CreationDate,
+		CreationDate: box.CreationDate.UTC(),
 		Members:      toBSONMembers(box.Members),
 		Items:        toBSONItems(box.Items),
 	}
@@ -53,7 +53,7 @@ func toBSONItems(in []models.Item) []BSONItem {
 	out := []BSONItem{}
 	for i := range in {
 		out = append(out, BSONItem{
-			CreationDate: in[i].CreationDate,
+			CreationDate: in[i].CreationDate.UTC(),
 			Subject:      in[i].Subject,
 			Message:      in[i].Message,
 			AuthorKey:    in[i].AuthorKey,
@@ -65,7 +65,7 @@ func toBSONItems(in []models.Item) []BSONItem {
 func ToBox(bsonBox *BSONBox) *models.Box {
 	return &models.Box{
 		Title:        bsonBox.Title,
-		CreationDate: bsonBox.CreationDate,
+		CreationDate: bsonBox.CreationDate.UTC(),
 		Members:      toMembers(bsonBox.Members),
 		Items:        toItems(bsonBox.Items),
 	}
@@ -88,7 +88,7 @@ func toItems(in []BSONItem) []models.Item {
 	out := []models.Item{}
 	for i := range in {
 		out = append(out, models.Item{
-			CreationDate: in[i].CreationDate,
+			CreationDate: in[i].CreationDate.UTC(),
 			Subject:      in[i].Subject,
 			Message:      in[i].Message,
 			AuthorKey:    in[i].AuthorKey,

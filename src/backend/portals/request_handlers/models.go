@@ -18,6 +18,11 @@ type JSONRequestAddItem struct {
 	Message string `json:"message"`
 }
 
+type JSONRequestUpdateItem struct {
+	Subject string `json:"subject"`
+	Message string `json:"message"`
+}
+
 type JSONRequestCreateBox struct {
 	Title   string   `json:"title"`
 	Owner   string   `json:"owner"`
