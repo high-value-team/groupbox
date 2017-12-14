@@ -28,5 +28,5 @@ cp deploy.sh ../dropstack
 rm Dockerfile.backup
 mv Dockerfile ../dropstack/Dockerfile
 
-echo "Jetzt cd dropstack und deployen mit dropstack deploy"
+echo "Jetzt cd ../dropstack und deployen mit ./deploy.sh"
 
