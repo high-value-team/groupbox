@@ -23,6 +23,8 @@ sed -i .backup "s|SMTP_PASSWORD|${SMTP_PASSWORD}|g" Dockerfile
 sed -i .backup "s|SMTP_NO_REPLY_EMAIL|${SMTP_NO_REPLY_EMAIL}|g" Dockerfile
 sed -i .backup "s|SMTP_SERVER_ADDRESS|${SMTP_SERVER_ADDRESS}|g" Dockerfile
 
+cp deploy.sh ../dropstack
+
 rm Dockerfile.backup
 mv Dockerfile ../dropstack/Dockerfile
 
