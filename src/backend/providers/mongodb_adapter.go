@@ -36,20 +36,21 @@ func (adapter *MongoDBAdapter) LoadBox(boxKey string) *models.Box {
 
 	collection := sessionCopy.DB("").C(ConstBoxCollection)
 
-	var box models.Box
-	err := collection.Find(bson.M{"members.key": boxKey}).One(&box)
+	var bsonBox BSONBox
+	err := collection.Find(bson.M{"members.key": boxKey}).One(&bsonBox)
 	check(err)
 
-	return &box
+	return ToBox(&bsonBox)
 }
 
 func (adapter *MongoDBAdapter) SaveBox(box *models.Box) {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
+	bsonBox := ToBSONBox(box)
 	collection := sessionCopy.DB("").C(ConstBoxCollection)
 
-	_, err := collection.Upsert(bson.M{"members.key": box.Members[0].Key}, box)
+	_, err := collection.Upsert(bson.M{"members.key": bsonBox.Members[0].Key}, bsonBox)
 	check(err)
 }
 

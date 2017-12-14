@@ -20,13 +20,14 @@ func (portal *HTTPPortal) Run(port int) {
 
 func (portal *HTTPPortal) ServeHTTP(writer http.ResponseWriter, reader *http.Request) {
 	writer.Header().Set("Cache-Control", "no-cache")
+	writer.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
 	defer handleException(writer)
 	portal.Router.ServeHTTP(writer, reader)
 }
 
 func handleException(writer http.ResponseWriter) {
-	writer.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
-	if r := recover(); r != nil {
+	r := recover()
+	if r != nil {
 		switch ex := r.(type) {
 		case models.SadException:
 			http.Error(writer, ex.Message(), 404)
