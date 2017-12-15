@@ -17,6 +17,7 @@ import Typography from 'material-ui/Typography';
 
 import AddIcon from 'material-ui-icons/Add';
 import Linkify from 'react-linkify';
+import TextTruncate from 'react-text-truncate';
 
 
 const styles = theme => ({
@@ -33,6 +34,12 @@ const styles = theme => ({
     position: 'absolute',
     top: 32,
     right: 32,
+  },
+  previewCard: {
+    float: 'left',
+    margin: '0.5em',
+    width: '20em',
+    height: '12em',
   },
   card: {
     float: 'left',
@@ -293,7 +300,7 @@ class Box extends React.Component {
     const { classes } = this.props;
 
     return (
-      <Card className={classes.card} key={`item-${index}`} >
+      <Card className={classes.previewCard} key={`item-${index}`} >
         <CardHeader
           avatar={
             <Tooltip id="avatar-tooltip" title={item.authorNickname} placement="right">
@@ -310,7 +317,11 @@ class Box extends React.Component {
         <CardContent>
           <Typography component="p">
             <Linkify properties={{target: '_blank'}}>
-              {item.message}
+              <TextTruncate
+                line={3}
+                truncateText="…"
+                text={item.message}
+              />
             </Linkify>
           </Typography>
         </CardContent>
