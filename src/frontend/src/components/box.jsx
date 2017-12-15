@@ -8,16 +8,14 @@ import { withStyles } from 'material-ui/styles';
 import red from 'material-ui/colors/red';
 import Avatar from 'material-ui/Avatar';
 import Button from 'material-ui/Button';
-import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
-import IconButton from 'material-ui/IconButton';
 import { LinearProgress } from 'material-ui/Progress';
 import TextField from 'material-ui/TextField';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 
 import AddIcon from 'material-ui-icons/Add';
-import FavoriteIcon from 'material-ui-icons/Favorite';
 import Linkify from 'react-linkify';
 
 
@@ -286,14 +284,6 @@ class Box extends React.Component {
               </Linkify>
             </Typography>
           </CardContent>
-          <CardActions disableActionSpacing={true}>
-            <Tooltip id="favorite-tooltip" title="Finde ich gut!" placement="right">
-              <IconButton aria-label="Finde ich gut!">
-                <FavoriteIcon />
-              </IconButton>
-            </Tooltip>
-            <div className={classes.flexGrow} />
-          </CardActions>
         </Card>
       </Dialog>
     );
@@ -324,14 +314,6 @@ class Box extends React.Component {
             </Linkify>
           </Typography>
         </CardContent>
-        <CardActions disableActionSpacing={true}>
-          <Tooltip id="favorite-tooltip" title="Finde ich gut!" placement="right">
-            <IconButton aria-label="Finde ich gut!">
-              <FavoriteIcon />
-            </IconButton>
-          </Tooltip>
-          <div className={classes.flexGrow} />
-        </CardActions>
       </Card>
     );
   }
