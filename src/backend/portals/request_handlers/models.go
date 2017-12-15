@@ -8,6 +8,7 @@ type JSONBox struct {
 }
 
 type JSONItem struct {
+	ItemID         string `json:"itemID"`
 	AuthorNickname string `json:"authorNickname"`
 	CreationDate   string `json:"creationDate"`
 	Subject        string `json:"subject"`

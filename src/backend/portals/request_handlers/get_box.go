@@ -3,6 +3,7 @@ package request_handlers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -34,12 +35,13 @@ func mapToJSONBox(box *models.Box, boxKey string) *JSONBox {
 		CreationDate:   box.CreationDate.Format(time.RFC3339),
 		Items:          []JSONItem{},
 	}
-	for _, item := range box.Items {
+	for i := range box.Items {
 		jsonBox.Items = append(jsonBox.Items, JSONItem{
-			AuthorNickname: selectMember(item.AuthorKey, box.Members).Nickname,
-			CreationDate:   item.CreationDate.Format(time.RFC3339),
-			Subject:        item.Subject,
-			Message:        item.Message,
+			ItemID:         strconv.Itoa(i),
+			AuthorNickname: selectMember(box.Items[i].AuthorKey, box.Members).Nickname,
+			CreationDate:   box.Items[i].CreationDate.Format(time.RFC3339),
+			Subject:        box.Items[i].Subject,
+			Message:        box.Items[i].Message,
 		})
 	}
 	return &jsonBox

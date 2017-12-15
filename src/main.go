@@ -52,6 +52,8 @@ func NewInteractions(mongoDBAdapter *providers.MongoDBAdapter, emailNotification
 func NewRouter(interactions *interactions.Interactions, versionNumber string) *chi.Mux {
 	router := chi.NewRouter()
 	router.Post("/api/boxes/{boxKey}/items", request_handlers.NewAddItemHandler(interactions))
+	router.Put("/api/boxes/{boxKey}/items/{itemID}", request_handlers.NewUpdateItemHandler(interactions))
+	router.Delete("/api/boxes/{boxKey}/items/{itemID}", request_handlers.NewDeleteItemHandler(interactions))
 	router.Post("/api/boxes", request_handlers.NewCreateBoxHandler(interactions))
 	router.Get("/api/boxes/{boxKey}", request_handlers.NewGetBoxHandler(interactions))
 	router.Get("/api/version", request_handlers.NewVersionHandler(versionNumber))

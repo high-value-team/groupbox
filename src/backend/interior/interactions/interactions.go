@@ -4,6 +4,7 @@ package interactions
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/high-value-team/groupbox/src/backend/models"
@@ -35,14 +36,41 @@ func (i *Interactions) CreateBox(title, ownerEmail string, memberEmails []string
 
 func (i *Interactions) AddItem(boxKey string, message string) {
 	item := models.NewItem(boxKey, message)
-	box := i.updateBox(boxKey, item)
+	box := i.addItemToBox(boxKey, item)
 	audience := selectAudience(box.Members, boxKey)
 	async(func() { i.emailNotifications.NotifyAudience(audience, box.Title) })
 }
 
-func (i *Interactions) updateBox(boxKey string, item *models.Item) *models.Box {
+func (i *Interactions) UpdateItem(boxKey, itemID, subject, message string) {
+	box := i.updateItemInBox(boxKey, itemID, subject, message)
+	audience := selectAudience(box.Members, boxKey)
+	async(func() { i.emailNotifications.NotifyAudience(audience, box.Title) })
+}
+
+func (i *Interactions) DeleteItem(boxKey, itemID string) {
+	box := i.deleteItemInBox(boxKey, itemID)
+	audience := selectAudience(box.Members, boxKey)
+	async(func() { i.emailNotifications.NotifyAudience(audience, box.Title) })
+}
+
+func (i *Interactions) addItemToBox(boxKey string, item *models.Item) *models.Box {
 	box := i.mongoDBAdapter.LoadBox(boxKey)
 	box.Items = append(box.Items, *item)
+	i.mongoDBAdapter.SaveBox(box)
+	return box
+}
+
+func (i *Interactions) updateItemInBox(boxKey, itemID, subject, message string) *models.Box {
+	box := i.mongoDBAdapter.LoadBox(boxKey)
+	item := selectItem(box.Items, itemID)
+	changeItem(item, subject, message)
+	i.mongoDBAdapter.SaveBox(box)
+	return box
+}
+
+func (i *Interactions) deleteItemInBox(boxKey, itemID string) *models.Box {
+	box := i.mongoDBAdapter.LoadBox(boxKey)
+	box.Items = deleteFromItems(box.Items, itemID)
 	i.mongoDBAdapter.SaveBox(box)
 	return box
 }
@@ -99,4 +127,27 @@ func selectAudience(members []models.Member, authorKey string) []models.Member {
 		}
 	}
 	return audience
+}
+
+func selectItem(items []models.Item, itemID string) *models.Item {
+	for i := range items {
+		if strconv.Itoa(i) == itemID {
+			return &items[i]
+		}
+	}
+	panic(models.SuprisingException{Err: fmt.Errorf("No item found!")})
+}
+
+func changeItem(item *models.Item, subject, message string) {
+	item.Subject = subject
+	item.Message = message
+}
+
+func deleteFromItems(items []models.Item, itemID string) []models.Item {
+	for i := range items {
+		if strconv.Itoa(i) == itemID {
+			return append(items[:i], items[i+1:]...)
+		}
+	}
+	panic(models.SuprisingException{Err: fmt.Errorf("No item found!")})
 }
