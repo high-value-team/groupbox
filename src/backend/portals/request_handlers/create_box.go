@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/high-value-team/groupbox/src/backend/interior/interactions"
-	"github.com/high-value-team/groupbox/src/backend/models"
 )
 
 type CreateBox struct {
@@ -17,8 +16,8 @@ func NewCreateBoxHandler(interactions *interactions.Interactions) http.HandlerFu
 }
 
 func (handler *CreateBox) Handle(writer http.ResponseWriter, reader *http.Request) {
-	requestDTO := models.CreateBoxRequestDTO{}
-	parseRequestBody(reader, &requestDTO)
-	responseDTO := handler.Interactions.CreateBox(requestDTO.Title, requestDTO.Owner, requestDTO.Members)
-	writeJsonResponse(writer, responseDTO)
+	requestBody := JSONRequestCreateBox{}
+	parseRequestBody(reader, &requestBody)
+	owner := handler.Interactions.CreateBox(requestBody.Title, requestBody.Owner, requestBody.Members)
+	writeJsonResponse(writer, JSONResponseCreateBox{BoxKey: owner.Key})
 }

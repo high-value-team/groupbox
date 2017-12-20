@@ -16,7 +16,7 @@ docker:
 
 deploy:
 	echo "deploy to dropstack"
-	cd dropstack && dropstack deploy
+	cd dropstack && ./deploy.sh
 
 run:
 	echo "run docker container on localhost:9090"

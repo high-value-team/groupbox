@@ -8,18 +8,19 @@ import { withStyles } from 'material-ui/styles';
 import red from 'material-ui/colors/red';
 import Avatar from 'material-ui/Avatar';
 import Button from 'material-ui/Button';
-import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
-import IconButton from 'material-ui/IconButton';
 import { LinearProgress } from 'material-ui/Progress';
 import TextField from 'material-ui/TextField';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
+import IconButton from 'material-ui/IconButton';
 
 import AddIcon from 'material-ui-icons/Add';
-import FavoriteIcon from 'material-ui-icons/Favorite';
 import Linkify from 'react-linkify';
-
+import TextTruncate from 'react-text-truncate';
+import ModeEditIcon from 'material-ui-icons/ModeEdit';
+import ActionDeleteIcon from 'material-ui-icons/Delete';
 
 const styles = theme => ({
   root: {
@@ -35,6 +36,12 @@ const styles = theme => ({
     position: 'absolute',
     top: 32,
     right: 32,
+  },
+  previewCard: {
+    float: 'left',
+    margin: '0.5em',
+    width: '20em',
+    height: '12em',
   },
   card: {
     float: 'left',
@@ -88,8 +95,14 @@ class Box extends React.Component {
       box: null,
       dialogOpen: false,
       itemMessage: '',
-      itemDialogOpen: false,
+      itemSubject: '',
+      itemID: '',
+
+      showItemDialogOpen: false,
+      editItemDialogOpen: false,
+
       currentItem: null,
+      currentItemEditing: false,
     };
   }
 
@@ -99,6 +112,46 @@ class Box extends React.Component {
 
   componentWillUnmount() {
     BoxService.next(null);
+  }
+
+
+  deleteCurrentItem = () => {
+    const { boxkey } = this.props;
+
+    const body = JSON.stringify({});
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Content-Length', body.length);
+
+    fetch(`/api/boxes/${boxkey}/items/${this.state.itemID}`, {
+      method: 'DELETE',
+      headers,
+      body,
+    }).then(rsp => {
+      if (rsp.ok) {
+        this.hideDialog();
+        this.loadBox();
+        this.setState({
+          dialogOpen: false,
+          itemMessage: '',
+          itemSubject: '',
+          itemID: '',
+
+          showItemDialogOpen: false,
+          editItemDialogOpen: false,
+
+          currentItem: null,
+          currentItemEditing: false,
+        });
+      } else {
+        console.log(`Error creating new box: ${rsp.status} - ${rsp.statusText}`);
+      }
+    });
+  };
+
+  editCurrentItem = () => {
+    this.setState({ editItemDialogOpen: true });
   }
 
   getAuthorInitials = (nickname) => {
@@ -112,8 +165,12 @@ class Box extends React.Component {
     this.setState({ dialogOpen: false, itemMessage: '' });
   }
 
-  hideItemDialog = () => {
-    this.setState({ itemDialogOpen: false, currentItem: null });
+  hideShowItemDialog = () => {
+    this.setState({ showItemDialogOpen: false, currentItem: null });
+  };
+
+  hideEditItemDialog = () => {
+    this.setState({ editItemDialogOpen: false });
   };
 
   loadBox = () => {
@@ -161,10 +218,56 @@ class Box extends React.Component {
   };
 
   showItemDialog = (item) => {
-    this.setState({ itemDialogOpen: true, currentItem: item });
+    this.setState({
+      showItemDialogOpen: true,
+      currentItem: item,
+      itemSubject: item.subject,
+      itemMessage: item.message,
+      itemID: item.itemID,
+    });
+  };
+
+  updateItem = () => {
+    const { boxkey } = this.props;
+    // const itemID = this.state.currentItem ? this.state.currentItem.itemID : '-1';
+
+    const body = JSON.stringify({
+      subject: this.state.itemSubject,
+      message: this.state.itemMessage,
+    });
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Content-Length', body.length);
+
+    fetch(`/api/boxes/${boxkey}/items/${this.state.itemID}`, {
+      method: 'PUT',
+      headers,
+      body,
+    }).then(rsp => {
+      if (rsp.ok) {
+        this.hideDialog();
+        this.loadBox();
+        this.setState({
+          dialogOpen: false,
+          itemMessage: '',
+          itemSubject: '',
+          itemID: '',
+
+          showItemDialogOpen: false,
+          editItemDialogOpen: false,
+
+          currentItem: null,
+          currentItemEditing: false,
+        });
+      } else {
+        console.log(`Error creating new box: ${rsp.status} - ${rsp.statusText}`);
+      }
+    });
   };
 
   updateItemMessage = e => this.setState({itemMessage: e.target.value});
+  updateItemSubject = e => this.setState({itemSubject: e.target.value});
 
   renderBlank = () => {
     return <div className={this.props.classes.root} />;
@@ -263,10 +366,18 @@ class Box extends React.Component {
   }
 
   renderItemDialog = () => {
-    const item = this.state.currentItem ? this.state.currentItem : { authorNickname: '' };
-    const { classes } = this.props;
+    const editItemDialogOpen = this.state.editItemDialogOpen;
     return (
-      <Dialog open={this.state.itemDialogOpen} onRequestClose={this.hideItemDialog}>
+      editItemDialogOpen === true ? this.renderEditItemDialog() : this.renderShowItemDialog()
+    );
+  };
+
+  renderShowItemDialog = () => {
+    const item = this.state.currentItem ? this.state.currentItem : {authorNickname: ''};
+    const {classes} = this.props;
+
+    return (
+      <Dialog open={this.state.showItemDialogOpen} onRequestClose={this.hideShowItemDialog}>
         <Card className={classes.card} >
           <CardHeader
             avatar={
@@ -278,6 +389,16 @@ class Box extends React.Component {
             }
             title={item.subject}
             subheader={moment(item.creationDate).fromNow()}
+            action={
+              <div>
+                <IconButton onClick={this.deleteCurrentItem}>
+                  <ActionDeleteIcon />
+                </IconButton>
+                <IconButton onClick={this.editCurrentItem}>
+                  <ModeEditIcon />
+                </IconButton>
+              </div>
+            }
           />
           <CardContent>
             <Typography component="p">
@@ -286,24 +407,53 @@ class Box extends React.Component {
               </Linkify>
             </Typography>
           </CardContent>
-          <CardActions disableActionSpacing={true}>
-            <Tooltip id="favorite-tooltip" title="Finde ich gut!" placement="right">
-              <IconButton aria-label="Finde ich gut!">
-                <FavoriteIcon />
-              </IconButton>
-            </Tooltip>
-            <div className={classes.flexGrow} />
-          </CardActions>
         </Card>
       </Dialog>
     );
-  };
+  }
+
+  renderEditItemDialog = () => {
+    // const item = this.state.currentItem ? this.state.currentItem : {authorNickname: ''};
+    const {classes} = this.props;
+    return (
+      <Dialog open={this.state.editItemDialogOpen} onRequestClose={this.hideEditItemDialog}>
+        <DialogContent className={classes.dialog}>
+          <TextField
+            className={classes.dialogMessage}
+            autoFocus={true}
+            margin="dense"
+            multiline={false}
+            fullWidth={true}
+            value={this.state.itemSubject}
+            onChange={this.updateItemSubject}
+          />
+          <TextField
+            className={classes.dialogMessage}
+            autoFocus={true}
+            margin="dense"
+            multiline={true}
+            fullWidth={true}
+            value={this.state.itemMessage}
+            onChange={this.updateItemMessage}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.hideEditItemDialog} color="primary">
+            Abbrechen
+          </Button>
+          <Button onClick={this.updateItem} color="primary" raised={true}>
+            Speichern
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
 
   renderItem = (index, item) => {
     const { classes } = this.props;
 
     return (
-      <Card className={classes.card} key={`item-${index}`} >
+      <Card className={classes.previewCard} key={`item-${index}`} >
         <CardHeader
           avatar={
             <Tooltip id="avatar-tooltip" title={item.authorNickname} placement="right">
@@ -320,18 +470,14 @@ class Box extends React.Component {
         <CardContent>
           <Typography component="p">
             <Linkify properties={{target: '_blank'}}>
-              {item.message}
+              <TextTruncate
+                line={3}
+                truncateText="…"
+                text={item.message}
+              />
             </Linkify>
           </Typography>
         </CardContent>
-        <CardActions disableActionSpacing={true}>
-          <Tooltip id="favorite-tooltip" title="Finde ich gut!" placement="right">
-            <IconButton aria-label="Finde ich gut!">
-              <FavoriteIcon />
-            </IconButton>
-          </Tooltip>
-          <div className={classes.flexGrow} />
-        </CardActions>
       </Card>
     );
   }
