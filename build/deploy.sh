@@ -1,2 +1,2 @@
 #!/bin/sh
-dropstack deploy --compress --verbose --alias groupbox.cloud.dropstack.run
+dropstack deploy --compress --verbose --alias groupbox.io
