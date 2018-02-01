@@ -1,43 +1,36 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
+import { routerReducer, syncHistoryWithStore } from 'react-router-redux';
+import { browserHistory } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import registerServiceWorker from './registerServiceWorker';
+import Theme from './Theme';
+import getRoutes from './Routes';
+import Reboot from 'material-ui/Reboot';
 
-import 'typeface-roboto';
-import 'material-design-icons/iconfont/material-icons.css';
+import box from './redux/box';
 
-import moment from 'moment';
-import 'moment/locale/de';
-moment.locale('de');
+const store = createStore(combineReducers({box, routing: routerReducer}), compose(
+  applyMiddleware(thunk),
+  window.devToolsExtension ? window.devToolsExtension() : (f) => f
+));
 
-import Theme from './themes/standard';
-import App from './components/app';
-import HomePage from './components/home';
-import BoxPage from './components/box';
-import NotFoundPage from './components/notfound';
-
-let page = null;
-const path = window.location.pathname;
-if (path === '/') {
-  page = <HomePage />;
-} else if (path === '/notfound') {
-  page = <NotFoundPage />;
-} else if (path.match(/\/\w+/)) {
-  const boxkey = path.substr(1);
-  page = <BoxPage boxkey={boxkey} />;
-} else {
-  page = <NotFoundPage />;
-}
+const history = syncHistoryWithStore(browserHistory, store);
 
 const element = (
-  <MuiThemeProvider theme={Theme}>
-    <App>
-      {page}
-    </App>
-  </MuiThemeProvider>
+  <Provider store={store}>
+    <MuiThemeProvider theme={Theme}>
+      <Reboot>
+        {getRoutes(history)}
+      </Reboot>
+    </MuiThemeProvider>
+  </Provider>
 );
-
 const target = document.getElementById('root');
 
 ReactDOM.render(element, target);
-registerServiceWorker();
+
+
+
