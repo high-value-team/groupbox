@@ -3,8 +3,7 @@
 *.dll
 *.so
 *.dylib
-/src/groupbox
-groupbox
+
 
 # Test binary, build with `go test -c`
 *.test
@@ -18,14 +17,15 @@ groupbox
 # MacOS
 .DS_Store
 
-# Dropstack
-.dropstack.json
 
-# FRONTEND
-/src/frontend/build
-/src/frontend/node_modules
-/src/frontend/coverage
-
-# Deployment
-/dropstack
-/build/environment
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/

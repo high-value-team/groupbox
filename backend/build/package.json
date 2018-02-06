@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "dotenv": "^5.0.0",
+    "dotenv-expand": "^4.0.1",
+    "runjs": "^4.3.0"
+  }
+}

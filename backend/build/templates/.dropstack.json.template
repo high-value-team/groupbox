@@ -1,0 +1,10 @@
+{
+  "variables": "",
+  "instances": 1,
+  "alias": "${DROPSTACK_ALIAS}.cloud.dropstack.run",
+  "type": "web",
+  "excludes": [],
+  "stateful": false,
+  "name": "${DROPSTACK_NAME}",
+  "serviceUrl": "${DROPSTACK_NAME}.cloud.dropstack.run"
+}
