@@ -4,32 +4,19 @@ Ad-hoc online collaboration on information collections
 ![travis build status](https://travis-ci.org/high-value-team/groupbox.svg?branch=develop)
 
 
-tools
+execute the frontend
 ```
-npm install -g dropstack-cli
-brew install go --with-cc-common # Installs go with cross compilation support
-export GOROOT=/usr/local/Cellar/go/1.9.1/libexec # optional
-```
-
-
-deploy to dropstack
-```
-source build/environment # export environment variables
-make docker
-make deploy
+cd frontend/build
+yarn install
+run start
 ```
 
-run local
-```
-source build/environment # export environment variables
-make build
-./dropstack
-```
+[read more about build scripts for the Frontend](frontend/build/README.md)
 
-run local with docker
+execute the backend
 ```
-source build/environment # export environment variables
-make docker
-make run
+cd backend/build
+yarn install
+run start
 ```
-
+[read more about build scripts for the Backend](backend/build/README.md)
