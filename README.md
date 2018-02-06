@@ -1,7 +1,6 @@
 # groupbox
 Ad-hoc online collaboration on information collections
 
-
 execute the frontend
 ```
 cd frontend/build
