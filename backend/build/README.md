@@ -19,9 +19,9 @@ yarn install
 
 create and configure environment files (e.g. .env.development)
 ```
-cp examples/dropstack .env.dropstack
-cp examples/development .env.development
-cp examples/production .env.production
+cp environment examples/dropstack .env.dropstack
+cp environment examples/development .env.development
+cp environment examples/production .env.production
 ```
 
 ## Run Tasks
