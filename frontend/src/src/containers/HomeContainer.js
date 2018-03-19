@@ -41,7 +41,7 @@ class HomeContainer extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
-    updateName: PropTypes.func.isRequired,
+    updateTitle: PropTypes.func.isRequired,
     updateOwnerEmail: PropTypes.func.isRequired,
     updateMemberEmailsTextfield: PropTypes.func.isRequired,
     saveBox: PropTypes.func.isRequired,
@@ -83,7 +83,7 @@ class HomeContainer extends React.Component {
               label="Titel"
               className={classes.textField}
               value={this.props.title}
-              onChange={(e) => this.props.updateName(e.target.value)}
+              onChange={(e) => this.props.updateTitle(e.target.value)}
               margin="normal"
               type="email"
             />

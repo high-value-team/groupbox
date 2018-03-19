@@ -256,7 +256,7 @@ export default function box (state = initialState, action) {
     case UPDATE_TITLE :
       return {
         ...state,
-        name: action.name,
+        title: action.title,
       };
     case UPDATE_OWNER_EMAIL :
       return {
