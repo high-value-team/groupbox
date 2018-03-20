@@ -52,10 +52,6 @@ class HomeContainer extends React.Component {
 
   };
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  };
-
   constructor(props) {
     super(props);
     this.onSubmit = this.onSubmit.bind(this);

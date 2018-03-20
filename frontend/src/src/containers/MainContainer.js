@@ -28,10 +28,6 @@ class MainContainer extends React.Component {
     title: PropTypes.string.isRequired,
   };
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  };
-
   constructor(props) {
     super(props);
     console.log(`NODE_ENV:${NODE_ENV}`);

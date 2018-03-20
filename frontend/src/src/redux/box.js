@@ -73,7 +73,6 @@ function savingItemSuccess () {
   return {
     type: SAVING_ITEM_SUCCESS,
     itemStatus: 2,
-    box,
   };
 }
 
