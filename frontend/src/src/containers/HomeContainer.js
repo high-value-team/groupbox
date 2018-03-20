@@ -40,7 +40,6 @@ class HomeContainer extends React.Component {
 
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    router: PropTypes.object.isRequired,
     updateTitle: PropTypes.func.isRequired,
     updateOwnerEmail: PropTypes.func.isRequired,
     updateMemberEmailsTextfield: PropTypes.func.isRequired,
@@ -49,7 +48,6 @@ class HomeContainer extends React.Component {
     title: PropTypes.string.isRequired,
     ownerEmail: PropTypes.string.isRequired,
     memberEmailsTextfield: PropTypes.string.isRequired,
-
   };
 
   constructor(props) {
