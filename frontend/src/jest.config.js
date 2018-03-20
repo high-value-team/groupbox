@@ -1,4 +1,4 @@
-{
+module.exports = {
   "rootDir": "src",
   "coverageReporters": [
     "html",
@@ -8,9 +8,10 @@
   ],
   "setupFiles": [
     "<rootDir>/../scripts/polyfills.js",
-    "raf/polyfill"
+    "raf/polyfill",
+    "<rootDir>/../jest.setup.js"
   ],
   "testPathIgnorePatterns": [
     "/node_modules/"
   ]
-}
+};
