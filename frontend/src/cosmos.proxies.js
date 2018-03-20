@@ -21,3 +21,14 @@ export default [
   ReduxProxy,
   createRouterProxy()
 ];
+
+
+//
+// create snapshots
+//
+
+// import runTests from 'react-cosmos-telescope';
+// runTests({
+//   cosmosConfigPath: require.resolve('./cosmos.config.js')
+// });
+
