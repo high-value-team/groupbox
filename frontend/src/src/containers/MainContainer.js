@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { withStyles } from 'material-ui/styles';
+import Typography from 'material-ui/Typography';
 
 import Navigation from '../components/Navigation';
 import {NODE_ENV, API_ROOT} from '../Config';
@@ -16,7 +17,11 @@ const styles = () => ({
   innerContainer: {
     maxWidth: '900px',
     margin: '0px auto',
+    display: 'flex',
   },
+  versionContainer: {
+    marginTop: '150px',
+  }
 });
 
 class MainContainer extends React.Component {
@@ -55,8 +60,10 @@ class MainContainer extends React.Component {
         <div className={this.props.classes.innerContainer}>
           {this.props.children}
         </div>
-        <div>
-          <p>version: {this.props.version}</p>
+        <div className={this.props.classes.versionContainer}>
+          <Typography align="center" type="caption">
+            version: {this.props.version}
+          </Typography>
         </div>
       </div>
     );
