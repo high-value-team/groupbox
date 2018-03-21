@@ -1,5 +1,5 @@
 import React  from 'react';
-import BoxContainer from "./BoxContainer";
+import BoxContainer from "../BoxContainer";
 
 export default {
   component: BoxContainer,

@@ -1,4 +1,4 @@
-import MainContainer from "./MainContainer";
+import MainContainer from "../MainContainer";
 import React  from 'react';
 
 export default {
@@ -6,7 +6,7 @@ export default {
   reduxState: {
     box: {
       version: "version",
-      title: "florian title"
+      title: ""
     }
   },
   fetch: [
@@ -18,8 +18,7 @@ export default {
   props: {
     children: (
       <div>
-        <p>Fixture ain't afraid of JSX</p>
-        <p>Fixture ain't afraid of nothin!</p>
+        <p>No Title</p>
       </div>
     ),
   }

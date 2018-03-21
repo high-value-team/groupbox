@@ -1,5 +1,5 @@
 import React  from 'react';
-import HomeContainer from "./HomeContainer";
+import HomeContainer from "../HomeContainer";
 
 export default {
   component: HomeContainer,

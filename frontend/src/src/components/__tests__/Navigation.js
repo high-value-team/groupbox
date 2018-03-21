@@ -1,5 +1,5 @@
 import createTestContext from 'react-cosmos-test/enzyme';
-import fixture from '../Navigation.fixture';
+import fixture from '../__fixtures__/Navigation.fixture';
 
 const { mount, getWrapper, setProps } = createTestContext({ fixture });
 
