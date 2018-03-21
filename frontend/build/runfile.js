@@ -43,7 +43,7 @@ function deploy () {
     const dropstackEnv = loadEnvironment('dropstack');
 
     // build .dropstack.json file
-    var file = fs.readFileSync('template/.dropstack.json.template', 'utf8'); // read .dropstack.json.template
+    var file = fs.readFileSync('templates/.dropstack.json.template', 'utf8'); // read .dropstack.json.template
     var parsedFile = interpolate(file, dropstackEnv); // interpolate with envObj
     fs.writeFileSync('../deploy/.dropstack.json', parsedFile); // write .dropstack.json
     // run(`cat ../deploy/.dropstack.json`);
