@@ -207,8 +207,6 @@ class BoxContainer extends React.Component {
   }
 
   render () {
-    // return this.renderLoading();
-    // return this.renderBox();
     switch (this.props.box.status) {
       case 1:
         return this.renderLoading();
