@@ -99,6 +99,7 @@ class BoxContainer extends React.Component {
   constructor(props) {
     super(props);
 
+    // console.log(`props:${JSON.stringify(props, null, 2)}`);
     this.newItem = this.newItem.bind(this);
 
     this.state = {
@@ -206,6 +207,8 @@ class BoxContainer extends React.Component {
   }
 
   render () {
+    // return this.renderLoading();
+    // return this.renderBox();
     switch (this.props.box.status) {
       case 1:
         return this.renderLoading();
@@ -403,10 +406,11 @@ class BoxContainer extends React.Component {
   }
 }
 
-function mapStateToProps ({box}, {router}) {
+function mapStateToProps (state, props) {
+  // console.log(`props:${JSON.stringify(props, null, 2)}`);
   return {
-    box: box,
-    boxkey: router.params.boxkey,
+    box: state.box,
+    boxkey: props.router.params.boxkey,
   };
 }
 
