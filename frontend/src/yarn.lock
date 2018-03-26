@@ -3616,6 +3616,12 @@ ignore@^3.3.3:
   version "3.3.5"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.5.tgz#c4e715455f6073a8d7e5dae72d2fc9d71663dba6"
 
+immutability-helper@^2.6.6:
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/immutability-helper/-/immutability-helper-2.6.6.tgz#9b384c240d65257133c155086e16f678ca563b05"
+  dependencies:
+    invariant "^2.2.0"
+
 immutable@^3.8.2:
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"

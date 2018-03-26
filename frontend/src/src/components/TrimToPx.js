@@ -1,8 +1,9 @@
-import React from 'React';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 /*
-  TODO: performance: improve the way the length is calculated. Trimming only one character results in long running rendering loops.
+  TODO: performance: improve the way the length is calculated.
+  Trimming only one character results in long running rendering loops.
  */
 class TrimToPx extends React.Component {
   static propTypes = {
@@ -21,6 +22,7 @@ class TrimToPx extends React.Component {
     this.state = {
       trimmedA: props.text,
       trimmedB: props.text + this.getSuffix(),
+      trimming: true,
     };
   }
 
@@ -37,7 +39,7 @@ class TrimToPx extends React.Component {
   }
 
   getSuffix() {
-    return this.props.suffix ? this.props.suffix : "";
+    return this.props.suffix ? this.props.suffix : '';
   }
 
   trim() {
@@ -45,23 +47,27 @@ class TrimToPx extends React.Component {
     // console.log(`offsetWidth A:${this.refTrimmedA.offsetWidth}`);
     // console.log(`offsetWidth B:${this.refTrimmedB.offsetWidth}`);
     if (this.refTrimmedB.offsetWidth > this.props.width) {
-      var trimmedA = this.state.trimmedA.substring(0, this.state.trimmedA.length-1);
+      const trimmedA = this.state.trimmedA.substring(0, this.state.trimmedA.length-1);
       this.setState({
         trimmedA: trimmedA,
         trimmedB: trimmedA + this.getSuffix(),
+        trimming: true,
       });
     } else {
       this.props.trimmedLength(this.state.trimmedB.length);
+      this.setState({
+        trimming: false
+      });
     }
   }
 
   render() {
     return (
-      <div style={{display:'none'}}>
-        <span style={{visibility:'hidden'}} ref={(ref) => this.refTrimmedA = ref}>{this.state.trimmedA}</span>
-        <span style={{visibility:'hidden'}} ref={(ref) => this.refTrimmedB = ref}>{this.state.trimmedB}</span>
+      <div style={{display: this.state.trimming ? 'block' : 'none'}}>
+        <span style={{ visibility: 'hidden' }} ref={(ref) => this.refTrimmedA = ref}>{this.state.trimmedA}</span>
+        <span style={{ visibility: 'hidden' }} ref={(ref) => this.refTrimmedB = ref}>{this.state.trimmedB}</span>
       </div>
-    )
+    );
   }
 }
 

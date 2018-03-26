@@ -19,9 +19,10 @@ import IconButton from 'material-ui/IconButton';
 
 import AddIcon from 'material-ui-icons/Add';
 import Linkify from 'react-linkify';
-import TextTruncate from 'react-text-truncate';
+// import TextTruncateOld from 'react-text-truncate';
 import ModeEditIcon from 'material-ui-icons/ModeEdit';
 import ActionDeleteIcon from 'material-ui-icons/Delete';
+import TruncateText from '../components/TruncateText';
 
 const styles = theme => ({
   root: {
@@ -297,14 +298,12 @@ class BoxContainer extends React.Component {
               className={classes.showCursor}
             />
             <CardContent>
-              {/*TODO: <div> cannot appear as a descendant of <p>.*/}
-              <Typography component="p">
-                <TextTruncate
-                  line={3}
-                  truncateText="…"
-                  text={item.message}
-                />
-              </Typography>
+              <TruncateText
+                text={item.message}
+                lineCount={3}
+                suffix="…"
+                width={250}
+              />
             </CardContent>
           </Card>
         ))}
