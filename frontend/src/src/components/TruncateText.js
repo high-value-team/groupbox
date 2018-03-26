@@ -80,7 +80,8 @@ export const calculateParts = (line) => {
 
   console.log(`line:
   ${JSON.stringify(line, null, 2)}
-  originalText.length:${line.originalText.length}`);
+  originalText.length:${line.originalText.length}
+  parts:${JSON.stringify(parts, null, 2)}`);
 
 
   return parts;
@@ -174,7 +175,7 @@ class TruncateText extends React.Component {
           <Typography component="p" key={index}>
             <span>
               {line.parts.map((part, idx) =>
-                part.isURL ? <a key={idx} href={part.text}>{part.text}</a> : part.text)}<br/>
+                part.isURL ? <a key={idx} href={part.URL}>{part.text}</a> : part.text)}<br/>
             </span>
           </Typography>
         ))}
