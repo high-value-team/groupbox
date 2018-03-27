@@ -7,7 +7,7 @@ import Typography from 'material-ui/Typography';
 
 import Navigation from '../components/Navigation';
 import {NODE_ENV, API_ROOT} from '../Config';
-import * as boxActionCreators from '../redux/box';
+import * as boxActionCreators from '../Redux';
 
 const styles = () => ({
   container: {

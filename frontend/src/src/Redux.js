@@ -1,5 +1,5 @@
 import { browserHistory } from 'react-router';
-import * as api from '../Api';
+import * as api from './Api';
 
 //
 // action constants

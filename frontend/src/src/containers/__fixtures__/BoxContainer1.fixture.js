@@ -48,7 +48,7 @@ export default {
             "authorNickname": "Flying Fox",
             "creationDate": "2017-10-03T20:55:10Z",
             "subject": "Schuld und Süh...",
-            "message": "Schuld und Sühne, Dostojewski, www.amazon.de/Schuld-Sühne-Fjodr-Michailowitsch-Dostojewski-ebook/dp/B004UBCWK6"
+            "message": "Schuld und Sühne, Dostojewski, www.amazon.de/Schuld-Suehne-Fjodr-Michailowitsch-Dostojewski-ebook/dp/B004UBCWK6"
           }
         ]
       }

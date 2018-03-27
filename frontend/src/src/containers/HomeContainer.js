@@ -1,7 +1,7 @@
 import React from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as boxActionCreators from '../redux/box';
+import * as boxActionCreators from '../Redux';
 import PropTypes from 'prop-types';
 
 import {withStyles} from 'material-ui/styles/index';

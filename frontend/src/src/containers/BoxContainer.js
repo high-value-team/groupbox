@@ -2,7 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import * as boxActionCreators from '../redux/box';
+import * as boxActionCreators from '../Redux';
 import moment from 'moment';
 
 import { withStyles } from 'material-ui/styles';
@@ -19,7 +19,6 @@ import IconButton from 'material-ui/IconButton';
 
 import AddIcon from 'material-ui-icons/Add';
 import Linkify from 'react-linkify';
-// import TextTruncateOld from 'react-text-truncate';
 import ModeEditIcon from 'material-ui-icons/ModeEdit';
 import ActionDeleteIcon from 'material-ui-icons/Delete';
 import TruncateText from '../components/TruncateText';

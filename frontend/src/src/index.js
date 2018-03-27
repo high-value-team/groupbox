@@ -10,7 +10,7 @@ import Theme from './Theme';
 import getRoutes from './Routes';
 import Reboot from 'material-ui/Reboot';
 
-import box from './redux/box';
+import box from './Redux';
 
 const store = createStore(combineReducers({box, routing: routerReducer}), compose(
   applyMiddleware(thunk),
