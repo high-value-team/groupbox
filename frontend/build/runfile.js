@@ -7,53 +7,62 @@ const fs = require('fs');
 // tasks
 //
 
+function setup() {
+    ['env.development', 'env.production', 'env.dropstack'].forEach((filename) => {
+        if (!fs.existsSync(filename)) {
+            run(`cp examples/${filename} .`);
+        }
+    });
+}
+help(start, 'Setup environment files; copy ./example/* to .; Please edit copied files with useful values based.');
+
 function start () {
-    const envObj = loadEnvironment('development');
+    const envObj = loadEnvironment('development.env');
     run(`cd ../src && yarn start`, {env: envObj});
 }
 help(start, 'Run frontend start scripts');
 
-// TODO
-// build:production
-// build:development
-// (default: build:production)
-function build () {
-    const envObj = loadEnvironment('production');
+function build_production () {
+    console.log('using env.production');
+    _build('env.production');
+}
+help(build_production, 'Run frontend build scripts: production');
+
+function build_development () {
+    console.log('using env.development');
+    _build('env.development');
+}
+help(build_development, 'Run frontend build scripts: development');
+
+function _build (envPath) {
+    const envObj = loadEnvironment(envPath);
     run(`cd ../src && yarn build`, {env: envObj});
     run(`rm -rf ../bin`);
     run(`cp -r ../src/build ../bin`);
 }
-help(build, 'Run frontend build scripts');
 
-// initial dropstack deploy:
-// export DROPSTACK_TOKEN=xxx
-// export DROPSTACK_ALIAS=groupbox
-// dropstack deploy --compress --verbose --alias $DROPSTACK_ALIAS.cloud.dropstack.run --token $DROPSTACK_TOKEN
-// => replace DROPSTACK_TOKEN, DROPSTACK_ALIAS, DROPSTACK_NAME in '.env.dropstack' file!
 function deploy () {
-    // TODO create tmp.dropstack.deploy folder and work from there (cp ../bin ../tmp.dropstack.deploy && write .dropstack.json)
-
-    // create deploy folder
-    const productionEnv = loadEnvironment('production');
+    // create deploy folder: ../deploy
+    const productionEnv = loadEnvironment('production.env');
     run(`cd ../src && yarn build`, {env: productionEnv});
     run(`rm -rf ../deploy`);
     run(`cp -r ../src/build ../deploy`);
 
     // parse dropstack environment variables
-    const dropstackEnv = loadEnvironment('dropstack');
+    const dropstackEnv = loadEnvironment('dropstack.env');
 
     // build .dropstack.json file
-    var file = fs.readFileSync('templates/.dropstack.json.template', 'utf8'); // read .dropstack.json.template
-    var parsedFile = interpolate(file, dropstackEnv); // interpolate with envObj
-    fs.writeFileSync('../deploy/.dropstack.json', parsedFile); // write .dropstack.json
+    var file = fs.readFileSync('template.dropstack.json', 'utf8')
+    var parsedFile = interpolate(file, dropstackEnv);
+    fs.writeFileSync('../deploy/.dropstack.json', parsedFile);
     // run(`cat ../deploy/.dropstack.json`);
 
     // deploy to dropstack
     const cmd = `cd ../deploy && dropstack deploy --compress --verbose --alias ${dropstackEnv.DROPSTACK_ALIAS}.cloud.dropstack.run --token ${dropstackEnv.DROPSTACK_TOKEN}`;
     run(cmd);
-    // console.log(`cmd:${cmd}`);
 }
-help(build, 'Run frontend deployment scripts');
+help(deploy, 'Run frontend deployment scripts');
+
 
 //
 // helper
@@ -71,8 +80,8 @@ function interpolate(text, env) {
     return text;
 }
 
-function loadEnvironment(envName) {
-    var env = dotenv.config({path: `.env.${envName}`});
+function loadEnvironment(envPath) {
+    var env = dotenv.config({path: envPath});
     // console.log(`loadEnvironment:${JSON.stringify(env, null, 2)}`);
 
     // override 'system environment variables'
@@ -94,7 +103,15 @@ function loadEnvironment(envName) {
 //
 
 module.exports = {
-    build,
+    setup,
     start,
     deploy,
+
+    // examples:
+    // run build
+    // run build:production
+    // run build:development
+    'build': build_production,
+    'build:production': build_production,
+    'build:development': build_development,
 }

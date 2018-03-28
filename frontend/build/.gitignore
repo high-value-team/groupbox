@@ -1,6 +1,6 @@
 
-# .env files
-.env*
+# .env files, only in this directory
+/env.*
 
 
 # dependencies
