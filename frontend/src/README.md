@@ -8,10 +8,12 @@ If necessary, install yarn
 
 Then
 
-    cd src/frontend
-    yarn build
+    yarn install
 
-Finally generate the go source code to embed the app
+To start the app in development mode
 
-    cd ..
-    go generate
+    yarn dev
+
+Or play around in Cosmos - Playground UI
+
+    yarn cosmos
