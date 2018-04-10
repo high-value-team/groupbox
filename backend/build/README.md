@@ -21,7 +21,10 @@ yarn install
 
 ```
 run setup                           - Create environment files, e.g. env.production. Please edit files with useful values!
-run test                            - Run backend test scripts
+run test                            - Run backend unit tests
+run test:unit                       - Run backend unit tests
+run test:mongo                      - Run backend mongo tests
+run test:smtp                       - Run backend smtp tests
 run build                           - Run backend build scripts
 run build:clean                     - Remove all "bin" folders
 run start                           - Run backend start scripts using env.development

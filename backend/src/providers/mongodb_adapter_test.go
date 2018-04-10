@@ -1,3 +1,8 @@
+// +build mongo
+
+// export MONGODB_URL=mongodb://<username>:<password>@ds121565.mlab.com:21565/<databasename>
+// go test -tags=mongo
+
 package providers
 
 import (
@@ -11,8 +16,6 @@ import (
 
 var ConnectionString string = ""
 
-// export MONGODB_URL=mongodb://<username>:<password>@ds121565.mlab.com:21565/<databasename>
-// go test
 func TestMain(m *testing.M) {
 	ConnectionString = os.Getenv("MONGODB_URL")
 	os.Exit(m.Run())

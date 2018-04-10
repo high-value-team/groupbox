@@ -12,6 +12,8 @@ package providers
 import (
 	"os"
 	"testing"
+
+	"github.com/high-value-team/groupbox/backend/src/models"
 )
 
 func TestSendInvitations(t *testing.T) {
@@ -28,7 +30,7 @@ func TestSendInvitations(t *testing.T) {
 		Username:          username,
 		Password:          password,
 	}
-	members := []Member{
+	members := []models.Member{
 		{
 			Key:   "1",
 			Email: "florian@fnbk.cc",

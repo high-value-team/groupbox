@@ -9,7 +9,7 @@ const path = require("path");
 //
 
 function setup() {
-    const envFiles = ['env.development', 'env.production', 'env.dropstack'];
+    const envFiles = ['env.development', 'env.production', 'env.dropstack', 'env.test.unit', 'env.test.mongo', 'env.test.smtp'];
     let allEnvFilesExist = true;
     envFiles.forEach((filename) => {
         if (!fs.existsSync(filename)) {
@@ -30,9 +30,14 @@ function setup() {
 }
 help(setup, 'Create environment files, e.g. env.production. Please edit files with useful values!');
 
-function test () {
-    const envFile = 'env.development';
+function test_unit () {
+    const envFile = 'env.test.unit';
     console.log(`using ${envFile}`);
+
+    // perpare environment variables
+    let envObj = loadEnvironment(envFile);
+    envObj.GOROOT = process.env.GOROOT;
+    envObj.GOPATH = process.env.GOPATH;
 
     // prepare directory list
     let dirList = run(`go list ../src/... | grep -v vendor | grep -v playground`, {stdio: 'pipe'})
@@ -41,16 +46,49 @@ function test () {
     const prefix = dirList[0].replace(/src$/,"");
     dirList = dirList.map((dir) => dir.replace(prefix, '../'));
 
+    run(`go test -v --tags=unit ${dirList.join(' ')}`, {env: envObj});
+}
+help(test_unit, 'Run backend unit tests');
+
+function test_mongo () {
+    const envFile = 'env.test.mongo';
+    console.log(`using ${envFile}`);
+
     // perpare environment variables
     let envObj = loadEnvironment(envFile);
     envObj.GOROOT = process.env.GOROOT;
     envObj.GOPATH = process.env.GOPATH;
 
-    run(`go test -v ${dirList.join(' ')}`, {env: envObj});
-    // TODO check return code
-}
-help(test, 'Run backend test scripts');
+    // prepare directory list
+    let dirList = run(`go list ../src/... | grep -v vendor | grep -v playground`, {stdio: 'pipe'})
+        .split('\n')
+        .filter(dir => dir.length > 0); // remove empty
+    const prefix = dirList[0].replace(/src$/,"");
+    dirList = dirList.map((dir) => dir.replace(prefix, '../'));
 
+    run(`go test -v -tags=mongo ${dirList.join(' ')}`, {env: envObj});
+}
+help(test_mongo, 'Run backend mongo tests');
+
+function test_smtp () {
+    const envFile = 'env.test.smtp';
+    console.log(`using ${envFile}`);
+
+    // perpare environment variables
+    let envObj = loadEnvironment(envFile);
+    envObj.GOROOT = process.env.GOROOT;
+    envObj.GOPATH = process.env.GOPATH;
+
+    // prepare directory list
+    let dirList = run(`go list ../src/... | grep -v vendor | grep -v playground`, {stdio: 'pipe'})
+        .split('\n')
+        .filter(dir => dir.length > 0); // remove empty
+    const prefix = dirList[0].replace(/src$/,"");
+    dirList = dirList.map((dir) => dir.replace(prefix, '../'));
+
+    run(`go test -v -tags=smtp ${dirList.join(' ')}`, {env: envObj});
+}
+help(test_smtp, 'Run backend smtp tests');
 
 function trimPrefix(str, prefix) {
     if (str.startsWith(prefix)) {
@@ -205,7 +243,10 @@ function timestamp() {
 
 module.exports = {
     setup,
-    test,
+    test: test_unit,
+    'test:unit': test_unit,
+    'test:mongo': test_mongo,
+    'test:smtp': test_smtp,
 
     build,
     'build:clean': build_clean,
