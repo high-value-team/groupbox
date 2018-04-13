@@ -3,8 +3,8 @@
 package interactions
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestGenerateKey(t *testing.T) {
@@ -18,7 +18,6 @@ func TestGenerateKey(t *testing.T) {
 	}
 }
 
-
 func TestNewNicknameGenerator(t *testing.T) {
 	sut := NewNicknameGenerator()
 
@@ -30,11 +29,11 @@ func TestNewNicknameGenerator(t *testing.T) {
 	results = append(results, sut.Next())
 	results = append(results, sut.Next())
 
-	uniqueResults := map[string]string {}
-	for _,r := range results {
+	uniqueResults := map[string]string{}
+	for _, r := range results {
 		fmt.Printf("Nickname generated: %s\n", r)
 
-		if _,ok := uniqueResults[r]; ok {
+		if _, ok := uniqueResults[r]; ok {
 			t.Error("Duplicate nickname generated!")
 			return
 		}

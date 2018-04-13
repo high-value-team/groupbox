@@ -7,8 +7,9 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
+	"github.com/high-value-team/groupbox/backend/src/exceptions"
 	"github.com/high-value-team/groupbox/backend/src/interior/interactions"
-	"github.com/high-value-team/groupbox/backend/src/models"
+	interiorModels "github.com/high-value-team/groupbox/backend/src/interior/models"
 )
 
 type GetBox struct {
@@ -27,7 +28,7 @@ func (handler *GetBox) Handle(writer http.ResponseWriter, reader *http.Request) 
 	writeJsonResponse(writer, jsonBox)
 }
 
-func mapToJSONBox(box *models.Box, boxKey string) *JSONBox {
+func mapToJSONBox(box *interiorModels.Box, boxKey string) *JSONBox {
 	requestingMember := selectMember(boxKey, box.Members)
 	jsonBox := JSONBox{
 		Title:          box.Title,
@@ -47,11 +48,11 @@ func mapToJSONBox(box *models.Box, boxKey string) *JSONBox {
 	return &jsonBox
 }
 
-func selectMember(key string, members []models.Member) *models.Member {
+func selectMember(key string, members []interiorModels.Member) *interiorModels.Member {
 	for i := range members {
 		if members[i].Key == key {
 			return &members[i]
 		}
 	}
-	panic(models.SuprisingException{Err: fmt.Errorf("No member found for key:%s!", key)})
+	panic(exceptions.SuprisingException{Err: fmt.Errorf("No member found for key:%s!", key)})
 }

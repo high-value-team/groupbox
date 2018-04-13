@@ -7,7 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/high-value-team/groupbox/backend/src/models"
+	"github.com/high-value-team/groupbox/backend/src/exceptions"
+	"github.com/high-value-team/groupbox/backend/src/interior/models"
 	"github.com/high-value-team/groupbox/backend/src/providers"
 )
 
@@ -116,7 +117,7 @@ func selectOwner(members []models.Member) *models.Member {
 			return &members[i]
 		}
 	}
-	panic(models.SuprisingException{Err: fmt.Errorf("No owner found!")})
+	panic(exceptions.SuprisingException{Err: fmt.Errorf("No owner found!")})
 }
 
 func selectAudience(members []models.Member, authorKey string) []models.Member {
@@ -135,7 +136,7 @@ func selectItem(items []models.Item, itemID string) *models.Item {
 			return &items[i]
 		}
 	}
-	panic(models.SuprisingException{Err: fmt.Errorf("No item found!")})
+	panic(exceptions.SuprisingException{Err: fmt.Errorf("No item found!")})
 }
 
 func changeItem(item *models.Item, subject, message string) {
@@ -149,5 +150,5 @@ func deleteFromItems(items []models.Item, itemID string) []models.Item {
 			return append(items[:i], items[i+1:]...)
 		}
 	}
-	panic(models.SuprisingException{Err: fmt.Errorf("No item found!")})
+	panic(exceptions.SuprisingException{Err: fmt.Errorf("No item found!")})
 }

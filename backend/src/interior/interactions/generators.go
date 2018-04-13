@@ -1,13 +1,12 @@
 package interactions
 
 import (
-	"encoding/hex"
 	crand "crypto/rand"
+	"encoding/hex"
 	"fmt"
 	mrand "math/rand"
 	"time"
 )
-
 
 // source: http://www.ashishbanerjee.com/home/go/go-generate-uuid
 // API doc: https://golang.org/pkg/math/rand/#Read
@@ -22,11 +21,10 @@ func GenerateKey() string {
 	return hex.EncodeToString(uuid)
 }
 
-
 type NicknameGenerator struct {
-	adjectives     []string
-	nouns          []string
-	generated 	   map[string]int
+	adjectives []string
+	nouns      []string
+	generated  map[string]int
 }
 
 func NewNicknameGenerator() *NicknameGenerator {
@@ -42,9 +40,9 @@ func NewNicknameGenerator() *NicknameGenerator {
 
 func newNicknameGeneratorExplicit(adjectives []string, nouns []string) *NicknameGenerator {
 	o := NicknameGenerator{
-		adjectives:     adjectives,
-		nouns:          nouns,
-		generated:      map[string]int{},
+		adjectives: adjectives,
+		nouns:      nouns,
+		generated:  map[string]int{},
 	}
 	return &o
 }
@@ -63,7 +61,7 @@ func (g *NicknameGenerator) Next() string {
 
 		if _, ok := g.generated[nickname]; !ok {
 			g.generated[nickname] = 0
-			break;
+			break
 		}
 	}
 	if retries == MAX_RETRIES {

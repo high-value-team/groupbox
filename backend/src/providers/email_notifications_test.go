@@ -13,7 +13,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/high-value-team/groupbox/backend/src/models"
+	intriorModels "github.com/high-value-team/groupbox/backend/src/interior/models"
 )
 
 func TestSendInvitations(t *testing.T) {
@@ -30,7 +30,7 @@ func TestSendInvitations(t *testing.T) {
 		Username:          username,
 		Password:          password,
 	}
-	members := []models.Member{
+	members := []intriorModels.Member{
 		{
 			Key:   "1",
 			Email: "florian@fnbk.cc",

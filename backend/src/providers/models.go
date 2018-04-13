@@ -3,7 +3,7 @@ package providers
 import (
 	"time"
 
-	"github.com/high-value-team/groupbox/backend/src/models"
+	interiorModels "github.com/high-value-team/groupbox/backend/src/interior/models"
 )
 
 type BSONBox struct {
@@ -27,7 +27,7 @@ type BSONMember struct {
 	Owner    bool   `bson:"owner"`
 }
 
-func ToBSONBox(box *models.Box) *BSONBox {
+func ToBSONBox(box *interiorModels.Box) *BSONBox {
 	return &BSONBox{
 		Title:        box.Title,
 		CreationDate: box.CreationDate.UTC(),
@@ -36,7 +36,7 @@ func ToBSONBox(box *models.Box) *BSONBox {
 	}
 }
 
-func toBSONMembers(in []models.Member) []BSONMember {
+func toBSONMembers(in []interiorModels.Member) []BSONMember {
 	out := []BSONMember{}
 	for i := range in {
 		out = append(out, BSONMember{
@@ -49,7 +49,7 @@ func toBSONMembers(in []models.Member) []BSONMember {
 	return out
 }
 
-func toBSONItems(in []models.Item) []BSONItem {
+func toBSONItems(in []interiorModels.Item) []BSONItem {
 	out := []BSONItem{}
 	for i := range in {
 		out = append(out, BSONItem{
@@ -62,8 +62,8 @@ func toBSONItems(in []models.Item) []BSONItem {
 	return out
 }
 
-func ToBox(bsonBox *BSONBox) *models.Box {
-	return &models.Box{
+func ToBox(bsonBox *BSONBox) *interiorModels.Box {
+	return &interiorModels.Box{
 		Title:        bsonBox.Title,
 		CreationDate: bsonBox.CreationDate.UTC(),
 		Members:      toMembers(bsonBox.Members),
@@ -71,10 +71,10 @@ func ToBox(bsonBox *BSONBox) *models.Box {
 	}
 }
 
-func toMembers(in []BSONMember) []models.Member {
-	out := []models.Member{}
+func toMembers(in []BSONMember) []interiorModels.Member {
+	out := []interiorModels.Member{}
 	for i := range in {
-		out = append(out, models.Member{
+		out = append(out, interiorModels.Member{
 			Key:      in[i].Key,
 			Email:    in[i].Email,
 			Nickname: in[i].Nickname,
@@ -84,10 +84,10 @@ func toMembers(in []BSONMember) []models.Member {
 	return out
 }
 
-func toItems(in []BSONItem) []models.Item {
-	out := []models.Item{}
+func toItems(in []BSONItem) []interiorModels.Item {
+	out := []interiorModels.Item{}
 	for i := range in {
-		out = append(out, models.Item{
+		out = append(out, interiorModels.Item{
 			CreationDate: in[i].CreationDate.UTC(),
 			Subject:      in[i].Subject,
 			Message:      in[i].Message,

@@ -1,4 +1,4 @@
-package models
+package exceptions
 
 type SadException struct {
 	Err error
@@ -15,4 +15,3 @@ type SuprisingException struct {
 func (e *SuprisingException) Message() string {
 	return e.Err.Error()
 }
-

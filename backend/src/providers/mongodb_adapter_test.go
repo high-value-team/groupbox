@@ -11,7 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/high-value-team/groupbox/backend/src/models"
+	"github.com/high-value-team/groupbox/backend/src/exceptions"
+	interiorModels "github.com/high-value-team/groupbox/backend/src/interior/models"
 )
 
 var ConnectionString string = ""
@@ -27,10 +28,10 @@ func TestSaveBox(t *testing.T) {
 	adapter.Start()
 	defer adapter.Stop()
 	var exception interface{}
-	box := &models.Box{
+	box := &interiorModels.Box{
 		Title:        "Klassiker der Weltliteratur",
 		CreationDate: time.Date(2017, 10, 1, 10, 30, 59, 0, time.UTC), // "2017-10-01T10:30:59Z",
-		Members: []models.Member{
+		Members: []interiorModels.Member{
 			{
 				Key:      "1",
 				Email:    "peter@acme.com",
@@ -50,7 +51,7 @@ func TestSaveBox(t *testing.T) {
 				Owner:    false,
 			},
 		},
-		Items: []models.Item{
+		Items: []interiorModels.Item{
 			{
 				CreationDate: time.Date(2017, 10, 1, 10, 35, 20, 0, time.UTC),
 				Subject:      "Die drei Muske...",
@@ -83,7 +84,7 @@ func TestSaveBox(t *testing.T) {
 	)
 
 	// assert
-	if _, ok := exception.(models.SadException); ok {
+	if _, ok := exception.(exceptions.SadException); ok {
 		t.Fatalf("did not expect exception: %v", exception)
 	}
 }
@@ -103,10 +104,10 @@ func TestLoadBoxFound(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expected := &models.Box{
+	expected := &interiorModels.Box{
 		Title:        "Klassiker der Weltliteratur",
 		CreationDate: time.Date(2017, 10, 1, 10, 30, 59, 0, time.UTC), // "2017-10-01T10:30:59Z",
-		Members: []models.Member{
+		Members: []interiorModels.Member{
 			{
 				Key:      "1",
 				Email:    "peter@acme.com",
@@ -126,7 +127,7 @@ func TestLoadBoxFound(t *testing.T) {
 				Owner:    false,
 			},
 		},
-		Items: []models.Item{
+		Items: []interiorModels.Item{
 			{
 				CreationDate: time.Date(2017, 10, 1, 10, 35, 20, 0, time.UTC),
 				Subject:      "Die drei Muske...",
@@ -171,7 +172,7 @@ func TestLoadBoxNOTFound(t *testing.T) {
 	)
 
 	// assert
-	if _, ok := exception.(models.SadException); !ok {
+	if _, ok := exception.(exceptions.SadException); !ok {
 		t.Fatal("expected SadException")
 	}
 

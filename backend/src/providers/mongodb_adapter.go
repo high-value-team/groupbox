@@ -3,8 +3,8 @@ package providers
 import (
 	"time"
 
-	"github.com/high-value-team/groupbox/backend/src/models"
-
+	"github.com/high-value-team/groupbox/backend/src/exceptions"
+	interiorModels "github.com/high-value-team/groupbox/backend/src/interior/models"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -30,7 +30,7 @@ func (adapter *MongoDBAdapter) Stop() {
 	adapter.session.Close()
 }
 
-func (adapter *MongoDBAdapter) LoadBox(boxKey string) *models.Box {
+func (adapter *MongoDBAdapter) LoadBox(boxKey string) *interiorModels.Box {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
@@ -43,7 +43,7 @@ func (adapter *MongoDBAdapter) LoadBox(boxKey string) *models.Box {
 	return ToBox(&bsonBox)
 }
 
-func (adapter *MongoDBAdapter) SaveBox(box *models.Box) {
+func (adapter *MongoDBAdapter) SaveBox(box *interiorModels.Box) {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
@@ -57,9 +57,9 @@ func (adapter *MongoDBAdapter) SaveBox(box *models.Box) {
 func check(err error) {
 	if err != nil {
 		if err == mgo.ErrNotFound {
-			panic(models.SadException{Err: mgo.ErrNotFound})
+			panic(exceptions.SadException{Err: mgo.ErrNotFound})
 		} else {
-			panic(models.SuprisingException{Err: err})
+			panic(exceptions.SuprisingException{Err: err})
 		}
 	}
 }

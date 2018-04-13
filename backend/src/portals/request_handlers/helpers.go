@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/high-value-team/groupbox/backend/src/models"
+	"github.com/high-value-team/groupbox/backend/src/exceptions"
 )
 
 func writeJsonResponse(writer http.ResponseWriter, i interface{}) {
@@ -19,11 +19,11 @@ func parseRequestBody(reader *http.Request, body interface{}) {
 	defer func() {
 		err := reader.Body.Close()
 		if err != nil {
-			panic(models.SuprisingException{Err: err})
+			panic(exceptions.SuprisingException{Err: err})
 		}
 	}()
 	err := decoder.Decode(&body)
 	if err != nil {
-		panic(models.SuprisingException{Err: err})
+		panic(exceptions.SuprisingException{Err: err})
 	}
 }
