@@ -7,16 +7,15 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
-	"github.com/high-value-team/groupbox/backend/src/exceptions"
-	"github.com/high-value-team/groupbox/backend/src/interior/interactions"
-	interiorModels "github.com/high-value-team/groupbox/backend/src/interior/models"
+	"github.com/high-value-team/groupbox/backend/src/interior_interactions"
+	"github.com/high-value-team/groupbox/backend/src/interior_models"
 )
 
 type GetBox struct {
-	Interactions *interactions.Interactions
+	Interactions *interior_interactions.Interactions
 }
 
-func NewGetBoxHandler(interactions *interactions.Interactions) http.HandlerFunc {
+func NewGetBoxHandler(interactions *interior_interactions.Interactions) http.HandlerFunc {
 	getBox := GetBox{Interactions: interactions}
 	return getBox.Handle
 }
@@ -28,7 +27,7 @@ func (handler *GetBox) Handle(writer http.ResponseWriter, reader *http.Request) 
 	writeJsonResponse(writer, jsonBox)
 }
 
-func mapToJSONBox(box *interiorModels.Box, boxKey string) *JSONBox {
+func mapToJSONBox(box *interior_models.Box, boxKey string) *JSONBox {
 	requestingMember := selectMember(boxKey, box.Members)
 	jsonBox := JSONBox{
 		Title:          box.Title,
@@ -48,11 +47,11 @@ func mapToJSONBox(box *interiorModels.Box, boxKey string) *JSONBox {
 	return &jsonBox
 }
 
-func selectMember(key string, members []interiorModels.Member) *interiorModels.Member {
+func selectMember(key string, members []interior_models.Member) *interior_models.Member {
 	for i := range members {
 		if members[i].Key == key {
 			return &members[i]
 		}
 	}
-	panic(exceptions.SuprisingException{Err: fmt.Errorf("No member found for key:%s!", key)})
+	panic(interior_models.SuprisingException{Err: fmt.Errorf("No member found for key:%s!", key)})
 }

@@ -1,4 +1,4 @@
-package models
+package interior_models
 
 import (
 	"strings"

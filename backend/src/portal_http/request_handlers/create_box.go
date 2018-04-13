@@ -3,14 +3,14 @@ package request_handlers
 import (
 	"net/http"
 
-	"github.com/high-value-team/groupbox/backend/src/interior/interactions"
+	"github.com/high-value-team/groupbox/backend/src/interior_interactions"
 )
 
 type CreateBox struct {
-	Interactions *interactions.Interactions
+	Interactions *interior_interactions.Interactions
 }
 
-func NewCreateBoxHandler(interactions *interactions.Interactions) http.HandlerFunc {
+func NewCreateBoxHandler(interactions *interior_interactions.Interactions) http.HandlerFunc {
 	createBox := CreateBox{Interactions: interactions}
 	return createBox.Handle
 }

@@ -1,10 +1,9 @@
-package providers
+package provider_mongodb
 
 import (
 	"time"
 
-	"github.com/high-value-team/groupbox/backend/src/exceptions"
-	interiorModels "github.com/high-value-team/groupbox/backend/src/interior/models"
+	"github.com/high-value-team/groupbox/backend/src/interior_models"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -30,7 +29,7 @@ func (adapter *MongoDBAdapter) Stop() {
 	adapter.session.Close()
 }
 
-func (adapter *MongoDBAdapter) LoadBox(boxKey string) *interiorModels.Box {
+func (adapter *MongoDBAdapter) LoadBox(boxKey string) *interior_models.Box {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
@@ -43,7 +42,7 @@ func (adapter *MongoDBAdapter) LoadBox(boxKey string) *interiorModels.Box {
 	return ToBox(&bsonBox)
 }
 
-func (adapter *MongoDBAdapter) SaveBox(box *interiorModels.Box) {
+func (adapter *MongoDBAdapter) SaveBox(box *interior_models.Box) {
 	sessionCopy := adapter.session.Copy()
 	defer sessionCopy.Close()
 
@@ -57,9 +56,9 @@ func (adapter *MongoDBAdapter) SaveBox(box *interiorModels.Box) {
 func check(err error) {
 	if err != nil {
 		if err == mgo.ErrNotFound {
-			panic(exceptions.SadException{Err: mgo.ErrNotFound})
+			panic(interior_models.SadException{Err: mgo.ErrNotFound})
 		} else {
-			panic(exceptions.SuprisingException{Err: err})
+			panic(interior_models.SuprisingException{Err: err})
 		}
 	}
 }

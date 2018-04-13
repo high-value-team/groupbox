@@ -1,6 +1,6 @@
 // +build unit
 
-package models
+package interior_models
 
 import (
 	"testing"

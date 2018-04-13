@@ -1,6 +1,6 @@
 // +build unit
 
-package interactions
+package interior_interactions
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package interactions
+package interior_interactions
 
 import (
 	crand "crypto/rand"

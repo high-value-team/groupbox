@@ -7,13 +7,13 @@
 //export SMTP_SERVER_ADDRESS="sslout.df.eu:587"
 // go test -tags=smtp
 
-package providers
+package provider_smtp
 
 import (
 	"os"
 	"testing"
 
-	intriorModels "github.com/high-value-team/groupbox/backend/src/interior/models"
+	"github.com/high-value-team/groupbox/backend/src/interior_models"
 )
 
 func TestSendInvitations(t *testing.T) {
@@ -30,7 +30,7 @@ func TestSendInvitations(t *testing.T) {
 		Username:          username,
 		Password:          password,
 	}
-	members := []intriorModels.Member{
+	members := []interior_models.Member{
 		{
 			Key:   "1",
 			Email: "florian@fnbk.cc",

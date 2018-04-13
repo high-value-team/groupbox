@@ -1,9 +1,9 @@
-package providers
+package provider_mongodb
 
 import (
 	"time"
 
-	interiorModels "github.com/high-value-team/groupbox/backend/src/interior/models"
+	"github.com/high-value-team/groupbox/backend/src/interior_models"
 )
 
 type BSONBox struct {
@@ -27,7 +27,7 @@ type BSONMember struct {
 	Owner    bool   `bson:"owner"`
 }
 
-func ToBSONBox(box *interiorModels.Box) *BSONBox {
+func ToBSONBox(box *interior_models.Box) *BSONBox {
 	return &BSONBox{
 		Title:        box.Title,
 		CreationDate: box.CreationDate.UTC(),
@@ -36,7 +36,7 @@ func ToBSONBox(box *interiorModels.Box) *BSONBox {
 	}
 }
 
-func toBSONMembers(in []interiorModels.Member) []BSONMember {
+func toBSONMembers(in []interior_models.Member) []BSONMember {
 	out := []BSONMember{}
 	for i := range in {
 		out = append(out, BSONMember{
@@ -49,7 +49,7 @@ func toBSONMembers(in []interiorModels.Member) []BSONMember {
 	return out
 }
 
-func toBSONItems(in []interiorModels.Item) []BSONItem {
+func toBSONItems(in []interior_models.Item) []BSONItem {
 	out := []BSONItem{}
 	for i := range in {
 		out = append(out, BSONItem{
@@ -62,8 +62,8 @@ func toBSONItems(in []interiorModels.Item) []BSONItem {
 	return out
 }
 
-func ToBox(bsonBox *BSONBox) *interiorModels.Box {
-	return &interiorModels.Box{
+func ToBox(bsonBox *BSONBox) *interior_models.Box {
+	return &interior_models.Box{
 		Title:        bsonBox.Title,
 		CreationDate: bsonBox.CreationDate.UTC(),
 		Members:      toMembers(bsonBox.Members),
@@ -71,10 +71,10 @@ func ToBox(bsonBox *BSONBox) *interiorModels.Box {
 	}
 }
 
-func toMembers(in []BSONMember) []interiorModels.Member {
-	out := []interiorModels.Member{}
+func toMembers(in []BSONMember) []interior_models.Member {
+	out := []interior_models.Member{}
 	for i := range in {
-		out = append(out, interiorModels.Member{
+		out = append(out, interior_models.Member{
 			Key:      in[i].Key,
 			Email:    in[i].Email,
 			Nickname: in[i].Nickname,
@@ -84,10 +84,10 @@ func toMembers(in []BSONMember) []interiorModels.Member {
 	return out
 }
 
-func toItems(in []BSONItem) []interiorModels.Item {
-	out := []interiorModels.Item{}
+func toItems(in []BSONItem) []interior_models.Item {
+	out := []interior_models.Item{}
 	for i := range in {
-		out = append(out, interiorModels.Item{
+		out = append(out, interior_models.Item{
 			CreationDate: in[i].CreationDate.UTC(),
 			Subject:      in[i].Subject,
 			Message:      in[i].Message,

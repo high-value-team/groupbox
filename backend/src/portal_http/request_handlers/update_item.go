@@ -4,14 +4,14 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/high-value-team/groupbox/backend/src/interior/interactions"
+	"github.com/high-value-team/groupbox/backend/src/interior_interactions"
 )
 
 type UpdateItem struct {
-	Interactions *interactions.Interactions
+	Interactions *interior_interactions.Interactions
 }
 
-func NewUpdateItemHandler(interactions *interactions.Interactions) http.HandlerFunc {
+func NewUpdateItemHandler(interactions *interior_interactions.Interactions) http.HandlerFunc {
 	updateItem := UpdateItem{Interactions: interactions}
 	return updateItem.Handle
 }

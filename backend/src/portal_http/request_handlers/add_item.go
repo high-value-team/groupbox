@@ -4,14 +4,14 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/high-value-team/groupbox/backend/src/interior/interactions"
+	"github.com/high-value-team/groupbox/backend/src/interior_interactions"
 )
 
 type AddItem struct {
-	Interactions *interactions.Interactions
+	Interactions *interior_interactions.Interactions
 }
 
-func NewAddItemHandler(interactions *interactions.Interactions) http.HandlerFunc {
+func NewAddItemHandler(interactions *interior_interactions.Interactions) http.HandlerFunc {
 	addItem := AddItem{Interactions: interactions}
 	return addItem.Handle
 }

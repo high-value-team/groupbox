@@ -3,9 +3,10 @@ package main
 //go:generate go run frontend/util/generator/generator.go
 
 import (
-	"github.com/high-value-team/groupbox/backend/src/interior/interactions"
-	"github.com/high-value-team/groupbox/backend/src/portals"
-	"github.com/high-value-team/groupbox/backend/src/providers"
+	"github.com/high-value-team/groupbox/backend/src/interior_interactions"
+	"github.com/high-value-team/groupbox/backend/src/portal_http"
+	"github.com/high-value-team/groupbox/backend/src/provider_mongodb"
+	"github.com/high-value-team/groupbox/backend/src/provider_smtp"
 )
 
 // wird durch build.sh gesetzt
@@ -19,17 +20,17 @@ func main() {
 	mongoDBAdapter, emailNotifications := NewProviders(cliParams)
 	defer mongoDBAdapter.Stop()
 	interactions := NewInteractions(mongoDBAdapter, emailNotifications)
-	httpPortal := portals.NewHTTPPortal(interactions, VersionNumber)
+	httpPortal := portal_http.NewHTTPPortal(interactions, VersionNumber)
 
 	// run
 	httpPortal.Run(cliParams.Port)
 }
 
-func NewProviders(cliParams *CLIParams) (*providers.MongoDBAdapter, *providers.EmailNotifications) {
-	mongoDBAdapter := providers.MongoDBAdapter{ConnectionString: cliParams.MongoDBURL}
+func NewProviders(cliParams *CLIParams) (*provider_mongodb.MongoDBAdapter, *provider_smtp.EmailNotifications) {
+	mongoDBAdapter := provider_mongodb.MongoDBAdapter{ConnectionString: cliParams.MongoDBURL}
 	mongoDBAdapter.Start()
 
-	emailNotifications := &providers.EmailNotifications{
+	emailNotifications := &provider_smtp.EmailNotifications{
 		Domain:            cliParams.Domain,
 		NoReplyEmail:      cliParams.SMTPNoReplyEmail,
 		SMTPServerAddress: cliParams.SMTPServerAddress,
@@ -39,6 +40,6 @@ func NewProviders(cliParams *CLIParams) (*providers.MongoDBAdapter, *providers.E
 	return &mongoDBAdapter, emailNotifications
 }
 
-func NewInteractions(mongoDBAdapter *providers.MongoDBAdapter, emailNotifications *providers.EmailNotifications) *interactions.Interactions {
-	return interactions.NewInteractions(mongoDBAdapter, emailNotifications)
+func NewInteractions(mongoDBAdapter *provider_mongodb.MongoDBAdapter, emailNotifications *provider_smtp.EmailNotifications) *interior_interactions.Interactions {
+	return interior_interactions.NewInteractions(mongoDBAdapter, emailNotifications)
 }

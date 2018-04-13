@@ -1,4 +1,4 @@
-package exceptions
+package interior_models
 
 type SadException struct {
 	Err error

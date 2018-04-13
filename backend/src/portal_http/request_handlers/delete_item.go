@@ -4,14 +4,14 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/high-value-team/groupbox/backend/src/interior/interactions"
+	"github.com/high-value-team/groupbox/backend/src/interior_interactions"
 )
 
 type DeleteItem struct {
-	Interactions *interactions.Interactions
+	Interactions *interior_interactions.Interactions
 }
 
-func NewDeleteItemHandler(interactions *interactions.Interactions) http.HandlerFunc {
+func NewDeleteItemHandler(interactions *interior_interactions.Interactions) http.HandlerFunc {
 	updateItem := DeleteItem{Interactions: interactions}
 	return updateItem.Handle
 }
