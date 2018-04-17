@@ -17,8 +17,13 @@ function runSilent(command, options = {}) {
 //
 
 function setup() {
-    // TODO get list from examples folder
-    const envFiles = ['env.development', 'env.dockerhub', 'env.dropstack', 'env.production', 'env.sloppy', 'env.test.mongo', 'env.test.smtp', 'env.test.unit'];
+    let envFiles = [];
+    fs.readdirSync('setup').forEach(file => {
+        if (file.startsWith('env.')) {
+            envFiles.push(file);
+        }
+    });
+
     let allEnvFilesExist = true;
     envFiles.forEach((filename) => {
         if (!fs.existsSync(filename)) {
@@ -32,7 +37,7 @@ function setup() {
 
     envFiles.forEach((filename) => {
         if (!fs.existsSync(filename)) {
-            run(`cp examples/${filename} .`);
+            run(`cp setup/${filename} .`);
             console.log(`Please edit this file!`)
         }
     });
