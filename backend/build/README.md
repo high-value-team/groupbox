@@ -19,19 +19,31 @@ yarn install
 
 ## Run Tasks
 
+`run [taskname]`
+
+e.g. `run start`
+
+Available tasks:
 ```
-run setup                           - Create environment files, e.g. env.production. Please edit files with useful values!
-run test                            - Run backend unit tests
-run test:unit                       - Run backend unit tests
-run test:mongo                      - Run backend mongo tests
-run test:smtp                       - Run backend smtp tests
-run build                           - Run backend build scripts
-run build:clean                     - Remove all "bin" folders
-run start                           - Run backend start scripts using env.development
-run start:development               - Run backend start scripts using env.development
-run start:production                - Run backend start scripts using env.production
-run deploy                          - Create deploy folder and deploy to Dropstack
-run deploy:clean                    - Remove all "deploy" folders
+setup                           - Create environment files, e.g. env.production. Please edit files with useful values!
+test                            - Run backend unit tests
+test:unit                       - Run backend unit tests
+test:mongo                      - Run backend mongo tests
+test:smtp                       - Run backend smtp tests
+local                           - Build and start go-executable using env.development
+local:development               - Build and start go-executable using env.development
+local:production                - Build and start go-executable using env.production
+docker:build                    - Build go executable with docker build flags and build docker image
+docker:start                    - Start docker container
+docker:stop                     - Stop docker container
+sloppy:publish                  - Push latest docker build to docker hub
+sloppy:delete                   - Delete existing project on sloppy.zone
+sloppy:deploy                   - Deploy to sloppy.zone
+dropstack:build                 - Create Dropstack folder
+dropstack:deploy                - Deploy to Dropstack
+clean:local                     - Remove all "sloppy" folders
+clean:docker                    - Remove all "docker" folders
+clean:sloppy                    - Remove all "sloppy" folders
 ```
 
 Execute `run` to list all available tasks

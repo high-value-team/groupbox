@@ -296,7 +296,7 @@ function clean_docker() {
     });
 
 }
-help(clean_docker, 'Remove all "bin" folders');
+help(clean_docker, 'Remove all "docker" folders');
 
 function clean_sloppy() {
     fs.readdirSync('.').forEach(file => {
