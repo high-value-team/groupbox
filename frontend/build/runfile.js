@@ -202,27 +202,37 @@ help(dropstack_deploy, 'Deploy to Dropstack');
 // clean
 //
 
-function clean_build() {
+function clean_docker() {
     fs.readdirSync('.').forEach(file => {
-        if (fs.statSync(file).isDirectory() && file.match(/^bin\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
+        if (fs.statSync(file).isDirectory() && file.match(/^docker\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
             const removeDirectory = `rm -rf ${file}`;
             run(removeDirectory);
         }
     });
 
 }
-help(clean_build, 'Remove all "bin" folders');
+help(clean_docker, 'Remove all "docker" folders');
 
 
-function clean_deploy() {
+function clean_dropstack() {
     fs.readdirSync('.').forEach(file => {
-        if (fs.statSync(file).isDirectory() && file.match(/^deploy\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
+        if (fs.statSync(file).isDirectory() && file.match(/^dropstack\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
             const removeDirectory = `rm -rf ${file}`;
             run(removeDirectory);
         }
     })
 }
-help(clean_deploy, 'Remove all "deploy" folders');
+help(clean_dropstack, 'Remove all "dropstack" folders');
+
+function clean_sloppy() {
+    fs.readdirSync('.').forEach(file => {
+        if (fs.statSync(file).isDirectory() && file.match(/^sloppy\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
+            const removeDirectory = `rm -rf ${file}`;
+            run(removeDirectory);
+        }
+    })
+}
+help(clean_sloppy, 'Remove all "sloppy" folders');
 
 //
 // helper
@@ -335,8 +345,9 @@ module.exports = {
     'dropstack:build': dropstack_build,
     'dropstack:deploy': dropstack_deploy,
 
-    'clean:build': clean_build,
-    'clean:deploy': clean_deploy,
+    'clean:docker': clean_docker,
+    'clean:sloppy': clean_sloppy,
+    'clean:dropstack': clean_dropstack,
 
     // timestamp: () => console.log(timestamp()),
 };
