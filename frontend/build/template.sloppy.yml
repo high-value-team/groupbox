@@ -1,0 +1,12 @@
+version: "v1"
+project: "groupbox-frontend"
+services:
+  a:
+    b:
+      image: hvt1/groupbox-frontend
+      domain: "groupbox-frontend.sloppy.zone"
+      ports: 80
+      env:
+        - HTTP_PORT: "80"
+        - REACT_APP_BACKEND_URL: "https://groupbox-backend.sloppy.zone"
+      mem: 64

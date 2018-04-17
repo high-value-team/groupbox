@@ -2,13 +2,28 @@ const { help, run } = require('runjs');
 const dotenv = require('dotenv');
 const dotenvExpand = require('dotenv-expand');
 const fs = require('fs');
+const { SilentLogger } = require('runjs/lib/common');
 
 //
-// tasks
+// decorators
+//
+
+function runSilent(command, options = {}) {
+    run(command, options, new SilentLogger());
+}
+
+//
+// setup
 //
 
 function setup() {
-    const envFiles = ['env.development', 'env.production', 'env.dropstack'];
+    let envFiles = [];
+    fs.readdirSync('setup').forEach(file => {
+        if (file.startsWith('env.')) {
+            envFiles.push(file);
+        }
+    });
+
     let allEnvFilesExist = true;
     envFiles.forEach((filename) => {
         if (!fs.existsSync(filename)) {
@@ -22,72 +37,170 @@ function setup() {
 
     envFiles.forEach((filename) => {
         if (!fs.existsSync(filename)) {
-            run(`cp examples/${filename} .`);
+            run(`cp setup/${filename} .`);
             console.log(`Please edit this file!`)
         }
     });
 }
 help(setup, 'Create environment files, e.g. env.production. Please edit files with useful values!');
 
-function start_development () {
+//
+// local
+//
+
+function local_development () {
     const envFile = 'env.development';
     const envObj = loadEnvironment(envFile);
     console.log(`using ${envFile}`);
     run(`cd ../src && yarn start`, {env: envObj});
 }
-help(start_development, 'Run frontend start scripts using env.development');
+help(local_development, 'Run frontend start scripts using env.development');
 
-function start_production () {
+function local_production () {
     const envFile = 'env.production';
     const envObj = loadEnvironment(envFile);
     console.log(`using ${envFile}`);
     run(`cd ../src && yarn start`, {env: envObj});
 }
-help(start_production, 'Run frontend start scripts using env.production');
+help(local_production, 'Run frontend start scripts using env.production');
 
-function build_production () {
-    const envFile = 'env.production';
+//
+// docker
+//
+
+function docker_build () {
+    const imageName = 'hvt1/groupbox-frontend';
+    const envFile = 'env.frontend';
     console.log(`using ${envFile}`);
-    _build(envFile);
-}
-help(build_production, 'Run frontend build scripts using env.production');
 
-function build_development () {
-    const envFile = 'env.development';
-    console.log(`using ${envFile}`);
-    _build(envFile);
-}
-help(build_development, 'Run frontend build scripts using env.development');
+    const binDir = `docker.${timestamp()}`;
+    const envObj = loadEnvironment(envFile);
 
-function _build (envPath) {
-    const envObj = loadEnvironment(envPath);
+    // build frontend with ENV placeholders
+    run(`mkdir -p ${binDir}/app`);
     run(`cd ../src && yarn build`, {env: envObj});
-    run(`cp -r ../src/build bin.${timestamp()}`);
-}
+    run(`cp -r ../src/build/ ${binDir}/app`);
 
-function deploy () {
-    const binPath = findNewestBinFolder();
-    if (binPath === undefined) {
-        console.log('No bin-folder found. Please execute a "build" job first!');
+    // copy files
+    run(`cp template.nginx.default.conf ${binDir}/nginx.default.conf`);
+    run(`cp template.nginx.Dockerfile ${binDir}/Dockerfile`);
+    run(`cp template.nginx.replace.sh ${binDir}/replace.sh`);
+    run(`cp template.nginx.run.sh ${binDir}/run.sh`);
+
+    run(`docker build --tag ${imageName} ${binDir}`);
+}
+help(docker_build, 'Build frontend and build docker image');
+
+function docker_start () {
+    const localURL = '127.0.0.1:8090';
+    const imageName = 'hvt1/groupbox-frontend';
+    const containerName = 'groupbox-frontend';
+    const envFile = 'env.development';
+    console.log(`using ${envFile}`);
+    const envObj = loadEnvironment(envFile);
+    const envArgs = toDockerEnvironmentArgs(envObj);
+
+    const isRunning = checkIsRunning(containerName);
+    if (isRunning) {
+        console.log(`The docker container '${containerName}' is already running. Make sure to stop it! ('run docker:stop')`);
         return
     }
+    run(`docker run --name=${containerName} --publish "${localURL}:80" ${envArgs} ${imageName}`);
+}
 
-    const deployPath = `deploy.${timestamp()}`;
-    const createDeployFolder = `cp -r ${binPath} ${deployPath}`;
-    run(createDeployFolder);
+help(docker_start, 'Start docker container');
+
+function docker_stop () {
+    const containerName = 'groupbox-frontend';
+    console.log(`checking if '${containerName}'-container is running`);
+    let containerID = run(`docker ps --filter "name=${containerName}" --format "{{.ID}}"`, {stdio: 'pipe'});
+    if (containerID.length !== 0) {
+        run(`docker kill ${containerName}`);
+    }
+    console.log();
+
+    console.log(`checking if '${containerName}'-container exists`);
+    containerID = run(`docker ps --all --filter "name=${containerName}" --format "{{.ID}}"`, {stdio: 'pipe'});
+    if (containerID.length !== 0) {
+        run(`docker rm ${containerName}`);
+    }
+    console.log();
+}
+help(docker_stop, 'Stop docker container');
+
+//
+// sloppy
+//
+
+function sloppy_publish () {
+    const imageName = 'hvt1/groupbox-frontend';
+    const envFile = 'env.dockerhub';
+    console.log(`using ${envFile}`);
+    const envObj = loadEnvironment(envFile);
+
+    runSilent(`docker login --username ${envObj.USERNAME} --password ${envObj.PASSWORD}`, {stdio: 'pipe'});
+    run(`docker push ${imageName}`);
+}
+help(sloppy_publish, 'Push latest docker build to docker hub');
+
+function sloppy_delete() {
+    const envFile = 'env.sloppy';
+    console.log(`using ${envFile}`);
+    const envObj = loadEnvironment(envFile);
+
+    run(`sloppy delete groupbox-frontend`, {env: envObj});
+}
+help(sloppy_delete, 'Delete existing project on sloppy.zone');
+
+function sloppy_deploy() {
+    const envFile = 'env.sloppy';
+    console.log(`using ${envFile}`);
+    const envObj = loadEnvironment(envFile);
+
+    const deployDir = `sloppy.${timestamp()}`;
+    run(`mkdir ${deployDir}`);
+    run(`cp template.sloppy.yml ${deployDir}/sloppy.yml`);
+    run(`sloppy start ${deployDir}/sloppy.yml`, {env: envObj});
+}
+help(sloppy_deploy, 'Deploy to sloppy.zone');
+
+//
+// dropstack
+//
+
+function dropstack_build() {
+    // build project and and create dropstack folder
+    const binDir = `dropstack.${timestamp()}`;
+    const envFile = 'env.production';
+    const envObj = loadEnvironment(envFile);
+    console.log(`using ${envFile}`);
+    run(`cd ../src && yarn build`, {env: envObj});
+    run(`cp -r ../src/build ${binDir}`);
 
     // create and write .dropstack.json in deploy folder
     const dropstackEnv = loadEnvironment('env.dropstack');
     var file = fs.readFileSync('template.dropstack.json', 'utf8')
     var parsedFile = interpolate(file, dropstackEnv);
-    fs.writeFileSync(`${deployPath}/.dropstack.json`, parsedFile);
+    fs.writeFileSync(`${binDir}/.dropstack.json`, parsedFile);
+}
+help(dropstack_build, 'Create Dropstack folder');
 
-    const deployToDropstack = `cd ${deployPath} && dropstack deploy --compress --verbose --alias ${dropstackEnv.DROPSTACK_ALIAS}.cloud.dropstack.run --token ${dropstackEnv.DROPSTACK_TOKEN}`;
+function dropstack_deploy () {
+    const binPath = findNewestDropstackFolder();
+    if (binPath === undefined) {
+        console.log('No bin-folder found. Please execute a "run dropstack:build" job first!');
+        return
+    }
+
+    const dropstackEnv = loadEnvironment('env.dropstack');
+    const deployToDropstack = `cd ${binPath} && dropstack deploy --compress --verbose --alias ${dropstackEnv.DROPSTACK_ALIAS}.cloud.dropstack.run --token ${dropstackEnv.DROPSTACK_TOKEN}`;
     run(deployToDropstack);
 }
-help(deploy, 'Create deploy folder and deploy to Dropstack');
+help(dropstack_deploy, 'Deploy to Dropstack');
 
-
+//
+// clean
+//
 
 function clean_build() {
     fs.readdirSync('.').forEach(file => {
@@ -145,10 +258,10 @@ function loadEnvironment(envPath) {
     return env.parsed;
 }
 
-function findNewestBinFolder() {
+function findNewestDropstackFolder() {
     let binFolders = [];
     fs.readdirSync('.').forEach(file => {
-        if (fs.statSync(file).isDirectory() && file.match(/^bin\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
+        if (fs.statSync(file).isDirectory() && file.match(/^dropstack\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
             binFolders.push(file);
         }
     });
@@ -159,8 +272,34 @@ function findNewestBinFolder() {
 function timestamp() {
     const pad = (n) => String("00" + n).slice(-2);
     const date = new Date();
-    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDay())}-${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`
+    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}-${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`
 }
+
+function checkIsRunning(containerName) {
+    let containerID = run(`docker ps --filter "name=${containerName}" --format "{{.ID}}"`, {stdio: 'pipe'});
+    if (containerID.length !== 0) {
+        return true;
+    }
+    // console.log();
+
+    containerID = run(`docker ps --all --filter "name=${containerName}" --format "{{.ID}}"`, {stdio: 'pipe'});
+    if (containerID.length !== 0) {
+        return true;
+    }
+
+    return false
+}
+
+function toDockerEnvironmentArgs(envObj) {
+    var args = '';
+    var keys = Object.keys(envObj);
+    keys.forEach((key) => {
+        const value = envObj[key];
+        args = args.concat(`--env "${key}=${value}" `);
+    });
+    return args;
+}
+
 
 //
 // exports
@@ -169,16 +308,35 @@ function timestamp() {
 module.exports = {
     setup,
 
-    start: start_development,
-    'start:development': start_development,
-    'start:production': start_production,
+    // start: start_development,
+    // 'start:development': start_development,
+    // 'start:production': start_production,
 
-    deploy,
+    // deploy,
 
-    'build': build_production,
-    'build:production': build_production,
-    'build:development': build_development,
+    // 'build': build,
+    // 'build:production': build_production,
+    // 'build:development': build_development,
+    // 'build:docker': build_docker,
+
+
+    'local': local_development,
+    'local:development': local_development,
+    'local:production': local_production,
+
+    'docker:build': docker_build,
+    'docker:start': docker_start,
+    'docker:stop': docker_stop,
+
+    'sloppy:publish': sloppy_publish,
+    'sloppy:delete': sloppy_delete,
+    'sloppy:deploy': sloppy_deploy,
+
+    'dropstack:build': dropstack_build,
+    'dropstack:deploy': dropstack_deploy,
 
     'clean:build': clean_build,
     'clean:deploy': clean_deploy,
-}
+
+    // timestamp: () => console.log(timestamp()),
+};

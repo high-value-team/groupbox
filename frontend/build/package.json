@@ -2,6 +2,8 @@
   "devDependencies": {
     "dotenv": "^5.0.0",
     "dotenv-expand": "^4.0.1",
+    "dropstack-cli": "^2.8.0",
+    "replace-in-file": "^3.4.0",
     "runjs": "^4.3.0"
   }
 }
