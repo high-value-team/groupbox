@@ -1,0 +1,16 @@
+version: "v1"
+project: "groupbox-backend"
+services:
+  a:
+    b:
+      image: hvt1/groupbox-backend
+      domain: "groupbox-backend.sloppy.zone"
+      ports: 80
+      env:
+        - HTTP_PORT: "${HTTP_PORT}"
+        - MONGODB_URL: "${MONGODB_URL}"
+        - SMTP_NO_REPLY_EMAIL: "${SMTP_NO_REPLY_EMAIL}"
+        - SMTP_SERVER_ADDRESS: "${SMTP_SERVER_ADDRESS}"
+        - SMTP_USERNAME: "${SMTP_USERNAME}"
+        - SMTP_PASSWORD: "${SMTP_PASSWORD}"
+      mem: 64

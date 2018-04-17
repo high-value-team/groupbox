@@ -1,8 +1,9 @@
 
 # .env files, only in this directory
 /env.*
-/bin.*/
-/deploy.*/
+/local.*/
+/docker.*/
+/dropstack.*/
 
 # dependencies
 node_modules
