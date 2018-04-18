@@ -7,16 +7,16 @@
   * every commando is executed in a new shell
   * parsing command line arguments not really possible
   
-![limitations with Makefile](build-system-images/makefile-example.png)
+![limitations with Makefile](images-build-system/makefile-example.png)
 
 * too many tools: Makefile, shell scripts, sed, cp, mv
   * this leads to high coupling with the operating system
   * relying too much on the file structure
   * e.g replace environment variables in files: `sed -i .backup "s|MONGODB_URL|${MONGODB_URL}|g" Dockerfile`
 
-![limitations with Makefile](build-system-images/shell-script-example.png)
+![limitations with Makefile](images-build-system/shell-script-example.png)
 
-![High coupling with the file structure](build-system-images/filestructure-makefile.png)
+![High coupling with the file structure](images-build-system/filestructure-makefile.png)
 
 
 ## runjs
@@ -37,10 +37,10 @@ run build --env=production
 
 * easy to read, because we can structure the code the way we like
 
-![all the power of javascript](build-system-images/javascript-code.png)
+![all the power of javascript](images-build-system/javascript-code.png)
 
 
-![improved file structure](build-system-images/filestructure-runjs.png)
+![improved file structure](images-build-system/filestructure-runjs.png)
 * leads to a better separation of concerns (Environment files, Template files)
   
 
