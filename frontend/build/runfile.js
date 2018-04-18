@@ -44,6 +44,20 @@ function setup() {
 }
 help(setup, 'Create environment files, e.g. env.production. Please edit files with useful values!');
 
+function install() {
+    run(`cd ../src && yarn install`);
+}
+help(install, 'Install all dependencies in "src" folder');
+
+//
+// test
+//
+
+function cosmos() {
+    run(`cd ../src && yarn cosmos`);
+}
+help(cosmos, 'Start cosmos server for Playground-UI testing');
+
 //
 // local
 //
@@ -234,6 +248,11 @@ function clean_sloppy() {
 }
 help(clean_sloppy, 'Remove all "sloppy" folders');
 
+function clean_install() {
+    run(`cd ../src && rm -r node_modules`);
+}
+help(clean_install, 'Remove installed libraries in "src" folder');
+
 //
 // helper
 //
@@ -317,18 +336,8 @@ function toDockerEnvironmentArgs(envObj) {
 
 module.exports = {
     setup,
-
-    // start: start_development,
-    // 'start:development': start_development,
-    // 'start:production': start_production,
-
-    // deploy,
-
-    // 'build': build,
-    // 'build:production': build_production,
-    // 'build:development': build_development,
-    // 'build:docker': build_docker,
-
+    install,
+    cosmos,
 
     'local': local_development,
     'local:development': local_development,
@@ -348,6 +357,7 @@ module.exports = {
     'clean:docker': clean_docker,
     'clean:sloppy': clean_sloppy,
     'clean:dropstack': clean_dropstack,
+    'clean:install': clean_install,
 
     // timestamp: () => console.log(timestamp()),
 };
