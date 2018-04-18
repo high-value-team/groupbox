@@ -4,6 +4,7 @@
 /local.*/
 /docker.*/
 /dropstack.*/
+/sloppy.*/
 
 # dependencies
 node_modules

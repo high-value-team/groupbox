@@ -13,4 +13,5 @@ services:
         - SMTP_SERVER_ADDRESS: "${SMTP_SERVER_ADDRESS}"
         - SMTP_USERNAME: "${SMTP_USERNAME}"
         - SMTP_PASSWORD: "${SMTP_PASSWORD}"
+        - GROUPBOX_ROOT_URI: "${GROUPBOX_ROOT_URI}"
       mem: 64
