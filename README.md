@@ -5,6 +5,8 @@ Ad-hoc online collaboration on information collections
 
 Read more about Groupbox: [Details](doc/groupbox.md)
 
+live demo: https://groupbox-frontend.sloppy.zone
+
 ## frontend
 ```
 cd frontend/build
