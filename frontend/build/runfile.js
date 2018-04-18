@@ -92,7 +92,7 @@ function docker_build () {
 help(docker_build, 'Build frontend and build docker image');
 
 function docker_start () {
-    const localURL = '127.0.0.1:8090';
+    const localURL = '127.0.0.1:9010';
     const imageName = 'hvt1/groupbox-frontend';
     const containerName = 'groupbox-frontend';
     const envFile = 'env.development';

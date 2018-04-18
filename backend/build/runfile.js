@@ -166,7 +166,7 @@ function docker_build () {
 help(docker_build, 'Build go executable with docker build flags and build docker image');
 
 function docker_start () {
-    const localURL = `127.0.0.1:8091`;
+    const localURL = `127.0.0.1:9011`;
     const imageName = 'hvt1/groupbox-backend';
     const containerName = 'groupbox-backend';
     const envFile = 'env.development';
