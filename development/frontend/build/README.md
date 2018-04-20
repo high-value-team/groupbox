@@ -10,6 +10,7 @@
 brew install node@9
 npm install -g npm@5.6.0
 npm install -g yarn@0.23.4
+npm install -g runjs@4.3.0
 ```
 
 install build dependencies
