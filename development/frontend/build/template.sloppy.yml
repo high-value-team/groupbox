@@ -4,7 +4,7 @@ services:
   a:
     b:
       image: hvt1/groupbox-frontend
-      domain: "groupbox-frontend.sloppy.zone"
+      domain: "groupbox.sloppy.zone"
       ports: 80
       env:
         - HTTP_PORT: "80"
