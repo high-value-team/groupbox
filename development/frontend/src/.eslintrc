@@ -54,7 +54,7 @@
 		"indent": [1, 2, { "SwitchCase": 1 }],
 		"key-spacing": ["error"],
 		"keyword-spacing": ["error"],
-		"max-len": ["error", 120],
+//		"max-len": ["error", 120],
 		"no-console": 0,
 		"no-extra-strict": 0,
 		"no-unused-vars": ["error", { "ignoreRestSiblings": true }],
@@ -85,6 +85,7 @@
     "react/no-multi-comp": 1,
     "react/no-set-state": 0,
     "react/self-closing-comp": 1,
+    "react/jsx-no-target-blank": 0,
 //    "react/sort-comp": [1, {
 //			"order": [
 //				"type-annotations",
