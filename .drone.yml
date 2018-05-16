@@ -1,0 +1,57 @@
+workspace:
+  base: /app
+  path: src/github.com/high-value-team/groupbox
+
+pipeline:
+
+  backend_build:
+    image: golang
+    commands:
+      - go build
+      - go test -v
+      - go test -v -tags=mongo
+
+  backend_docker:
+    debug: true
+    image: plugins/docker
+    repo: hvt1/groupbox-backend
+    secrets: [ docker_username, docker_password ]
+    context: /app/src/github.com/high-value-team/groupbox/backend/bin
+    dockerfile: /app/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
+
+  frontend_build:
+    image: node
+    commands:
+      - cd /app/src/github.com/high-value-team/groupbox/frontend/build
+      - yarn install
+      - npx run build_for_drone
+
+  frontend_docker:
+    debug: true
+    image: plugins/docker
+    repo: hvt1/groupbox-frontend
+    secrets: [ docker_username, docker_password ]
+    context: /app/src/github.com/high-value-team/groupbox/frontend/bin
+    dockerfile: /app/src/github.com/high-value-team/groupbox/frontend/bin/Dockerfile
+
+  frontend_rancher:
+    image: peloton/drone-rancher
+    url: http://hvt.zone:8080/v1
+    service: groupbox/frontend
+    docker_image: hvt1/groupbox-frontend
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    confirm: true
+    timeout: 180
+
+  backend_rancher:
+    image: peloton/drone-rancher
+    url: http://hvt.zone:8080/v1
+    service: groupbox/backend
+    docker_image: hvt1/groupbox-backend
+    secrets: [ rancher_access_key, rancher_secret_key ]
+    confirm: true
+    timeout: 180
+
+services:
+  mongo:
+    image: mongo
