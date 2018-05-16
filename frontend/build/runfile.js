@@ -82,8 +82,7 @@ help(local_production, 'Run frontend start scripts using env.production');
 // docker
 //
 
-function docker_build () {
-    const imageName = 'hvt1/groupbox-frontend';
+function docker_prepare () {
     const envFile = 'env.frontend';
     console.log(`using ${envFile}`);
 
@@ -93,15 +92,28 @@ function docker_build () {
     // build frontend with ENV placeholders
     run(`mkdir -p ${binDir}/app`);
     run(`cd ../src && yarn build`, {env: envObj});
-    run(`cp -r ../src/build/ ${binDir}/app`);
+    run(`cp -r ../src/build/* ${binDir}/app`);
 
     // copy files
     run(`cp template.nginx.default.conf ${binDir}/nginx.default.conf`);
     run(`cp template.nginx.Dockerfile ${binDir}/Dockerfile`);
     run(`cp template.nginx.replace.sh ${binDir}/replace.sh`);
     run(`cp template.nginx.run.sh ${binDir}/run.sh`);
+}
+help(docker_prepare, 'Build project and prepare Dockerfile');
 
-    run(`docker build --tag ${imageName} ${binDir}`);
+function docker_build () {
+    const imageName = 'hvt1/groupbox-frontend';
+
+    docker_prepare();
+
+    const binPath = findNewestDockerFolder();
+    if (binPath === undefined) {
+        console.log('No bin-folder found. Please execute a "run docker:prepare" job first!');
+        return
+    }
+
+    run(`docker build --tag ${imageName} ${binPath}`);
 }
 help(docker_build, 'Build frontend and build docker image');
 
@@ -220,6 +232,30 @@ function clean_install() {
 help(clean_install, 'Remove installed libraries in "src" folder');
 
 //
+// drone
+//
+
+function build_for_drone() {
+    clean_install();
+    install();
+    setup();
+    docker_prepare();
+    move_latest_docker_prepare_to_bin();
+}
+help(build_for_drone, 'Create bin directory with all artefacts for creating a docker image in the Drone-CI workflow.');
+
+function move_latest_docker_prepare_to_bin() {
+    const binPath = findNewestDockerFolder();
+    if (binPath === undefined) {
+        console.log('No bin-folder found. Please execute a "run docker:prepare" job first!');
+        return
+    }
+
+    run(`rm -rf ../bin`);
+    run(`mv ${binPath} ../bin`);
+}
+
+//
 // helper
 //
 
@@ -253,11 +289,12 @@ function loadEnvironment(envPath) {
     return env.parsed;
 }
 
-function findNewestDropstackFolder() {
+function findNewestDockerFolder() {
     let binFolders = [];
     fs.readdirSync('.').forEach(file => {
-        if (fs.statSync(file).isDirectory() && file.match(/^dropstack\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
-            binFolders.push(file);
+        if (fs.statSync(file).isDirectory() && file.match(/^docker\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
+            const absolutePath = `${__dirname}/${file}`;
+            binFolders.push(absolutePath);
         }
     });
     let sorted = binFolders.sort();
@@ -320,6 +357,8 @@ module.exports = {
     'clean:docker': clean_docker,
     'clean:sloppy': clean_sloppy,
     'clean:install': clean_install,
+
+    'build_for_drone': build_for_drone,
 
     // timestamp: () => console.log(timestamp()),
 };

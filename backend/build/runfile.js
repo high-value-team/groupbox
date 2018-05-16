@@ -290,27 +290,6 @@ function clean_local() {
 help(clean_local, 'Remove all "sloppy" folders');
 
 //
-// drone
-//
-
-function build_for_drone() {
-    docker_prepare();
-    move_latest_docker_prepare_to_bin();
-}
-help(build_for_drone, 'Create bin directory with all artefacts for creating a docker image in the Drone-CI workflow.');
-
-function move_latest_docker_prepare_to_bin() {
-    const binPath = findNewestDockerFolder();
-    if (binPath === undefined) {
-        console.log('No bin-folder found. Please execute a "run docker:prepare" job first!');
-        return
-    }
-
-    run(`rm -rf ../bin`);
-    run(`mv ${binPath} ../bin`);
-}
-
-//
 // helper
 //
 
