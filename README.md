@@ -7,17 +7,7 @@ Read more about Groupbox: [Details](documentation/groupbox.md)
 
 live demo: https://groupbox.sloppy.zone
 
-## up and running
-
-To quickly just spin up the application, please run the following command:
-
-```
-docker-compose up
-```
-
-then later visit http://localhost:8080
-
-
+[![Try in PWD](https://cdn.rawgit.com/play-with-docker/stacks/cff22438/assets/images/button.png)](http://play-with-docker.com?stack=https://raw.githubusercontent.com/high-value-team/groupbox/master/build/docker-compose.yml)
 
 ## frontend
 ```
