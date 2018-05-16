@@ -1,0 +1,29 @@
+version: "3.1"
+services:
+  frontend:
+    image: hvt1/groupbox-frontend
+    ports:
+      - "8080:80"
+    environment:
+      - HTTP_PORT=80
+      - REACT_APP_BACKEND_URL=http://localhost:8081
+
+  backend:
+    image: hvt1/groupbox-backend
+    ports:
+      - "8081:80"
+    environment:
+      - HTTP_PORT=80
+      - MONGODB_URL=mongodb://mongo:27017/develop
+      - GROUPBOX_ROOT_URI=http://localhost:8080
+#      # backend still works even if SMTP is not configured
+#      - SMTP_NO_REPLY_EMAIL=no-reply-groupbox@ralfw.de
+#      - SMTP_SERVER_ADDRESS=sslout.df.eu:587
+#      - SMTP_USERNAME=TODO
+#      - SMTP_PASSWORD=TODO
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
