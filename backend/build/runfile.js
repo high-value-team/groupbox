@@ -146,9 +146,8 @@ help(local_production, 'Build and start go-executable using env.production');
 // docker
 //
 
-function docker_build () {
+function docker_prepare () {
     const binDir = `docker.${timestamp()}`;
-    const imageName = 'hvt1/groupbox-backend';
 
     // build go executable
     const gitTag = run(`git describe --always --tags --dirty="*"`, {stdio: 'pipe'}).trim();
@@ -159,9 +158,21 @@ function docker_build () {
     // create Dockerfile
     var dockerfile = fs.readFileSync('template.docker.Dockerfile', 'utf8');
     fs.writeFileSync(`${binDir}/Dockerfile`, dockerfile);
+}
+help(docker_prepare, 'Build project and prepare Dockerfile');
 
-    // build docker image
-    run(`docker build --tag ${imageName} ${binDir}`);
+function docker_build () {
+    const imageName = 'hvt1/groupbox-backend';
+
+    docker_prepare();
+
+    const binPath = findNewestDockerFolder();
+    if (binPath === undefined) {
+        console.log('No bin-folder found. Please execute a "run docker:prepare" job first!');
+        return
+    }
+
+    run(`docker build --tag ${imageName} ${binPath}`);
 }
 help(docker_build, 'Build go executable with docker build flags and build docker image');
 
@@ -279,6 +290,27 @@ function clean_local() {
 help(clean_local, 'Remove all "sloppy" folders');
 
 //
+// drone
+//
+
+function build_for_drone() {
+    docker_prepare();
+    move_latest_docker_prepare_to_bin();
+}
+help(build_for_drone, 'Create bin directory with all artefacts for creating a docker image in the Drone-CI workflow.');
+
+function move_latest_docker_prepare_to_bin() {
+    const binPath = findNewestDockerFolder();
+    if (binPath === undefined) {
+        console.log('No bin-folder found. Please execute a "run docker:prepare" job first!');
+        return
+    }
+
+    run(`rm -rf ../bin`);
+    run(`mv ${binPath} ../bin`);
+}
+
+//
 // helper
 //
 
@@ -312,11 +344,12 @@ function loadEnvironment(envPath) {
     return env.parsed;
 }
 
-function findNewestDropstacklFolder() {
+function findNewestDockerFolder() {
     let binFolders = [];
     fs.readdirSync('.').forEach(file => {
-        if (fs.statSync(file).isDirectory() && file.match(/^dropstack\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
-            binFolders.push(file);
+        if (fs.statSync(file).isDirectory() && file.match(/^docker\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
+            const absolutePath = `${__dirname}/${file}`;
+            binFolders.push(absolutePath);
         }
     });
     let sorted = binFolders.sort();

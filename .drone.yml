@@ -4,14 +4,24 @@ workspace:
 
 pipeline:
 
-  backend_build:
-    image: golang
+  create_bin_directories:
+    image: alpine
     commands:
       - mkdir -p /app/src/github.com/high-value-team/groupbox/backend/bin/app
       - cp /app/src/github.com/high-value-team/groupbox/backend/build/template.docker.Dockerfile /app/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
-      - go build
-      - go test -v
-      - go test -v -tags=mongo
+      - mkdir -p /app/src/github.com/high-value-team/groupbox/frontend/bin/app
+      - cp /app/src/github.com/high-value-team/groupbox/frontend/build/template.docker.Dockerfile /app/src/github.com/high-value-team/groupbox/frontend/bin/Dockerfile
+
+  backend_build:
+    image: node
+    environment:
+      - MONGODB_URL=mongo:27017
+    commands:
+      - cd /app/src/github.com/high-value-team/groupbox/backend/build
+      - yarn install
+      - npx run test:unit
+      - npx run test:mongo
+      - npx run build_for_drone
 
   backend_docker:
     debug: true
