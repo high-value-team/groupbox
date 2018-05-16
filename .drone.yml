@@ -15,9 +15,7 @@ pipeline:
       - mkdir -p /go/src/github.com/high-value-team/groupbox/backend/bin
       - cp /go/src/github.com/high-value-team/groupbox/backend/build/template.docker.Dockerfile /go/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
       - cd /go/src/github.com/high-value-team/groupbox/backend/src
-      - ls -lisa
       - go build -o /go/src/github.com/high-value-team/groupbox/backend/bin/groupbox-backend .
-      - ls -lisa /go/src/github.com/high-value-team/groupbox/backend/bin
 
   backend_docker:
     debug: true
