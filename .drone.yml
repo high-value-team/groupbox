@@ -17,6 +17,7 @@ pipeline:
     commands:
       - cd /app/src/github.com/high-value-team/groupbox/backend/build
       - yarn install
+      - npx run setup
       - npx run test:unit
       - npx run test:mongo
       - npx run build_for_drone
