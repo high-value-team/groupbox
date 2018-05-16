@@ -18,9 +18,9 @@ pipeline:
       - GOARCH=amd64
     commands:
       - cd /app/src/github.com/high-value-team/groupbox/backend/src
-      - go test -v --tags=mongo $(go list ../src/... | grep -v vendor | grep -v playground)
-      - go test -v --tags=unit $(go list ../src/... | grep -v vendor | grep -v playground)
-      - go build -o ../bin/groupbox-backend ../src
+      - go test -v --tags=mongo $(go list ./... | grep -v vendor | grep -v playground)
+      - go test -v --tags=unit $(go list ./... | grep -v vendor | grep -v playground)
+      - go build -o ../bin/groupbox-backend .
 
   backend_docker:
     debug: true
