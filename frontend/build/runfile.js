@@ -227,7 +227,7 @@ function clean_sloppy() {
 help(clean_sloppy, 'Remove all "sloppy" folders');
 
 function clean_install() {
-    run(`cd ../src && rm -r node_modules`);
+    run(`cd ../src && rm -rf node_modules`);
 }
 help(clean_install, 'Remove installed libraries in "src" folder');
 
