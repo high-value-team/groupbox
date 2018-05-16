@@ -9,8 +9,6 @@ pipeline:
     commands:
       - mkdir -p /app/src/github.com/high-value-team/groupbox/backend/bin/app
       - cp /app/src/github.com/high-value-team/groupbox/backend/build/template.docker.Dockerfile /app/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
-      - mkdir -p /app/src/github.com/high-value-team/groupbox/frontend/bin/app
-      - cp /app/src/github.com/high-value-team/groupbox/frontend/build/template.docker.Dockerfile /app/src/github.com/high-value-team/groupbox/frontend/bin/Dockerfile
 
   backend_build:
     image: node
