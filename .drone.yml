@@ -5,6 +5,7 @@ workspace:
 pipeline:
 
   backend_build:
+    debug: true
     image: golang:1.8
     environment:
       - MONGODB_URL=mongo:27017
@@ -26,6 +27,7 @@ pipeline:
     dockerfile: /go/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
 
   backend_rancher:
+    debug: true
     image: peloton/drone-rancher
     url: http://hvt.zone:8080/v1
     service: groupbox/backend
@@ -35,6 +37,7 @@ pipeline:
     timeout: 180
 
   frontend_build:
+    debug: true
     image: node
     commands:
       - cd /go/src/github.com/high-value-team/groupbox/frontend/build
@@ -50,6 +53,7 @@ pipeline:
     dockerfile: /go/src/github.com/high-value-team/groupbox/frontend/bin/Dockerfile
 
   frontend_rancher:
+    debug: true
     image: peloton/drone-rancher
     url: http://hvt.zone:8080/v1
     service: groupbox/frontend
