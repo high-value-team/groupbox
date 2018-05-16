@@ -17,11 +17,7 @@ const styles = () => ({
   innerContainer: {
     maxWidth: '900px',
     margin: '0px auto',
-    display: 'flex',
   },
-  versionContainer: {
-    marginTop: '150px',
-  }
 });
 
 class MainContainer extends React.Component {
@@ -73,10 +69,10 @@ class MainContainer extends React.Component {
         <Navigation title={this.calcTitle()}/>
         <div className={this.props.classes.innerContainer}>
           {this.props.children}
-        </div>
-        <div style={{marginTop: '150px', display: 'flex', color: '#0000008a', fontSize: '10px',}}>
-          <p style={{flexGrow: '1'}}>{this.formatVersion(this.props.version)} - Brought to you by <a href="http://high-value-team.de" target="_blank" rel="noopener noreferrer">high-value-team.de</a></p>
-          <p><Link to="/imprint">imprint and data privacy policy</Link></p>
+          <div style={{marginTop: '150px', display: 'flex', color: '#0000008a', fontSize: '10px',}}>
+            <p style={{flexGrow: '1'}}>{this.formatVersion(this.props.version)} - Brought to you by <a href="http://high-value-team.de" target="_blank" rel="noopener noreferrer">high-value-team.de</a></p>
+            <p><Link to="/imprint">imprint and data privacy policy</Link></p>
+          </div>
         </div>
       </div>
     );

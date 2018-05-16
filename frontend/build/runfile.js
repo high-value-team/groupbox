@@ -105,6 +105,17 @@ function docker_build () {
 }
 help(docker_build, 'Build frontend and build docker image');
 
+function docker_publish () {
+    const imageName = 'hvt1/groupbox-frontend';
+    const envFile = 'env.dockerhub';
+    console.log(`using ${envFile}`);
+    const envObj = loadEnvironment(envFile);
+
+    runSilent(`docker login --username ${envObj.USERNAME} --password ${envObj.PASSWORD}`, {stdio: 'pipe'});
+    run(`docker push ${imageName}`);
+}
+help(docker_publish, 'Push latest docker build to docker hub');
+
 function docker_start () {
     const localURL = '127.0.0.1:9010';
     const imageName = 'hvt1/groupbox-frontend';
@@ -146,17 +157,6 @@ help(docker_stop, 'Stop docker container');
 // sloppy
 //
 
-function sloppy_publish () {
-    const imageName = 'hvt1/groupbox-frontend';
-    const envFile = 'env.dockerhub';
-    console.log(`using ${envFile}`);
-    const envObj = loadEnvironment(envFile);
-
-    runSilent(`docker login --username ${envObj.USERNAME} --password ${envObj.PASSWORD}`, {stdio: 'pipe'});
-    run(`docker push ${imageName}`);
-}
-help(sloppy_publish, 'Push latest docker build to docker hub');
-
 function sloppy_delete() {
     const envFile = 'env.sloppy';
     console.log(`using ${envFile}`);
@@ -177,40 +177,6 @@ function sloppy_deploy() {
     run(`sloppy start ${deployDir}/sloppy.yml`, {env: envObj});
 }
 help(sloppy_deploy, 'Deploy to sloppy.zone');
-
-//
-// dropstack
-//
-
-function dropstack_build() {
-    // build project and and create dropstack folder
-    const binDir = `dropstack.${timestamp()}`;
-    const envFile = 'env.production';
-    const envObj = loadEnvironment(envFile);
-    console.log(`using ${envFile}`);
-    run(`cd ../src && yarn build`, {env: envObj});
-    run(`cp -r ../src/build ${binDir}`);
-
-    // create and write .dropstack.json in deploy folder
-    const dropstackEnv = loadEnvironment('env.dropstack');
-    var file = fs.readFileSync('template.dropstack.json', 'utf8')
-    var parsedFile = interpolate(file, dropstackEnv);
-    fs.writeFileSync(`${binDir}/.dropstack.json`, parsedFile);
-}
-help(dropstack_build, 'Create Dropstack folder');
-
-function dropstack_deploy () {
-    const binPath = findNewestDropstackFolder();
-    if (binPath === undefined) {
-        console.log('No bin-folder found. Please execute a "run dropstack:build" job first!');
-        return
-    }
-
-    const dropstackEnv = loadEnvironment('env.dropstack');
-    const deployToDropstack = `cd ${binPath} && dropstack deploy --compress --verbose --alias ${dropstackEnv.DROPSTACK_ALIAS}.cloud.dropstack.run --token ${dropstackEnv.DROPSTACK_TOKEN}`;
-    run(deployToDropstack);
-}
-help(dropstack_deploy, 'Deploy to Dropstack');
 
 //
 // clean
@@ -344,19 +310,15 @@ module.exports = {
     'local:production': local_production,
 
     'docker:build': docker_build,
+    'docker:publish': docker_publish,
     'docker:start': docker_start,
     'docker:stop': docker_stop,
 
-    'sloppy:publish': sloppy_publish,
     'sloppy:delete': sloppy_delete,
     'sloppy:deploy': sloppy_deploy,
 
-    'dropstack:build': dropstack_build,
-    'dropstack:deploy': dropstack_deploy,
-
     'clean:docker': clean_docker,
     'clean:sloppy': clean_sloppy,
-    'clean:dropstack': clean_dropstack,
     'clean:install': clean_install,
 
     // timestamp: () => console.log(timestamp()),

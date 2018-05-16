@@ -9,8 +9,8 @@ export default function getRoutes (history) {
   return (
     <Router history={history}>
       <Route path="/" component={MainContainer}>
-        <Route path="/:boxkey" component={BoxContainer} />
         <Route path="/imprint" component={ImprintContainer} />
+        <Route path="/:boxkey" component={BoxContainer} />
         <IndexRoute component={HomeContainer}/>
       </Route>
     </Router>
