@@ -6,4 +6,4 @@ EXPOSE 80
 
 RUN apk add --no-cache ca-certificates
 
-ENTRYPOINT /go/bin/groupbox-backend
+CMD /go/bin/groupbox-backend

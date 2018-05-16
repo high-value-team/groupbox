@@ -22,7 +22,7 @@ pipeline:
       - go test
       - go test -v --tags=mongo $(go list ./... | grep -v vendor | grep -v playground)
       - go test -v --tags=unit $(go list ./... | grep -v vendor | grep -v playground)
-      - go build -o ../bin/groupbox-backend .
+      - go build -o /go/src/github.com/high-value-team/groupbox/backend/bin/groupbox-backend .
 
   backend_docker:
     debug: true
