@@ -7,6 +7,8 @@ pipeline:
   backend_build:
     image: golang
     commands:
+      - mkdir -p /app/src/github.com/high-value-team/groupbox/backend/bin/app
+      - cp /app/src/github.com/high-value-team/groupbox/backend/build/template.docker.Dockerfile /app/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
       - go build
       - go test -v
       - go test -v -tags=mongo
