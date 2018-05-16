@@ -11,16 +11,16 @@ pipeline:
       - cp /app/src/github.com/high-value-team/groupbox/backend/build/template.docker.Dockerfile /app/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
 
   backend_build:
-    image: node
+    image: golang:1.8
     environment:
       - MONGODB_URL=mongo:27017
+      - GOOS=linux
+      - GOARCH=amd64
     commands:
-      - cd /app/src/github.com/high-value-team/groupbox/backend/build
-      - yarn install
-      - npx run setup
-      - npx run test:unit
-      - npx run test:mongo
-      - npx run build_for_drone
+      - cd /app/src/github.com/high-value-team/groupbox/backend/src
+      - go test -v --tags=mongo $(go list ../src/... | grep -v vendor | grep -v playground)
+      - go test -v --tags=unit $(go list ../src/... | grep -v vendor | grep -v playground)
+      - go build -o ../bin/groupbox-backend ../src
 
   backend_docker:
     debug: true
