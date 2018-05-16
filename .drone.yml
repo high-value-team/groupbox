@@ -4,25 +4,17 @@ workspace:
 
 pipeline:
 
-  create_bin_directories:
-    image: alpine
-    commands:
-      - mkdir -p /go/src/github.com/high-value-team/groupbox/backend/bin/app
-      - cp /go/src/github.com/high-value-team/groupbox/backend/build/template.docker.Dockerfile /go/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
-
   backend_build:
     image: golang:1.8
     environment:
       - MONGODB_URL=mongo:27017
       - GOOS=linux
       - GOARCH=amd64
+      - CGO_ENABLED=0
     commands:
-      - cd /go/src/github.com/high-value-team/groupbox/backend/src
-      - go list ./... | grep -v vendor | grep -v playground
-      - go test
-      - go test -v --tags=mongo $(go list ./... | grep -v vendor | grep -v playground)
-      - go test -v --tags=unit $(go list ./... | grep -v vendor | grep -v playground)
-      - go build -o /go/src/github.com/high-value-team/groupbox/backend/bin/groupbox-backend .
+      - mkdir -p /go/src/github.com/high-value-team/groupbox/backend/bin
+      - cp /go/src/github.com/high-value-team/groupbox/backend/build/template.docker.Dockerfile /go/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
+      - go build -o /go/src/github.com/high-value-team/groupbox/backend/bin/groupbox-backend /go/src/github.com/high-value-team/groupbox/backend/src
 
   backend_docker:
     debug: true
@@ -31,30 +23,6 @@ pipeline:
     secrets: [ docker_username, docker_password ]
     context: /go/src/github.com/high-value-team/groupbox/backend/bin
     dockerfile: /go/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
-
-  frontend_build:
-    image: node
-    commands:
-      - cd /go/src/github.com/high-value-team/groupbox/frontend/build
-      - yarn install
-      - npx run build_for_drone
-
-  frontend_docker:
-    debug: true
-    image: plugins/docker
-    repo: hvt1/groupbox-frontend
-    secrets: [ docker_username, docker_password ]
-    context: /go/src/github.com/high-value-team/groupbox/frontend/bin
-    dockerfile: /go/src/github.com/high-value-team/groupbox/frontend/bin/Dockerfile
-
-  frontend_rancher:
-    image: peloton/drone-rancher
-    url: http://hvt.zone:8080/v1
-    service: groupbox/frontend
-    docker_image: hvt1/groupbox-frontend
-    secrets: [ rancher_access_key, rancher_secret_key ]
-    confirm: true
-    timeout: 180
 
   backend_rancher:
     image: peloton/drone-rancher
@@ -65,8 +33,81 @@ pipeline:
     confirm: true
     timeout: 180
 
-services:
-  mongo:
-    image: mongo
 
-    
+
+
+
+
+#workspace:
+#  base: /go
+#  path: src/github.com/high-value-team/groupbox
+#
+#pipeline:
+#
+#  create_bin_directories:
+#    image: alpine
+#    commands:
+#      - mkdir -p /go/src/github.com/high-value-team/groupbox/backend/bin/app
+#      - cp /go/src/github.com/high-value-team/groupbox/backend/build/template.docker.Dockerfile /go/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
+#
+#  backend_build:
+#    image: golang:1.8
+#    environment:
+#      - MONGODB_URL=mongo:27017
+#      - GOOS=linux
+#      - GOARCH=amd64
+#      - CGO_ENABLED=0
+#    commands:
+#      - cd /go/src/github.com/high-value-team/groupbox/backend/src
+#      - go list ./... | grep -v vendor | grep -v playground
+#      - go test
+#      - go test -v --tags=mongo $(go list ./... | grep -v vendor | grep -v playground)
+#      - go test -v --tags=unit $(go list ./... | grep -v vendor | grep -v playground)
+#      - go build -o /go/src/github.com/high-value-team/groupbox/backend/bin/groupbox-backend .
+#
+#  backend_docker:
+#    debug: true
+#    image: plugins/docker
+#    repo: hvt1/groupbox-backend
+#    secrets: [ docker_username, docker_password ]
+#    context: /go/src/github.com/high-value-team/groupbox/backend/bin
+#    dockerfile: /go/src/github.com/high-value-team/groupbox/backend/bin/Dockerfile
+#
+#  frontend_build:
+#    image: node
+#    commands:
+#      - cd /go/src/github.com/high-value-team/groupbox/frontend/build
+#      - yarn install
+#      - npx run build_for_drone
+#
+#  frontend_docker:
+#    debug: true
+#    image: plugins/docker
+#    repo: hvt1/groupbox-frontend
+#    secrets: [ docker_username, docker_password ]
+#    context: /go/src/github.com/high-value-team/groupbox/frontend/bin
+#    dockerfile: /go/src/github.com/high-value-team/groupbox/frontend/bin/Dockerfile
+#
+#  frontend_rancher:
+#    image: peloton/drone-rancher
+#    url: http://hvt.zone:8080/v1
+#    service: groupbox/frontend
+#    docker_image: hvt1/groupbox-frontend
+#    secrets: [ rancher_access_key, rancher_secret_key ]
+#    confirm: true
+#    timeout: 180
+#
+#  backend_rancher:
+#    image: peloton/drone-rancher
+#    url: http://hvt.zone:8080/v1
+#    service: groupbox/backend
+#    docker_image: hvt1/groupbox-backend
+#    secrets: [ rancher_access_key, rancher_secret_key ]
+#    confirm: true
+#    timeout: 180
+#
+#services:
+#  mongo:
+#    image: mongo
+#
+#
