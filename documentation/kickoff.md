@@ -43,17 +43,17 @@ Was sind die wichtigsten Features? Was ist unsere Mission?
 
 
 **Bild 01: Neue Groupbox anlegen**
-![01 Neue Groupbox anlegen](images/01.jpeg)
+![01 Neue Groupbox anlegen](images-kickoff/01.jpeg)
 
 **Bild 02: Groupbox Hauptseite**
-![02 Groupbox Hauptseite](images/02.jpeg)
+![02 Groupbox Hauptseite](images-kickoff/02.jpeg)
 
 
 **Bild 03: Neue Nachricht anlegen**
-![03 Neue Nachricht anlegen](images/03.jpeg)
+![03 Neue Nachricht anlegen](images-kickoff/03.jpeg)
 
 **Bild 04: Mission Statement**
-![04 Mission Statement](images/04.jpeg)
+![04 Mission Statement](images-kickoff/04.jpeg)
 
 ## Architektur
 
@@ -61,22 +61,22 @@ In welchem Umfeld bewegen wir uns? Was können wir zur groben Architektur sagen?
 Was sind die Kontrakte/Datenstrukturen zwischen Frontend und Backend?
 
 **Bild 05: Subarchitekturen (Frontend, Backend)**
-![05 Subarchitekturen (Frontend, Backend)](images/05.jpeg)
+![05 Subarchitekturen (Frontend, Backend)](images-kickoff/05.jpeg)
 
 **Bild 06: Kontrakte**
-![06 Kontrakte](images/06.jpeg)
+![06 Kontrakte](images-kickoff/06.jpeg)
 
 ## Entwürfe
 
 **Bild 07: GetVersion**
-![07 GetVersion](images/07.jpeg)
+![07 GetVersion](images-kickoff/07.jpeg)
 
 **Bild 08: GetBox**
-![08 GetBox](images/08.jpeg)
+![08 GetBox](images-kickoff/08.jpeg)
 
 **Bild 09: CreateBox**
-![09 CreateBox](images/09.jpeg)
+![09 CreateBox](images-kickoff/09.jpeg)
 
 **Bild 10: HTTP Portal**
-![10 Kontrakte](images/10.jpeg)
+![10 Kontrakte](images-kickoff/10.jpeg)
 
