@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/high-value-team/groupbox/backend/src/interior_interactions"
 	"github.com/high-value-team/groupbox/backend/src/interior_models"
-	"github.com/high-value-team/groupbox/backend/src/portal_http/request_handlers"
+	"github.com/high-value-team/groupbox/backend/src/adapters/portal_httprtal_http/request_handlers"
 	"github.com/rs/cors"
 )
 

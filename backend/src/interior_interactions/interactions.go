@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/high-value-team/groupbox/backend/src/interior_models"
+	"github.com/high-value-team/groupbox/backend/src/interior/interior_modelsor_models"
 	"github.com/high-value-team/groupbox/backend/src/provider_mongodb"
 	"github.com/high-value-team/groupbox/backend/src/provider_smtp"
 )
