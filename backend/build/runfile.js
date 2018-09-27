@@ -146,9 +146,8 @@ help(local_production, 'Build and start go-executable using env.production');
 // docker
 //
 
-function docker_build () {
+function docker_prepare () {
     const binDir = `docker.${timestamp()}`;
-    const imageName = 'hvt1/groupbox-backend';
 
     // build go executable
     const gitTag = run(`git describe --always --tags --dirty="*"`, {stdio: 'pipe'}).trim();
@@ -159,11 +158,34 @@ function docker_build () {
     // create Dockerfile
     var dockerfile = fs.readFileSync('template.docker.Dockerfile', 'utf8');
     fs.writeFileSync(`${binDir}/Dockerfile`, dockerfile);
+}
+help(docker_prepare, 'Build project and prepare Dockerfile');
 
-    // build docker image
-    run(`docker build --tag ${imageName} ${binDir}`);
+function docker_build () {
+    const imageName = 'hvt1/groupbox-backend';
+
+    docker_prepare();
+
+    const binPath = findNewestDockerFolder();
+    if (binPath === undefined) {
+        console.log('No bin-folder found. Please execute a "run docker:prepare" job first!');
+        return
+    }
+
+    run(`docker build --tag ${imageName} ${binPath}`);
 }
 help(docker_build, 'Build go executable with docker build flags and build docker image');
+
+function docker_publish () {
+    const imageName = 'hvt1/groupbox-backend';
+    const envFile = 'env.dockerhub';
+    console.log(`using ${envFile}`);
+    const envObj = loadEnvironment(envFile);
+
+    runSilent(`docker login --username ${envObj.USERNAME} --password ${envObj.PASSWORD}`, {stdio: 'pipe'});
+    run(`docker push ${imageName}`);
+}
+help(docker_publish, 'Push latest docker build to docker hub');
 
 function docker_start () {
     const localURL = `127.0.0.1:9011`;
@@ -206,17 +228,6 @@ help(docker_stop, 'Stop docker container');
 // sloppy
 //
 
-function sloppy_publish () {
-    const imageName = 'hvt1/groupbox-backend';
-    const envFile = 'env.dockerhub';
-    console.log(`using ${envFile}`);
-    const envObj = loadEnvironment(envFile);
-
-    runSilent(`docker login --username ${envObj.USERNAME} --password ${envObj.PASSWORD}`, {stdio: 'pipe'});
-    run(`docker push ${imageName}`);
-}
-help(sloppy_publish, 'Push latest docker build to docker hub');
-
 function sloppy_delete() {
     const envFile = 'env.sloppy';
     console.log(`using ${envFile}`);
@@ -242,46 +253,6 @@ function sloppy_deploy() {
     run(`sloppy start ${deployDir}/sloppy.yml`, {env: sloppyEnv});
 }
 help(sloppy_deploy, 'Deploy to sloppy.zone');
-
-//
-// dropstack
-//
-
-function dropstack_build() {
-    const binDir = `dropstack.${timestamp()}`;
-
-    // build go executable
-    const gitTag = run(`git describe --always --tags --dirty="*"`, {stdio: 'pipe'}).trim();
-    const buildCommand = `go build -ldflags "-X main.VersionNumber=${gitTag}" -o ${binDir}/groupbox-backend ../src`;
-    const envObj = { GOOS: "linux", GOARCH: "amd64", GOROOT: process.env.GOROOT, GOPATH: process.env.GOPATH};
-    run(buildCommand, {env:envObj});
-
-    // create .dropstack.json
-    const dropstackEnv = loadEnvironment('env.dropstack');
-    var file = fs.readFileSync('template.dropstack.json', 'utf8')
-    var parsedFile = interpolate(file, dropstackEnv);
-    fs.writeFileSync(`${binDir}/.dropstack.json`, parsedFile);
-
-    // create Dockerfile
-    const productionEnv = loadEnvironment('env.production');
-    var dropstackTemplate = fs.readFileSync('template.dropstack.Dockerfile', 'utf8');
-    var dropstackDockerfile = interpolate(dropstackTemplate, productionEnv);
-    fs.writeFileSync(`${binDir}/Dockerfile`, dropstackDockerfile);
-}
-help(dropstack_build, 'Create Dropstack folder');
-
-function dropstack_deploy() {
-    const binPath = findNewestDropstacklFolder();
-    if (binPath === undefined) {
-        console.log('No bin-folder found. Please execute a "build" job first!');
-        return
-    }
-
-    const dropstackEnv = loadEnvironment('env.dropstack');
-    const deployToDropstack = `cd ${binPath} && dropstack deploy --compress --verbose --alias ${dropstackEnv.DROPSTACK_ALIAS}.cloud.dropstack.run --token ${dropstackEnv.DROPSTACK_TOKEN}`;
-    run(deployToDropstack);
-}
-help(dropstack_deploy, 'Deploy to Dropstack');
 
 //
 // clean
@@ -352,11 +323,12 @@ function loadEnvironment(envPath) {
     return env.parsed;
 }
 
-function findNewestDropstacklFolder() {
+function findNewestDockerFolder() {
     let binFolders = [];
     fs.readdirSync('.').forEach(file => {
-        if (fs.statSync(file).isDirectory() && file.match(/^dropstack\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
-            binFolders.push(file);
+        if (fs.statSync(file).isDirectory() && file.match(/^docker\.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}$/)) {
+            const absolutePath = `${__dirname}/${file}`;
+            binFolders.push(absolutePath);
         }
     });
     let sorted = binFolders.sort();
@@ -410,15 +382,12 @@ module.exports = {
     'local:production': local_production,
 
     'docker:build': docker_build,
+    'docker:publish': docker_publish,
     'docker:start': docker_start,
     'docker:stop': docker_stop,
 
-    'sloppy:publish': sloppy_publish,
     'sloppy:delete': sloppy_delete,
     'sloppy:deploy': sloppy_deploy,
-
-    'dropstack:build': dropstack_build,
-    'dropstack:deploy': dropstack_deploy,
 
     'clean:local': clean_local,
     'clean:docker': clean_docker,

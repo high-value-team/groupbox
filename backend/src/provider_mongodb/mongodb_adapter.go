@@ -19,7 +19,7 @@ type MongoDBAdapter struct {
 
 func (adapter *MongoDBAdapter) Start() {
 	var err error
-	adapter.session, err = mgo.DialWithTimeout(adapter.ConnectionString, 1*time.Second)
+	adapter.session, err = mgo.DialWithTimeout(adapter.ConnectionString, 10*time.Second)
 	if err != nil {
 		panic(err)
 	}
